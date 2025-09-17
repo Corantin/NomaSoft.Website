@@ -1,10 +1,11 @@
+import type {ComponentType, SVGProps} from 'react';
 import {Bot, Boxes, Globe, Smartphone} from 'lucide-react';
 import Link from 'next/link';
+import {useTranslations} from 'next-intl';
 import siteContent from '@/content/site.json';
 import {Locale} from '@/lib/i18n';
-import {useTranslations} from 'next-intl';
 
-const iconMap: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+const iconMap: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   web3: Boxes,
   web: Globe,
   mobile: Smartphone,

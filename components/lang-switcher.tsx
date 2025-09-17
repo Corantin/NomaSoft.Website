@@ -1,7 +1,7 @@
 'use client';
 
 import {useLocale, usePathname, useRouter} from 'next-intl/client';
-import {useTransition} from 'react';
+import {ChangeEvent, useTransition} from 'react';
 import {languageCookieName, locales} from '@/lib/i18n';
 
 export function LangSwitcher({label}: {label: string}) {
@@ -10,7 +10,7 @@ export function LangSwitcher({label}: {label: string}) {
   const locale = useLocale();
   const [isPending, startTransition] = useTransition();
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const nextLocale = event.target.value;
     document.cookie = `${languageCookieName}=${nextLocale}; path=/; max-age=${60 * 60 * 24 * 365}`;
 

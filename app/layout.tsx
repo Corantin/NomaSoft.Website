@@ -1,4 +1,5 @@
 import type {Metadata, Viewport} from 'next';
+import type {ReactNode} from 'react';
 import {Inter} from 'next/font/google';
 import './globals.css';
 
@@ -26,7 +27,7 @@ export const viewport: Viewport = {
   themeColor: '#09090b'
 };
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({children}: {children: ReactNode}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} bg-zinc-950 text-zinc-50 antialiased`}>

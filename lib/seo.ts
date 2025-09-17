@@ -7,7 +7,7 @@ const siteName = siteContent.site.name;
 const defaultDescription = {
   en: siteContent.hero.subhead.en,
   fr: siteContent.hero.subhead.fr
-};
+} satisfies Record<Locale, string>;
 
 const localeToOg = {
   en: 'en_US',

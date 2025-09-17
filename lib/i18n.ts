@@ -3,7 +3,7 @@ import {getRequestConfig} from 'next-intl/server';
 import siteContent from '@/content/site.json';
 
 export const languageCookieName = 'NEXT_LOCALE';
-export const locales = siteContent.site.locales as readonly string[];
+export const locales = siteContent.site.locales satisfies readonly string[];
 export type Locale = (typeof locales)[number];
 export const defaultLocale = (process.env.NEXT_PUBLIC_DEFAULT_LOCALE || 'en') as Locale;
 export const localePrefix = 'always';
