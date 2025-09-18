@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "homeTitle": "NovaSoft — Automation-first software engineering",
+    "homeDescription": "Lean product teams shipping Web, Mobile, Web3, and AI systems with measurable outcomes.",
+    "contactTitle": "Contact NovaSoft",
+    "privacyTitle": "Privacy Policy — NovaSoft",
+    "termsTitle": "Terms of Service — NovaSoft"
+  },
+  "nav": {
+    "skip": "Skip to content",
+    "services": "Services",
+    "process": "Process",
+    "portfolio": "Portfolio",
+    "about": "About",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "hero": {
+    "ctaPrimary": "Book a call",
+    "ctaSecondary": "See our work"
+  },
+  "sections": {
+    "services": "What we build",
+    "process": "Delivery process",
+    "portfolio": "Selected work",
+    "about": "About NovaSoft",
+    "contact": "Let's talk",
+    "servicesCta": "Discuss project"
+  },
+  "process": {
+    "cta": "Explore engagement"
+  },
+  "portfolio": {
+    "open": "Open case study"
+  },
+  "about": {
+    "lead": "We are an automation-first duo shipping resilient products across Web3, SaaS, and mobile.",
+    "body": "NovaSoft engineers blend product strategy with hands-on delivery. We pair rapid discovery with production-grade execution so your teams can focus on growth.",
+    "stack": "Core stack"
+  },
+  "contact": {
+    "title": "Tell us about your project",
+    "subtitle": "We respond within one business day.",
+    "name": "Name",
+    "email": "Email",
+    "company": "Company",
+    "message": "How can we help?",
+    "service": "Service interest",
+    "servicePlaceholder": "Select a service",
+    "file": "Attach brief (optional)",
+    "submit": "Send message",
+    "success": "Thanks! We'll reply shortly.",
+    "error": "Something went wrong. Please retry or email us directly.",
+    "validating": "Validating…",
+    "sending": "Sending…",
+    "lead": "Share context, constraints, and we will outline a roadmap."
+  },
+  "validation": {
+    "name": {
+      "min": "Name must be at least 2 characters.",
+      "max": "Name is too long."
+    },
+    "email": "Provide a valid email address.",
+    "company": {
+      "max": "Company name is too long."
+    },
+    "message": {
+      "min": "Tell us a little more about your project.",
+      "max": "Keep the message under 600 characters."
+    },
+    "service": "Choose the service you're interested in.",
+    "file": {
+      "size": "Attachments must be smaller than 5MB."
+    },
+    "bot": "Form submission flagged as spam."
+  },
+  "footer": {
+    "rights": "© {{year}} NovaSoft. All rights reserved."
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "fr": "Français"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "Sorry, the page you requested does not exist. Use the menu to continue browsing.",
+    "errorTitle": "Something went wrong",
+    "errorBody": "An unexpected error occurred. Please refresh or contact us if the issue persists.",
+    "goHome": "Back to home",
+    "retry": "Try again"
+  }
+}

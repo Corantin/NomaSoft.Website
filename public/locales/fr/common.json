@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "homeTitle": "NovaSoft — Ingénierie logicielle axée automatisation",
+    "homeDescription": "Des équipes produits agiles livrant Web, Mobile, Web3 et intégrations IA avec des résultats mesurables.",
+    "contactTitle": "Contactez NovaSoft",
+    "privacyTitle": "Politique de confidentialité — NovaSoft",
+    "termsTitle": "Conditions d'utilisation — NovaSoft"
+  },
+  "nav": {
+    "skip": "Aller au contenu",
+    "services": "Services",
+    "process": "Processus",
+    "portfolio": "Projets",
+    "about": "À propos",
+    "contact": "Contact",
+    "privacy": "Confidentialité",
+    "terms": "Conditions"
+  },
+  "hero": {
+    "ctaPrimary": "Réserver un appel",
+    "ctaSecondary": "Voir nos projets"
+  },
+  "sections": {
+    "services": "Ce que nous réalisons",
+    "process": "Notre méthode",
+    "portfolio": "Réalisations",
+    "about": "À propos de NovaSoft",
+    "contact": "Discutons",
+    "servicesCta": "Discuter du projet"
+  },
+  "process": {
+    "cta": "Découvrir l'accompagnement"
+  },
+  "portfolio": {
+    "open": "Ouvrir l'étude"
+  },
+  "about": {
+    "lead": "Nous sommes un duo orienté automatisation livrant des produits résilients pour le Web3, le SaaS et le mobile.",
+    "body": "Les ingénieurs NovaSoft allient stratégie produit et exécution terrain. Nous conjuguons découverte rapide et livraison de niveau production pour que vos équipes se concentrent sur la croissance.",
+    "stack": "Stack clé"
+  },
+  "contact": {
+    "title": "Parlez-nous de votre projet",
+    "subtitle": "Réponse sous un jour ouvré.",
+    "name": "Nom",
+    "email": "Email",
+    "company": "Entreprise",
+    "message": "Comment pouvons-nous aider ?",
+    "service": "Service ciblé",
+    "servicePlaceholder": "Sélectionner un service",
+    "file": "Joindre un brief (optionnel)",
+    "submit": "Envoyer",
+    "success": "Merci ! Nous revenons vers vous très vite.",
+    "error": "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
+    "validating": "Validation…",
+    "sending": "Envoi…",
+    "lead": "Partagez votre contexte et vos contraintes, nous proposerons une feuille de route."
+  },
+  "validation": {
+    "name": {
+      "min": "Le nom doit comporter au moins 2 caractères.",
+      "max": "Nom trop long."
+    },
+    "email": "Indiquez une adresse email valide.",
+    "company": {
+      "max": "Nom d'entreprise trop long."
+    },
+    "message": {
+      "min": "Dites-nous en un peu plus sur votre projet.",
+      "max": "Limitez le message à 600 caractères."
+    },
+    "service": "Choisissez le service qui vous intéresse.",
+    "file": {
+      "size": "Les pièces jointes doivent faire moins de 5 Mo."
+    },
+    "bot": "Soumission détectée comme spam."
+  },
+  "footer": {
+    "rights": "© {{year}} NovaSoft. Tous droits réservés."
+  },
+  "language": {
+    "label": "Langue",
+    "en": "English",
+    "fr": "Français"
+  },
+  "errors": {
+    "notFoundTitle": "Page introuvable",
+    "notFoundBody": "La page demandée n'existe pas. Utilisez le menu pour continuer la navigation.",
+    "errorTitle": "Une erreur est survenue",
+    "errorBody": "Une erreur inattendue est apparue. Rafraîchissez ou contactez-nous si le problème persiste.",
+    "goHome": "Retour à l'accueil",
+    "retry": "Réessayer"
+  }
+}
