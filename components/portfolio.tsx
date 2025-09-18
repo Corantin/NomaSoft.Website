@@ -1,35 +1,54 @@
 import Image from 'next/image';
 import siteContent from '@/content/site.json';
-import {Locale} from '@/lib/i18n';
-import {useTranslations} from 'next-intl';
-import {OutboundLink} from './outbound-link';
+import type { SiteContent } from '@/types/site-content';
 
-const imageMap: Record<string, {src: string; alt: string}> = {
-  Gardens: {src: '/images/portfolio/gardens.svg', alt: 'Gardens dashboard illustration'},
-  'Protocol DApp': {src: '/images/portfolio/protocol-dapp.svg', alt: 'Protocol DApp interface mockup'},
-  '1Hive Quests': {src: '/images/portfolio/1hive-quests.svg', alt: '1Hive Quests overview'}
+const typedSiteContent = siteContent as SiteContent;
+import { Locale } from '@/lib/i18n';
+import { useTranslations } from 'next-intl';
+import { OutboundLink } from './outbound-link';
+
+const imageMap: Record<string, { src: string; alt: string }> = {
+  Gardens: {
+    src: '/images/portfolio/gardens.svg',
+    alt: 'Gardens dashboard illustration',
+  },
+  'Protocol DApp': {
+    src: '/images/portfolio/protocol-dapp.svg',
+    alt: 'Protocol DApp interface mockup',
+  },
+  '1Hive Quests': {
+    src: '/images/portfolio/1hive-quests.svg',
+    alt: '1Hive Quests overview',
+  },
 };
 
 interface PortfolioProps {
   locale: Locale;
 }
 
-export function Portfolio({locale}: PortfolioProps) {
+export function Portfolio({ locale }: PortfolioProps) {
   const t = useTranslations();
 
   return (
-    <section id="portfolio" aria-labelledby="portfolio-heading" className="py-16 sm:py-24">
+    <section
+      id="portfolio"
+      aria-labelledby="portfolio-heading"
+      className="py-16 sm:py-24"
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 space-y-3">
           <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
             {t('sections.portfolio')}
           </span>
-          <h2 id="portfolio-heading" className="text-3xl font-semibold text-white sm:text-4xl">
-            {siteContent.hero.secondaryCta[locale]}
+          <h2
+            id="portfolio-heading"
+            className="text-3xl font-semibold text-white sm:text-4xl"
+          >
+            {typedSiteContent.hero.secondaryCta[locale]}
           </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
-          {siteContent.portfolio.map((item) => {
+          {typedSiteContent.portfolio.map((item) => {
             const image = imageMap[item.title];
             return (
               <article
@@ -55,13 +74,16 @@ export function Portfolio({locale}: PortfolioProps) {
                   </header>
                   <ul className="flex flex-wrap gap-2 text-xs text-brand-light">
                     {item.tags.map((tag) => (
-                      <li key={tag} className="rounded-full border border-brand/30 px-3 py-1">
+                      <li
+                        key={tag}
+                        className="rounded-full border border-brand/30 px-3 py-1"
+                      >
                         {tag}
                       </li>
                     ))}
                   </ul>
                   <OutboundLink
-                    href={item.link}
+                    href={item.link as any}
                     className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                   >
                     {t('portfolio.open')}

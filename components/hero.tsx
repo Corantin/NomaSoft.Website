@@ -1,17 +1,23 @@
-import {Sparkles} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import siteContent from '@/content/site.json';
-import {Locale} from '@/lib/i18n';
+import type { SiteContent } from '@/types/site-content';
+
+const typedSiteContent = siteContent as SiteContent;
+import { Locale } from '@/lib/i18n';
 
 interface HeroProps {
   locale: Locale;
 }
 
-export function Hero({locale}: HeroProps) {
-  const hero = siteContent.hero;
+export function Hero({ locale }: HeroProps) {
+  const hero = typedSiteContent.hero;
 
   return (
-    <section className="relative overflow-hidden pb-24 pt-20" aria-labelledby="hero-heading">
+    <section
+      className="relative overflow-hidden pb-24 pt-20"
+      aria-labelledby="hero-heading"
+    >
       <div className="absolute inset-x-0 top-0 -z-10 h-[480px] bg-gradient-to-b from-brand/20 via-brand/5 to-transparent blur-3xl" />
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
         <span className="flex items-center gap-2 text-sm font-medium text-brand-light">
@@ -19,7 +25,10 @@ export function Hero({locale}: HeroProps) {
           {siteContent.site.tagline}
         </span>
         <div className="space-y-6">
-          <h1 id="hero-heading" className="text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl">
+          <h1
+            id="hero-heading"
+            className="text-4xl font-semibold tracking-tight text-white sm:text-5xl md:text-6xl"
+          >
             {hero.headline[locale]}
           </h1>
           <p className="max-w-2xl text-lg text-zinc-300 sm:text-xl">

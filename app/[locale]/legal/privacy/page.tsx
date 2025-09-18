@@ -1,22 +1,22 @@
-import type {Metadata} from 'next';
-import {allLegalDocs} from 'contentlayer/generated';
-import {getTranslations, unstable_setRequestLocale} from 'next-intl/server';
-import {notFound} from 'next/navigation';
-import {MdxContent} from '@/components/mdx-content';
-import {getLegalJsonLd} from '@/lib/schema';
-import {buildMetadata} from '@/lib/seo';
-import {Locale, isLocale} from '@/lib/i18n';
+import type { Metadata } from 'next';
+import { allLegalDocs } from '.contentlayer/generated';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { MdxContent } from '@/components/mdx-content';
+import { getLegalJsonLd } from '@/lib/schema';
+import { buildMetadata } from '@/lib/seo';
+import { Locale, isLocale } from '@/lib/i18n';
 
 function getDoc(locale: string) {
   return allLegalDocs.find((doc) => doc.locale === locale && doc.slug === 'privacy');
 }
 
 export async function generateMetadata({
-  params
+  params,
 }: {
-  params: {locale: string};
+  params: { locale: string };
 }): Promise<Metadata> {
-  const {locale} = params;
+  const { locale } = params;
 
   if (!isLocale(locale)) {
     notFound();
@@ -27,21 +27,17 @@ export async function generateMetadata({
     notFound();
   }
 
-  const meta = await getTranslations({locale, namespace: 'meta'});
+  const meta = await getTranslations({ locale, namespace: 'meta' });
 
   return buildMetadata({
     locale,
     title: meta('privacyTitle'),
     description: doc.description ?? meta('homeDescription'),
-    path: `/${locale}/legal/privacy`
+    path: `/${locale}/legal/privacy`,
   });
 }
 
-export default async function PrivacyPage({
-  params
-}: {
-  params: {locale: string};
-}) {
+export default async function PrivacyPage({ params }: { params: { locale: string } }) {
   const locale = params.locale;
 
   if (!isLocale(locale)) {
@@ -65,7 +61,9 @@ export default async function PrivacyPage({
       <script
         type="application/ld+json"
         suppressHydrationWarning
-        dangerouslySetInnerHTML={{__html: getLegalJsonLd(locale as Locale, '/legal/privacy', doc.title)}}
+        dangerouslySetInnerHTML={{
+          __html: getLegalJsonLd(locale as Locale, '/legal/privacy', doc.title),
+        }}
       />
     </section>
   );

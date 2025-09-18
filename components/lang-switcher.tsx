@@ -1,13 +1,15 @@
 'use client';
 
-import {useLocale, usePathname, useRouter} from 'next-intl/client';
-import {ChangeEvent, useTransition} from 'react';
-import {languageCookieName, locales} from '@/lib/i18n';
+import { useLocale } from 'next-intl';
+import { createNavigation } from 'next-intl/navigation';
+import { ChangeEvent, useTransition } from 'react';
+import { languageCookieName, locales } from '@/lib/i18n';
 
-export function LangSwitcher({label}: {label: string}) {
-  const router = useRouter();
-  const pathname = usePathname();
+export function LangSwitcher({ label }: { label: string }) {
+  const navigation = createNavigation();
   const locale = useLocale();
+  const pathname = navigation.usePathname();
+  const router = navigation.useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -15,7 +17,7 @@ export function LangSwitcher({label}: {label: string}) {
     document.cookie = `${languageCookieName}=${nextLocale}; path=/; max-age=${60 * 60 * 24 * 365}`;
 
     startTransition(() => {
-      router.push(pathname, {locale: nextLocale});
+      router.push(pathname, { locale: nextLocale });
     });
   };
 

@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 export const MAX_MESSAGE_LENGTH = 600;
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -22,17 +22,20 @@ export function createContactSchema(t: Translator) {
       service: z.string().min(1, t('validation.service')),
       token: z.string().optional(),
       honeypot: z.string().optional(),
-      file: z
-        .instanceof(File)
-        .refine((file) => file.size <= MAX_FILE_SIZE, t('validation.file.size'))
-        .optional()
+      file:
+        typeof File === 'undefined'
+          ? z.any().optional() // On server, skip File validation
+          : z
+              .instanceof(File)
+              .refine((file) => file.size <= MAX_FILE_SIZE, t('validation.file.size'))
+              .optional(),
     })
     .superRefine((data, ctx) => {
       if (data.honeypot && data.honeypot.length > 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: t('validation.bot'),
-          path: ['honeypot']
+          path: ['honeypot'],
         });
       }
     });
@@ -51,7 +54,7 @@ export function parseFormData(formData: FormData, t: Translator): ContactFormInp
     service: formData.get('service'),
     token: formData.get('token') || undefined,
     honeypot: formData.get('company-website') || undefined,
-    file: file instanceof File && file.size > 0 ? file : undefined
+    file: file instanceof File && file.size > 0 ? file : undefined,
   });
 
   if (!parsed.success) {

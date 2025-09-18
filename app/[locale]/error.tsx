@@ -1,10 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import {useTranslations} from 'next-intl';
-import {useEffect} from 'react';
+import type { Route } from 'next';
+import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 
-export default function LocaleError({error, reset}: {error: Error & {digest?: string}; reset: () => void}) {
+export default function LocaleError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   const t = useTranslations('errors');
 
   useEffect(() => {
@@ -24,7 +31,7 @@ export default function LocaleError({error, reset}: {error: Error & {digest?: st
           {t('retry')}
         </button>
         <Link
-          href="."
+          href={'/' as Route}
           className="rounded-full border border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-200 transition hover:border-brand hover:text-white"
         >
           {t('goHome')}

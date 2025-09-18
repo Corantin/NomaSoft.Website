@@ -1,24 +1,27 @@
-import type {ComponentType, SVGProps} from 'react';
-import {Bot, Boxes, Globe, Smartphone} from 'lucide-react';
+import type { ComponentType, SVGProps } from 'react';
+import { Bot, Boxes, Globe, Smartphone } from 'lucide-react';
 import Link from 'next/link';
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 import siteContent from '@/content/site.json';
-import {Locale} from '@/lib/i18n';
+import type { SiteContent } from '@/types/site-content';
+
+const typedSiteContent = siteContent as SiteContent;
+import { Locale } from '@/lib/i18n';
 
 const iconMap: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
   web3: Boxes,
   web: Globe,
   mobile: Smartphone,
-  ai: Bot
+  ai: Bot,
 };
 
 interface ServicesProps {
   locale: Locale;
 }
 
-export function Services({locale}: ServicesProps) {
+export function Services({ locale }: ServicesProps) {
   const t = useTranslations();
-  const services = siteContent.services;
+  const services = typedSiteContent.services;
   const cta = t('sections.servicesCta');
 
   return (
@@ -28,8 +31,11 @@ export function Services({locale}: ServicesProps) {
           <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
             {t('sections.services')}
           </span>
-          <h2 id="services-heading" className="text-3xl font-semibold text-white sm:text-4xl">
-            {siteContent.hero.headline[locale]}
+          <h2
+            id="services-heading"
+            className="text-3xl font-semibold text-white sm:text-4xl"
+          >
+            {typedSiteContent.hero.headline[locale]}
           </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -51,9 +57,12 @@ export function Services({locale}: ServicesProps) {
                     <p className="text-sm text-zinc-300">{service.summary[locale]}</p>
                   </div>
                   <ul className="space-y-2 text-sm text-zinc-400">
-                    {service.bullets[locale].map((bullet) => (
+                    {service.bullets[locale].map((bullet: string) => (
                       <li key={bullet} className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
+                        <span
+                          className="mt-1 h-1.5 w-1.5 rounded-full bg-brand"
+                          aria-hidden="true"
+                        />
                         <span>{bullet}</span>
                       </li>
                     ))}

@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import {getTranslations, unstable_setRequestLocale} from 'next-intl/server';
-import {isLocale} from '@/lib/i18n';
+import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { isLocale } from '@/lib/i18n';
 
-export default async function LocaleNotFound({params}: {params: {locale: string}}) {
-  const locale = params.locale;
+export default async function LocaleNotFound({ params }: { params: { locale: string } }) {
+  const locale = params?.locale;
 
   if (!isLocale(locale)) {
     unstable_setRequestLocale('en');
@@ -11,7 +11,10 @@ export default async function LocaleNotFound({params}: {params: {locale: string}
     unstable_setRequestLocale(locale);
   }
 
-  const errors = await getTranslations({locale: isLocale(locale) ? locale : 'en', namespace: 'errors'});
+  const errors = await getTranslations({
+    locale: isLocale(locale) ? locale : 'en',
+    namespace: 'errors',
+  });
 
   return (
     <section className="flex min-h-[60vh] flex-col items-center justify-center gap-6 bg-zinc-950 px-4 text-center text-zinc-100">

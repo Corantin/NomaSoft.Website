@@ -6,7 +6,7 @@ export default createMiddleware({
   defaultLocale,
   localePrefix,
   localeDetection: true,
-  cookies: {
+  localeCookie: {
     name: languageCookieName
   }
 });

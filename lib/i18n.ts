@@ -1,17 +1,17 @@
-import {notFound} from 'next/navigation';
-import {getRequestConfig} from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { getRequestConfig } from 'next-intl/server';
 import siteContent from '@/content/site.json';
 
 export const languageCookieName = 'NEXT_LOCALE';
-export const locales = siteContent.site.locales satisfies readonly string[];
-export type Locale = (typeof locales)[number];
+export const locales = siteContent.site.locales;
+export type Locale = 'en' | 'fr';
 export const defaultLocale = (process.env.NEXT_PUBLIC_DEFAULT_LOCALE || 'en') as Locale;
 export const localePrefix = 'always';
 
 export const routing = {
   locales,
   defaultLocale,
-  localePrefix
+  localePrefix,
 };
 
 export function isLocale(locale: string | undefined): locale is Locale {
@@ -19,10 +19,10 @@ export function isLocale(locale: string | undefined): locale is Locale {
 }
 
 export function getAlternateLocale(locale: Locale): Locale {
-  return locales.find((item) => item !== locale) || defaultLocale;
+  return (locales.find((item) => item !== locale) as Locale) || defaultLocale;
 }
 
-export default getRequestConfig(async ({locale}) => {
+export default getRequestConfig(async ({ locale }) => {
   if (!isLocale(locale)) {
     notFound();
   }
@@ -31,6 +31,6 @@ export default getRequestConfig(async ({locale}) => {
 
   return {
     locale,
-    messages
+    messages,
   };
 });

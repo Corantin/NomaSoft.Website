@@ -21,7 +21,7 @@ export function getOrganizationSchema(locale: Locale) {
     '@id': organizationId,
     name: siteContent.site.name,
     url: siteUrl,
-    description: siteContent.hero.subhead[locale],
+    description: siteContent.hero.subhead[locale as keyof typeof siteContent.hero.subhead],
     sameAs: [siteContent.site.social.github]
   };
 }
@@ -29,9 +29,9 @@ export function getOrganizationSchema(locale: Locale) {
 export function getServicesSchema(locale: Locale) {
   return siteContent.services.map((service) => ({
     '@type': 'Service',
-    name: service.title[locale],
-    description: service.summary[locale],
-    serviceType: service.title[locale],
+    name: service.title[locale as keyof typeof service.title],
+    description: service.summary[locale as keyof typeof service.summary],
+    serviceType: service.title[locale as keyof typeof service.title],
     provider: {
       '@id': organizationId
     },
@@ -49,7 +49,7 @@ export function getPortfolioSchema(locale: Locale) {
   return siteContent.portfolio.map((item) => ({
     '@type': 'CreativeWork',
     name: item.title,
-    description: item.desc[locale],
+    description: item.desc[locale as keyof typeof item.desc],
     url: item.link,
     keywords: item.tags.join(', ')
   }));
@@ -61,8 +61,8 @@ export function getWebsiteSchema(locale: Locale) {
     '@id': websiteId,
     url: siteUrl,
     name: siteContent.site.name,
-    inLanguage: localeToLanguage[locale],
-    description: siteContent.hero.subhead[locale],
+    inLanguage: localeToLanguage[locale as keyof typeof localeToLanguage],
+    description: siteContent.hero.subhead[locale as keyof typeof siteContent.hero.subhead],
     potentialAction: {
       '@type': 'ContactAction',
       target: `${siteUrl}/contact`

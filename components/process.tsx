@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import siteContent from '@/content/site.json';
-import {Locale} from '@/lib/i18n';
-import {useTranslations} from 'next-intl';
+import type { SiteContent } from '@/types/site-content';
+
+const typedSiteContent = siteContent as SiteContent;
+import { Locale } from '@/lib/i18n';
+import { useTranslations } from 'next-intl';
 
 interface ProcessProps {
   locale: Locale;
 }
 
-export function Process({locale}: ProcessProps) {
+export function Process({ locale }: ProcessProps) {
   const t = useTranslations();
 
   return (
@@ -18,8 +21,11 @@ export function Process({locale}: ProcessProps) {
             <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
               {t('sections.process')}
             </span>
-            <h2 id="process-heading" className="text-3xl font-semibold text-white sm:text-4xl">
-              {siteContent.hero.subhead[locale]}
+            <h2
+              id="process-heading"
+              className="text-3xl font-semibold text-white sm:text-4xl"
+            >
+              {typedSiteContent.hero.subhead[locale]}
             </h2>
           </div>
           <Link
@@ -30,7 +36,7 @@ export function Process({locale}: ProcessProps) {
           </Link>
         </div>
         <div className="grid gap-6 md:grid-cols-4">
-          {siteContent.process.map((step, index) => (
+          {typedSiteContent.process.map((step, index) => (
             <article
               key={step.title.en}
               className="rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 shadow-inner shadow-black/40"
@@ -38,7 +44,9 @@ export function Process({locale}: ProcessProps) {
               <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <h3 className="mt-3 text-lg font-semibold text-white">{step.title[locale]}</h3>
+              <h3 className="mt-3 text-lg font-semibold text-white">
+                {step.title[locale]}
+              </h3>
               <p className="mt-2 text-sm text-zinc-400">{step.desc[locale]}</p>
             </article>
           ))}
