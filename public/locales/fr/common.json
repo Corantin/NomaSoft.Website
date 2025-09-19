@@ -76,7 +76,7 @@
     "bot": "Soumission détectée comme spam."
   },
   "footer": {
-    "rights": "© {{year}} NovaSoft. Tous droits réservés."
+    "rights": "© {year} NovaSoft. Tous droits réservés."
   },
   "language": {
     "label": "Langue",
