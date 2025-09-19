@@ -76,7 +76,7 @@
     "bot": "Form submission flagged as spam."
   },
   "footer": {
-    "rights": "© {{year}} NovaSoft. All rights reserved."
+    "rights": "© {year} NovaSoft. All rights reserved."
   },
   "language": {
     "label": "Language",

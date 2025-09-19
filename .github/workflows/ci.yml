@@ -14,17 +14,17 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8.15.5
       - name: Check for pnpm lockfile
         run: |
           if [ ! -f pnpm-lock.yaml ]; then
             echo "pnpm-lock.yaml not found!"
             exit 1
           fi
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.5
+          run_install: true
+          run_install_args: --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build
