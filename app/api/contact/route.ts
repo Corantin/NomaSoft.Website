@@ -88,7 +88,7 @@ type EmailPayload = {
 };
 
 async function sendEmail(payload: EmailPayload) {
-  const to = process.env.CONTACT_TO_EMAIL;
+  const to = process.env.CONTACT_TO_EMAIL ?? siteContent.site?.contact?.email;
   if (!to) {
     throw new Error('contact_recipient_missing');
   }
