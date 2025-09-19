@@ -1,11 +1,12 @@
-import { Buffer } from 'node:buffer';
-import { NextResponse } from 'next/server';
+import {Buffer} from 'node:buffer';
+import {NextResponse} from 'next/server';
 import nodemailer from 'nodemailer';
-import { createTranslator } from 'next-intl';
-import { ZodError } from 'zod';
+import {createTranslator} from 'next-intl';
+import {ZodError} from 'zod';
 import siteContent from '@/content/site.json';
-import { Locale, defaultLocale, isLocale } from '@/lib/i18n';
-import { parseFormData } from '@/lib/validators';
+import {verifyCaptcha} from '@/lib/captcha';
+import {Locale, defaultLocale, isLocale} from '@/lib/i18n';
+import {parseFormData} from '@/lib/validators';
 
 export const runtime = 'nodejs';
 
@@ -31,52 +32,6 @@ function escapeHtml(value: string) {
 }
 
 const formatAddress = (address: string) => `${brandName} <${address}>`;
-
-async function verifyCaptcha(token: string | undefined) {
-  const hcaptchaSecret = process.env.HCAPTCHA_SECRET?.trim();
-  const hcaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY?.trim();
-  const turnstileSecret = process.env.TURNSTILE_SECRET?.trim();
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
-
-  if (hcaptchaSecret && hcaptchaSiteKey) {
-    if (!token) return false;
-    const response = await fetch('https://hcaptcha.com/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        secret: hcaptchaSecret,
-        response: token,
-      }),
-    });
-    const result = (await response.json()) as { success: boolean };
-    return result.success;
-  }
-
-  if (turnstileSecret && turnstileSiteKey) {
-    if (!token) return false;
-    const response = await fetch(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          secret: turnstileSecret,
-          response: token,
-        }),
-      },
-    );
-    const result = (await response.json()) as { success: boolean };
-    return result.success;
-  }
-
-  if (hcaptchaSecret || hcaptchaSiteKey || turnstileSecret || turnstileSiteKey) {
-    console.warn(
-      'Captcha environment variables are partially configured. Skipping verification until both public and secret keys are set.',
-    );
-  }
-
-  return true;
-}
 
 type Attachment = {
   filename: string;
