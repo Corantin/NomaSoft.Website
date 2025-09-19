@@ -15,7 +15,7 @@ test('renders English and French locales with persisted selection', async ({page
   const languageSelect = page.locator('label:has-text("Language") select');
   await languageSelect.selectOption('fr');
   await expect(page).toHaveURL(/\/fr\//);
-  await expect(page.locator('h1')).toContainText('Livrez des logiciels plus futés');
+  await expect(page.locator('h1')).toContainText('Créez des solutions plus intelligentes');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
 });

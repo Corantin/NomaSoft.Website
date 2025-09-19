@@ -12,9 +12,9 @@ const imageMap: Record<string, { src: string; alt: string }> = {
     src: '/images/portfolio/gardens.svg',
     alt: 'Gardens dashboard illustration',
   },
-  'Protocol DApp': {
+  Deed3: {
     src: '/images/portfolio/protocol-dapp.svg',
-    alt: 'Protocol DApp interface mockup',
+    alt: 'Deed3 interface mockup',
   },
   '1Hive Quests': {
     src: '/images/portfolio/1hive-quests.svg',
