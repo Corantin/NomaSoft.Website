@@ -10,19 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1) Make pnpm available
+      # 1) Install pnpm from package.json `packageManager`
       - uses: pnpm/action-setup@v4
         with:
-          version: 8.15.5
+          # DO NOT set "version"
+          run_install: false
 
-      # 2) Node + cache restore (now pnpm exists)
+      # 2) Node + pnpm cache (pnpm now exists)
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
-      # 3) Install after cache restore
+      # 3) Install deps
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm lint
