@@ -1,13 +1,6 @@
 import type {Metadata, Viewport} from 'next';
 import type {ReactNode} from 'react';
-import {Inter} from 'next/font/google';
 import './globals.css';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap'
-});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://novasoft.dev';
 
@@ -30,7 +23,7 @@ export const viewport: Viewport = {
 export default function RootLayout({children}: {children: ReactNode}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} bg-zinc-950 text-zinc-50 antialiased`}>
+      <body className="bg-zinc-950 text-zinc-50 antialiased font-sans">
         {children}
       </body>
     </html>
