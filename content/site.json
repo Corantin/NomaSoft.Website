@@ -4,13 +4,13 @@
     "tagline": "Automation-first software engineering",
     "locales": ["en", "fr"],
     "contact": {
-      "email": "hello@novasoft.dev",
+      "email": "dev.novasoft.labs@gmail.com",
       "calendly": "https://cal.com/nova-soft"
     },
-    "social": { "github": "https://github.com/novasoft" }
+    "social": { "github": "https://github.com/Corantin/" }
   },
   "hero": {
-    "headline": { "en": "Ship smarter software", "fr": "Livrez des logiciels plus futés" },
+    "headline": { "en": "Ship smarter software", "fr": "Créez des solutions plus intelligentes" },
     "subhead": {
       "en": "Web, Mobile, Web3, and AI integration—built lean and scalable.",
       "fr": "Web, Mobile, Web3 et IA—solutions agiles et évolutives."
@@ -73,7 +73,7 @@
       "link": "https://docs.gardens.fund/"
     },
     {
-      "title": "Protocol DApp",
+      "title": "Deed3",
       "desc": { "en": "Full-stack DApp from README scope.", "fr": "DApp full-stack selon README." },
       "tags": ["DApp", "Next.js", "Smart Contracts"],
       "link": "https://github.com/Deed3Labs/Protocol-DApp"
