@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches: [main]
@@ -10,21 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - name: Check for pnpm lockfile
-        run: |
-          if [ ! -f pnpm-lock.yaml ]; then
-            echo "pnpm-lock.yaml not found!"
-            exit 1
-          fi
+
+      # 1) Make pnpm available
       - uses: pnpm/action-setup@v4
         with:
           version: 8.15.5
-          run_install: true
-          run_install_args: --frozen-lockfile
+
+      # 2) Node + cache restore (now pnpm exists)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      # 3) Install after cache restore
+      - run: pnpm install --frozen-lockfile
+
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build
