@@ -33,10 +33,12 @@ function escapeHtml(value: string) {
 const formatAddress = (address: string) => `${brandName} <${address}>`;
 
 async function verifyCaptcha(token: string | undefined) {
-  const hcaptchaSecret = process.env.HCAPTCHA_SECRET;
-  const turnstileSecret = process.env.TURNSTILE_SECRET;
+  const hcaptchaSecret = process.env.HCAPTCHA_SECRET?.trim();
+  const hcaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY?.trim();
+  const turnstileSecret = process.env.TURNSTILE_SECRET?.trim();
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
 
-  if (hcaptchaSecret) {
+  if (hcaptchaSecret && hcaptchaSiteKey) {
     if (!token) return false;
     const response = await fetch('https://hcaptcha.com/siteverify', {
       method: 'POST',
@@ -50,7 +52,7 @@ async function verifyCaptcha(token: string | undefined) {
     return result.success;
   }
 
-  if (turnstileSecret) {
+  if (turnstileSecret && turnstileSiteKey) {
     if (!token) return false;
     const response = await fetch(
       'https://challenges.cloudflare.com/turnstile/v0/siteverify',
@@ -65,6 +67,12 @@ async function verifyCaptcha(token: string | undefined) {
     );
     const result = (await response.json()) as { success: boolean };
     return result.success;
+  }
+
+  if (hcaptchaSecret || hcaptchaSiteKey || turnstileSecret || turnstileSiteKey) {
+    console.warn(
+      'Captcha environment variables are partially configured. Skipping verification until both public and secret keys are set.',
+    );
   }
 
   return true;
