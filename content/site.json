@@ -2,65 +2,171 @@
   "site": {
     "name": "NovaSoft",
     "tagline": "Automation-first software engineering",
-    "locales": ["en", "fr"],
+    "locales": [
+      "en",
+      "fr"
+    ],
     "contact": {
       "email": "dev.novasoft.labs@gmail.com",
       "calendly": "https://cal.com/nova-soft"
     },
-    "social": { "github": "https://github.com/Corantin/" }
+    "social": {
+      "github": "https://github.com/Corantin/"
+    }
   },
   "hero": {
-    "headline": { "en": "Ship smarter software", "fr": "Créez des solutions plus intelligentes" },
+    "headline": {
+      "en": "Ship smarter software",
+      "fr": "Créez des solutions plus intelligentes"
+    },
     "subhead": {
       "en": "Web, Mobile, Web3, and AI integration—built lean and scalable.",
       "fr": "Web, Mobile, Web3 et IA—solutions agiles et évolutives."
     },
-    "primaryCta": { "en": "Book a call", "fr": "Réserver un appel" },
-    "secondaryCta": { "en": "See our work", "fr": "Voir nos projets" }
+    "primaryCta": {
+      "en": "Book a call",
+      "fr": "Réserver un appel"
+    },
+    "secondaryCta": {
+      "en": "See our work",
+      "fr": "Voir nos projets"
+    }
   },
   "services": [
     {
       "key": "web3",
-      "title": { "en": "Blockchain / Web3", "fr": "Blockchain / Web3" },
-      "summary": { "en": "From contracts to dashboards and subgraphs.", "fr": "Des contrats aux tableaux de bord et subgraphs." },
+      "title": {
+        "en": "Blockchain / Web3",
+        "fr": "Blockchain / Web3"
+      },
+      "summary": {
+        "en": "From contracts to dashboards and subgraphs.",
+        "fr": "Des contrats aux tableaux de bord et subgraphs."
+      },
       "bullets": {
-        "en": ["Smart contracts & audits prep", "Protocol UIs & wallets", "Indexing & analytics"],
-        "fr": ["Contrats intelligents & préparation d'audits", "Interfaces de protocoles & wallets", "Indexation & analytique"]
+        "en": [
+          "Smart contracts & audits prep",
+          "Protocol UIs & wallets",
+          "Indexing & analytics"
+        ],
+        "fr": [
+          "Contrats intelligents & préparation d'audits",
+          "Interfaces de protocoles & wallets",
+          "Indexation & analytique"
+        ]
       }
     },
     {
       "key": "web",
-      "title": { "en": "Web Development", "fr": "Développement Web" },
-      "summary": { "en": "Robust apps with clean DX and data flows.", "fr": "Apps robustes avec flux de données maîtrisés." },
+      "title": {
+        "en": "Web Development",
+        "fr": "Développement Web"
+      },
+      "summary": {
+        "en": "Robust apps with clean DX and data flows.",
+        "fr": "Apps robustes avec flux de données maîtrisés."
+      },
       "bullets": {
-        "en": ["SSR/SSG dashboards", "Admin tools & APIs", "Data viz & auth"],
-        "fr": ["Dashboards SSR/SSG", "Outils admin & APIs", "Dataviz & auth"]
+        "en": [
+          "SSR/SSG dashboards",
+          "Admin tools & APIs",
+          "Data viz & auth"
+        ],
+        "fr": [
+          "Dashboards SSR/SSG",
+          "Outils admin & APIs",
+          "Dataviz & auth"
+        ]
       }
     },
     {
       "key": "mobile",
-      "title": { "en": "Mobile & Apps", "fr": "Mobile & Apps" },
-      "summary": { "en": "Cross-platform MVPs and offline-first UX.", "fr": "MVP multi-plateformes et UX hors-ligne." },
+      "title": {
+        "en": "Mobile & Apps",
+        "fr": "Mobile & Apps"
+      },
+      "summary": {
+        "en": "Cross-platform MVPs and offline-first UX.",
+        "fr": "MVP multi-plateformes et UX hors-ligne."
+      },
       "bullets": {
-        "en": ["React Native/Capacitor", "Push & background sync", "App store delivery"],
-        "fr": ["React Native/Capacitor", "Push & sync en arrière-plan", "Publication en stores"]
+        "en": [
+          "React Native/Capacitor",
+          "Push & background sync",
+          "App store delivery"
+        ],
+        "fr": [
+          "React Native/Capacitor",
+          "Push & sync en arrière-plan",
+          "Publication en stores"
+        ]
       }
     },
     {
       "key": "ai",
-      "title": { "en": "AI Integration", "fr": "Intégration IA" },
-      "summary": { "en": "Automate workflows with practical ML/LLM.", "fr": "Automatiser avec ML/LLM pragmatiques." },
+      "title": {
+        "en": "AI Integration",
+        "fr": "Intégration IA"
+      },
+      "summary": {
+        "en": "Automate workflows with practical ML/LLM.",
+        "fr": "Automatiser avec ML/LLM pragmatiques."
+      },
       "bullets": {
-        "en": ["RAG & internal search", "Agentic workflows", "Quality & guardrails"],
-        "fr": ["RAG & recherche interne", "Workflows agents", "Qualité & garde-fous"]
+        "en": [
+          "RAG & internal search",
+          "Agentic workflows",
+          "Quality & guardrails"
+        ],
+        "fr": [
+          "RAG & recherche interne",
+          "Workflows agents",
+          "Qualité & garde-fous"
+        ]
       }
     }
   ],
   "process": [
-    { "title": { "en": "Discover", "fr": "Découverte" }, "desc": { "en": "Scope, risks, and success metrics.", "fr": "Cadrage, risques, et succès." } },
-    { "title": { "en": "Design", "fr": "Conception" }, "desc": { "en": "Flows, arch, and UI prototypes.", "fr": "Flux, archi, et maquettes." } },
-    { "title": { "en": "Build", "fr": "Construction" }, "desc": { "en": "Iterative delivery and QA.", "fr": "Livraisons itératives et QA." } },
-    { "title": { "en": "Launch", "fr": "Lancement" }, "desc": { "en": "Ops, monitoring, and iteration.", "fr": "Ops, monitoring, itération." } }
+    {
+      "title": {
+        "en": "Discover",
+        "fr": "Découverte"
+      },
+      "desc": {
+        "en": "Scope, risks, and success metrics.",
+        "fr": "Cadrage, risques, et succès."
+      }
+    },
+    {
+      "title": {
+        "en": "Design",
+        "fr": "Conception"
+      },
+      "desc": {
+        "en": "Flows, arch, and UI prototypes.",
+        "fr": "Flux, archi, et maquettes."
+      }
+    },
+    {
+      "title": {
+        "en": "Build",
+        "fr": "Construction"
+      },
+      "desc": {
+        "en": "Iterative delivery and QA.",
+        "fr": "Livraisons itératives et QA."
+      }
+    },
+    {
+      "title": {
+        "en": "Launch",
+        "fr": "Lancement"
+      },
+      "desc": {
+        "en": "Ops, monitoring, and iteration.",
+        "fr": "Ops, monitoring, itération."
+      }
+    }
   ],
   "portfolio": [
     {
@@ -69,19 +175,37 @@
         "en": "Decentralized & democratic community fund management protocol.",
         "fr": "Protocole de gestion décentralisée et démocratique de fonds communautaires."
       },
-      "tags": ["Web3", "Protocol UI", "Subgraph"],
+      "tags": [
+        "Web3",
+        "Protocol UI",
+        "Subgraph"
+      ],
       "link": "https://docs.gardens.fund/"
     },
     {
       "title": "Deed3",
-      "desc": { "en": "Full-stack DApp from README scope.", "fr": "DApp full-stack selon README." },
-      "tags": ["DApp", "Next.js", "Smart Contracts"],
+      "desc": {
+        "en": "Full-stack DApp from README scope.",
+        "fr": "DApp full-stack selon README."
+      },
+      "tags": [
+        "DApp",
+        "Next.js",
+        "Smart Contracts"
+      ],
       "link": "https://github.com/Deed3Labs/Protocol-DApp"
     },
     {
       "title": "1Hive Quests",
-      "desc": { "en": "Decentralized, trustless bounty platform.", "fr": "Plateforme de primes décentralisée et trustless." },
-      "tags": ["Web3", "Bounties", "Governance"],
+      "desc": {
+        "en": "Decentralized, trustless bounty platform.",
+        "fr": "Plateforme de primes décentralisée et trustless."
+      },
+      "tags": [
+        "Web3",
+        "Bounties",
+        "Governance"
+      ],
       "link": "https://wiki.1hive.org/projects/quests"
     }
   ]

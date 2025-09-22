@@ -1,14 +1,16 @@
 'use client';
 
 import Script from 'next/script';
-import {useTranslations} from 'next-intl';
-import {FormEvent, useEffect, useMemo, useState} from 'react';
+import { useTranslations } from 'next-intl';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import type { CaptchaClientConfig } from '@/lib/captcha';
 import siteContent from '@/content/site.json';
-import {createContactSchema, MAX_MESSAGE_LENGTH} from '@/lib/validators';
+import { createContactSchema, MAX_MESSAGE_LENGTH } from '@/lib/validators';
 
 interface Props {
   locale: string;
   defaultService?: string;
+  captcha?: CaptchaClientConfig | null;
 }
 
 type Status = 'idle' | 'validating' | 'submitting' | 'success' | 'error';
@@ -17,21 +19,19 @@ declare global {
   interface Window {
     novasoftOnHcaptcha?: (token: string) => void;
     novasoftOnTurnstile?: (token: string) => void;
-    hcaptcha?: {reset: (widgetId?: string) => void};
-    turnstile?: {reset: (element: HTMLElement) => void};
+    hcaptcha?: { reset: (widgetId?: string) => void };
+    turnstile?: { reset: (element: HTMLElement) => void };
   }
 }
 
-export function ContactForm({locale, defaultService}: Props) {
+export function ContactForm({ locale, defaultService, captcha }: Props) {
   const t = useTranslations();
   const contactT = useTranslations('contact');
   const [status, setStatus] = useState<Status>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [captchaToken, setCaptchaToken] = useState<string | undefined>();
 
-  const hcaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  const captchaType = turnstileSiteKey ? 'turnstile' : hcaptchaSiteKey ? 'hcaptcha' : null;
+  const captchaType = captcha?.type ?? null;
 
   useEffect(() => {
     if (captchaType === 'hcaptcha') {
@@ -61,7 +61,9 @@ export function ContactForm({locale, defaultService}: Props) {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    console.log('submit');
     event.preventDefault();
+    event.stopPropagation();
     setStatus('validating');
     setErrors({});
 
@@ -75,7 +77,7 @@ export function ContactForm({locale, defaultService}: Props) {
       service: formData.get('service'),
       token: captchaToken,
       honeypot: formData.get('company-website'),
-      file: formData.get('file')
+      file: formData.get('file'),
     };
 
     const parsed = schema.safeParse(payload);
@@ -108,7 +110,7 @@ export function ContactForm({locale, defaultService}: Props) {
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        body: submission
+        body: submission,
       });
 
       if (!response.ok) {
@@ -130,6 +132,7 @@ export function ContactForm({locale, defaultService}: Props) {
       className="space-y-6 rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-8 shadow-xl shadow-black/20"
       noValidate
     >
+      <input type="hidden" name="locale" value={locale} />
       <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-zinc-200">
@@ -143,7 +146,9 @@ export function ContactForm({locale, defaultService}: Props) {
             className="mt-2 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"
             required
           />
-          {errors.name ? <p className="mt-2 text-xs text-red-400">{errors.name}</p> : null}
+          {errors.name ? (
+            <p className="mt-2 text-xs text-red-400">{errors.name}</p>
+          ) : null}
         </div>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-zinc-200">
@@ -157,7 +162,9 @@ export function ContactForm({locale, defaultService}: Props) {
             className="mt-2 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"
             required
           />
-          {errors.email ? <p className="mt-2 text-xs text-red-400">{errors.email}</p> : null}
+          {errors.email ? (
+            <p className="mt-2 text-xs text-red-400">{errors.email}</p>
+          ) : null}
         </div>
         <div>
           <label htmlFor="company" className="block text-sm font-medium text-zinc-200">
@@ -170,7 +177,9 @@ export function ContactForm({locale, defaultService}: Props) {
             autoComplete="organization"
             className="mt-2 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"
           />
-          {errors.company ? <p className="mt-2 text-xs text-red-400">{errors.company}</p> : null}
+          {errors.company ? (
+            <p className="mt-2 text-xs text-red-400">{errors.company}</p>
+          ) : null}
         </div>
         <div>
           <label htmlFor="service" className="block text-sm font-medium text-zinc-200">
@@ -190,7 +199,9 @@ export function ContactForm({locale, defaultService}: Props) {
               </option>
             ))}
           </select>
-          {errors.service ? <p className="mt-2 text-xs text-red-400">{errors.service}</p> : null}
+          {errors.service ? (
+            <p className="mt-2 text-xs text-red-400">{errors.service}</p>
+          ) : null}
         </div>
       </div>
       <div>
@@ -224,18 +235,37 @@ export function ContactForm({locale, defaultService}: Props) {
       </div>
       <div aria-hidden="true" className="hidden">
         <label htmlFor="company-website">Company Website</label>
-        <input id="company-website" name="company-website" type="text" tabIndex={-1} autoComplete="off" />
+        <input
+          id="company-website"
+          name="company-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
-      {captchaType === 'hcaptcha' && hcaptchaSiteKey ? (
+      {captchaType === 'hcaptcha' && captcha?.siteKey ? (
         <div className="flex justify-center">
           <Script src="https://js.hcaptcha.com/1/api.js" async defer />
-          <div className="h-captcha" data-sitekey={hcaptchaSiteKey} data-callback="novasoftOnHcaptcha" />
+          <div
+            className="h-captcha"
+            data-sitekey={captcha.siteKey}
+            data-callback="novasoftOnHcaptcha"
+          />
         </div>
       ) : null}
-      {captchaType === 'turnstile' && turnstileSiteKey ? (
+      {captchaType === 'turnstile' && captcha?.siteKey ? (
         <div className="flex justify-center">
-          <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
-          <div className="cf-turnstile" data-sitekey={turnstileSiteKey} data-callback="novasoftOnTurnstile" data-theme="dark" />
+          <Script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+            async
+            defer
+          />
+          <div
+            className="cf-turnstile"
+            data-sitekey={captcha.siteKey}
+            data-callback="novasoftOnTurnstile"
+            data-theme="dark"
+          />
         </div>
       ) : null}
       <button
