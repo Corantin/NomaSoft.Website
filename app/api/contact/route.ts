@@ -1,12 +1,12 @@
-import {Buffer} from 'node:buffer';
-import {NextResponse} from 'next/server';
+import { Buffer } from 'node:buffer';
+import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import {createTranslator} from 'next-intl';
-import {ZodError} from 'zod';
+import { createTranslator } from 'next-intl';
+import { ZodError } from 'zod';
 import siteContent from '@/content/site.json';
-import {verifyCaptcha} from '@/lib/captcha';
-import {Locale, defaultLocale, isLocale} from '@/lib/i18n';
-import {parseFormData} from '@/lib/validators';
+import { verifyCaptcha } from '@/lib/captcha';
+import { Locale, defaultLocale, isLocale } from '@/lib/i18n';
+import { parseFormData } from '@/lib/validators';
 
 export const runtime = 'nodejs';
 
@@ -51,7 +51,7 @@ type EmailPayload = {
 };
 
 async function sendEmail(payload: EmailPayload) {
-  const to = process.env.CONTACT_TO_EMAIL ?? siteContent.site?.contact?.email;
+  const to = process.env.CONTACT_TO_EMAIL || siteContent.site?.contact?.email;
   if (!to) {
     throw new Error('contact_recipient_missing');
   }
@@ -241,15 +241,24 @@ export async function POST(request: Request) {
           fieldErrors[field] = issue.message;
         }
       }
-      return NextResponse.json({ error: 'validation_error', errors: fieldErrors }, { status: 422 });
+      return NextResponse.json(
+        { error: 'validation_error', errors: fieldErrors },
+        { status: 422 },
+      );
     }
 
     if (error instanceof Error) {
       switch (error.message) {
         case 'contact_recipient_missing':
-          return NextResponse.json({ error: 'contact_recipient_missing' }, { status: 500 });
+          return NextResponse.json(
+            { error: 'contact_recipient_missing' },
+            { status: 500 },
+          );
         case 'mail_provider_not_configured':
-          return NextResponse.json({ error: 'mail_provider_not_configured' }, { status: 500 });
+          return NextResponse.json(
+            { error: 'mail_provider_not_configured' },
+            { status: 500 },
+          );
         case 'resend_request_failed':
           return NextResponse.json({ error: 'email_failed' }, { status: 502 });
         default:

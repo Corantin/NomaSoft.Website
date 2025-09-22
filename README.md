@@ -37,15 +37,15 @@ Copy `.env.example` to `.env.local` and fill in the values that apply to your de
 
 ### Commands
 
-| Script | Description |
-| --- | --- |
-| `npm run dev` | Start local development server |
-| `npm run lint` | Lint code with ESLint |
-| `npm run typecheck` | Run TypeScript checks |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run analyze` | Analyze production bundle |
-| `npm run test:e2e` | Execute Playwright smoke tests |
+| Script              | Description                    |
+| ------------------- | ------------------------------ |
+| `npm run dev`       | Start local development server |
+| `npm run lint`      | Lint code with ESLint          |
+| `npm run typecheck` | Run TypeScript checks          |
+| `npm run build`     | Production build               |
+| `npm run start`     | Start production server        |
+| `npm run analyze`   | Analyze production bundle      |
+| `npm run test:e2e`  | Execute Playwright smoke tests |
 
 ### Localization
 
@@ -85,7 +85,7 @@ Deploy to Vercel:
 1. Import the repository into Vercel.
 2. Set environment variables in the Vercel dashboard.
 3. Enable `npm run build` as the build command (default).
-4. Ensure Contentlayer builds by keeping the `next-contentlayer` plugin enabled in `next.config.mjs`.
+4. Ensure Contentlayer builds by keeping the `next-contentlayer` plugin enabled in `next.config.ts`.
 
 Vercel automatically handles image optimization and edge middleware for locale routing.
 
@@ -106,4 +106,4 @@ CI (`.github/workflows/ci.yml`) runs linting, type-checking, and `next build` on
 - Skip-to-content link, focus styles, and semantic landmarks are included.
 - Metadata and Open Graph tags are localized per page.
 - JSON-LD defines Organization, Service, CreativeWork, WebSite, and Breadcrumb schemas.
-- CSP, HSTS, Referrer-Policy, Permissions-Policy, and X-Content-Type-Options headers are configured in `next.config.mjs`.
+- CSP, HSTS, Referrer-Policy, Permissions-Policy, and X-Content-Type-Options headers are configured in `next.config.ts`.

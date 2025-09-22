@@ -7,6 +7,9 @@ interface CaptchaEnv {
   turnstileSiteKey?: string;
 }
 
+const HCAPTCHA_DEV_SITE_KEY = '10000000-ffff-ffff-ffff-000000000001';
+const HCAPTCHA_DEV_SECRET = '0x0000000000000000000000000000000000000000';
+
 interface CaptchaConfig {
   type: CaptchaProvider;
   siteKey: string;
@@ -21,9 +24,17 @@ export interface CaptchaClientConfig {
 let hasLoggedPartialConfig = false;
 
 function readCaptchaEnv(): CaptchaEnv {
+  const isProd = process.env.NODE_ENV === 'production';
+  const useProdHcaptchaInDev = process.env.HCAPTCHA_USE_PROD_KEYS_IN_DEV === 'true';
+
+  const hcaptchaSecretEnv = process.env.HCAPTCHA_SECRET?.trim() || undefined;
+  const hcaptchaSiteKeyEnv = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY?.trim() || undefined;
+
+  const shouldUseDevFallback = !isProd && !useProdHcaptchaInDev;
+
   return {
-    hcaptchaSecret: process.env.HCAPTCHA_SECRET?.trim() || undefined,
-    hcaptchaSiteKey: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY?.trim() || undefined,
+    hcaptchaSecret: shouldUseDevFallback ? HCAPTCHA_DEV_SECRET : hcaptchaSecretEnv,
+    hcaptchaSiteKey: shouldUseDevFallback ? HCAPTCHA_DEV_SITE_KEY : hcaptchaSiteKeyEnv,
     turnstileSecret: process.env.TURNSTILE_SECRET?.trim() || undefined,
     turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() || undefined
   };
