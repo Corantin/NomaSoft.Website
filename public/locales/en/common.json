@@ -1,10 +1,10 @@
 {
   "meta": {
-    "homeTitle": "NovaSoft — Automation-first software engineering",
+    "homeTitle": "NomaSoft — Automation-first software engineering",
     "homeDescription": "Lean product teams shipping Web, Mobile, Web3, and AI systems with measurable outcomes.",
-    "contactTitle": "Contact NovaSoft",
-    "privacyTitle": "Privacy Policy — NovaSoft",
-    "termsTitle": "Terms of Service — NovaSoft"
+    "contactTitle": "Contact NomaSoft",
+    "privacyTitle": "Privacy Policy — NomaSoft",
+    "termsTitle": "Terms of Service — NomaSoft"
   },
   "nav": {
     "skip": "Skip to content",
@@ -24,7 +24,7 @@
     "services": "What we build",
     "process": "Delivery process",
     "portfolio": "Selected work",
-    "about": "About NovaSoft",
+    "about": "About NomaSoft",
     "contact": "Let's talk",
     "servicesCta": "Discuss project"
   },
@@ -36,7 +36,7 @@
   },
   "about": {
     "lead": "We are an automation-first duo shipping resilient products across Web3, SaaS, and mobile.",
-    "body": "NovaSoft engineers blend product strategy with hands-on delivery. We pair rapid discovery with production-grade execution so your teams can focus on growth.",
+    "body": "NomaSoft engineers blend product strategy with hands-on delivery. We pair rapid discovery with production-grade execution so your teams can focus on growth.",
     "stack": "Core stack"
   },
   "contact": {
@@ -49,7 +49,7 @@
     "service": "Service interest",
     "servicePlaceholder": "Select a service",
     "file": "Attach brief (optional)",
-    "mailSubject": "NovaSoft contact request",
+    "mailSubject": "NomaSoft contact request",
     "submit": "Send message",
     "success": "Thanks! We'll reply shortly.",
     "error": "Something went wrong. Please retry or email us directly.",
@@ -77,7 +77,7 @@
     "bot": "Form submission flagged as spam."
   },
   "footer": {
-    "rights": "© {year} NovaSoft. All rights reserved."
+    "rights": "© {year} NomaSoft. All rights reserved."
   },
   "language": {
     "label": "Language",

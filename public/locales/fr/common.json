@@ -1,10 +1,10 @@
 {
   "meta": {
-    "homeTitle": "NovaSoft — Ingénierie logicielle axée automatisation",
+    "homeTitle": "NomaSoft — Ingénierie logicielle axée automatisation",
     "homeDescription": "Des équipes produits agiles livrant Web, Mobile, Web3 et intégrations IA avec des résultats mesurables.",
-    "contactTitle": "Contactez NovaSoft",
-    "privacyTitle": "Politique de confidentialité — NovaSoft",
-    "termsTitle": "Conditions d'utilisation — NovaSoft"
+    "contactTitle": "Contactez NomaSoft",
+    "privacyTitle": "Politique de confidentialité — NomaSoft",
+    "termsTitle": "Conditions d'utilisation — NomaSoft"
   },
   "nav": {
     "skip": "Aller au contenu",
@@ -24,7 +24,7 @@
     "services": "Ce que nous réalisons",
     "process": "Notre méthode",
     "portfolio": "Réalisations",
-    "about": "À propos de NovaSoft",
+    "about": "À propos de NomaSoft",
     "contact": "Discutons",
     "servicesCta": "Discuter du projet"
   },
@@ -36,7 +36,7 @@
   },
   "about": {
     "lead": "Nous sommes un duo orienté automatisation livrant des produits résilients pour le Web3, le SaaS et le mobile.",
-    "body": "Les ingénieurs NovaSoft allient stratégie produit et exécution terrain. Nous conjuguons découverte rapide et livraison de niveau production pour que vos équipes se concentrent sur la croissance.",
+    "body": "Les ingénieurs NomaSoft allient stratégie produit et exécution terrain. Nous conjuguons découverte rapide et livraison de niveau production pour que vos équipes se concentrent sur la croissance.",
     "stack": "Stack clé"
   },
   "contact": {
@@ -49,7 +49,7 @@
     "service": "Service ciblé",
     "servicePlaceholder": "Sélectionner un service",
     "file": "Joindre un brief (optionnel)",
-    "mailSubject": "Demande de contact NovaSoft",
+    "mailSubject": "Demande de contact NomaSoft",
     "submit": "Envoyer",
     "success": "Merci ! Nous revenons vers vous très vite.",
     "error": "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
@@ -77,7 +77,7 @@
     "bot": "Soumission détectée comme spam."
   },
   "footer": {
-    "rights": "© {year} NovaSoft. Tous droits réservés."
+    "rights": "© {year} NomaSoft. Tous droits réservés."
   },
   "language": {
     "label": "Langue",

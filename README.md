@@ -1,6 +1,6 @@
-# NovaSoft Site
+# NomaSoft Site
 
-Production-ready marketing site for NovaSoft built with Next.js 14 App Router, TypeScript, Tailwind CSS, Contentlayer, and next-intl.
+Production-ready marketing site for NomaSoft built with Next.js 14 App Router, TypeScript, Tailwind CSS, Contentlayer, and next-intl.
 
 ## Tech Stack
 
@@ -35,15 +35,15 @@ Copy `.env.example` to `.env.local` and fill in the values that apply to your de
 
 ### Commands
 
-| Script | Description |
-| --- | --- |
-| `npm run dev` | Start local development server |
-| `npm run lint` | Lint code with ESLint |
-| `npm run typecheck` | Run TypeScript checks |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run analyze` | Analyze production bundle |
-| `npm run test:e2e` | Execute Playwright smoke tests |
+| Script              | Description                    |
+| ------------------- | ------------------------------ |
+| `npm run dev`       | Start local development server |
+| `npm run lint`      | Lint code with ESLint          |
+| `npm run typecheck` | Run TypeScript checks          |
+| `npm run build`     | Production build               |
+| `npm run start`     | Start production server        |
+| `npm run analyze`   | Analyze production bundle      |
+| `npm run test:e2e`  | Execute Playwright smoke tests |
 
 ### Localization
 

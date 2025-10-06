@@ -54,7 +54,7 @@ async function sendEmail(payload: {
     return;
   }
 
-  const subject = `[NovaSoft] ${payload.name} — ${payload.service}`;
+  const subject = `[NomaSoft] ${payload.name} — ${payload.service}`;
   const text = `Name: ${payload.name}\nEmail: ${payload.email}\nCompany: ${payload.company ?? 'N/A'}\nService: ${payload.service}\n\n${payload.message}`;
 
   if (process.env.RESEND_API_KEY) {
