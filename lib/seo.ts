@@ -2,7 +2,7 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import siteContent from '@/content/site.json';
 import { Locale, locales } from './i18n';
 
-const defaultSiteUrl = 'https://nova-soft-website.vercel.app/';
+const defaultSiteUrl = 'https://nomasoft.dev';
 
 function resolveSiteUrl(value: string | undefined): string {
   if (!value) {
