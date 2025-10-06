@@ -7,8 +7,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nomasoft.dev';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'NovaSoft',
-    template: '%s | NovaSoft',
+    default: 'NomaSoft',
+    template: '%s | NomaSoft',
   },
   description:
     'Automation-first software engineering studio building Web, Mobile, Web3, and AI products.',

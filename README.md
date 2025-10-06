@@ -1,6 +1,6 @@
-# NovaSoft Site
+# NomaSoft Site
 
-Production-ready marketing site for NovaSoft built with Next.js 14 App Router, TypeScript, Tailwind CSS, Contentlayer, and next-intl.
+Production-ready marketing site for NomaSoft built with Next.js 14 App Router, TypeScript, Tailwind CSS, Contentlayer, and next-intl.
 
 ## Tech Stack
 

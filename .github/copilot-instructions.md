@@ -1,4 +1,4 @@
-# Copilot Instructions for NovaSoft.Website
+# Copilot Instructions for NomaSoft.Website
 
 ## Project Overview
 - **Framework:** Next.js 14 (App Router, TypeScript)
