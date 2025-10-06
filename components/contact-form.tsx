@@ -17,8 +17,8 @@ type Status = 'idle' | 'validating' | 'submitting' | 'success' | 'error';
 
 declare global {
   interface Window {
-    novasoftOnHcaptcha?: (token: string) => void;
-    novasoftOnTurnstile?: (token: string) => void;
+    nomasoftOnHcaptcha?: (token: string) => void;
+    nomasoftOnTurnstile?: (token: string) => void;
     hcaptcha?: { reset: (widgetId?: string) => void };
     turnstile?: { reset: (element: HTMLElement) => void };
   }
@@ -35,13 +35,13 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
 
   useEffect(() => {
     if (captchaType === 'hcaptcha') {
-      window.novasoftOnHcaptcha = (token: string) => setCaptchaToken(token);
+      window.nomasoftOnHcaptcha = (token: string) => setCaptchaToken(token);
     } else if (captchaType === 'turnstile') {
-      window.novasoftOnTurnstile = (token: string) => setCaptchaToken(token);
+      window.nomasoftOnTurnstile = (token: string) => setCaptchaToken(token);
     }
     return () => {
-      window.novasoftOnHcaptcha = undefined;
-      window.novasoftOnTurnstile = undefined;
+      window.nomasoftOnHcaptcha = undefined;
+      window.nomasoftOnTurnstile = undefined;
     };
   }, [captchaType]);
 
@@ -249,7 +249,7 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
           <div
             className="h-captcha"
             data-sitekey={captcha.siteKey}
-            data-callback="novasoftOnHcaptcha"
+            data-callback="nomasoftOnHcaptcha"
           />
         </div>
       ) : null}
@@ -263,7 +263,7 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
           <div
             className="cf-turnstile"
             data-sitekey={captcha.siteKey}
-            data-callback="novasoftOnTurnstile"
+            data-callback="nomasoftOnTurnstile"
             data-theme="dark"
           />
         </div>

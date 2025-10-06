@@ -1,14 +1,14 @@
 {
   "site": {
-    "name": "NovaSoft",
+    "name": "NomaSoft",
     "tagline": "Automation-first software engineering",
     "locales": [
       "en",
       "fr"
     ],
     "contact": {
-      "email": "dev.novasoft.labs@gmail.com",
-      "calendly": "https://cal.com/nova-soft"
+      "email": "dev.nomasoft.labs@gmail.com",
+      "calendly": "https://cal.com/noma-soft"
     },
     "social": {
       "github": "https://github.com/Corantin/"
