@@ -3,12 +3,14 @@
 import Script from 'next/script';
 import { useTranslations } from 'next-intl';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import type { CaptchaClientConfig } from '@/lib/captcha';
 import siteContent from '@/content/site.json';
 import { createContactSchema, MAX_MESSAGE_LENGTH } from '@/lib/validators';
 
 interface Props {
   locale: string;
   defaultService?: string;
+  captcha?: CaptchaClientConfig | null;
 }
 
 type Status = 'idle' | 'validating' | 'submitting' | 'success' | 'error';
@@ -22,7 +24,7 @@ declare global {
   }
 }
 
-export function ContactForm({ locale, defaultService }: Props) {
+export function ContactForm({ locale, defaultService, captcha }: Props) {
   const t = useTranslations();
   const contactT = useTranslations('contact');
   const [status, setStatus] = useState<Status>('idle');
@@ -31,13 +33,7 @@ export function ContactForm({ locale, defaultService }: Props) {
   const contactEmail = siteContent.site.contact.email;
   const [mailtoHref, setMailtoHref] = useState(() => `mailto:${contactEmail}`);
 
-  const hcaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
-  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  const captchaType = turnstileSiteKey
-    ? 'turnstile'
-    : hcaptchaSiteKey
-      ? 'hcaptcha'
-      : null;
+  const captchaType = captcha?.type ?? null;
 
   useEffect(() => {
     if (captchaType === 'hcaptcha') {
@@ -92,7 +88,9 @@ export function ContactForm({ locale, defaultService }: Props) {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    console.log('submit');
     event.preventDefault();
+    event.stopPropagation();
     setStatus('validating');
     setErrors({});
 
@@ -165,6 +163,7 @@ export function ContactForm({ locale, defaultService }: Props) {
       className="space-y-6 rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-8 shadow-xl shadow-black/20"
       noValidate
     >
+      <input type="hidden" name="locale" value={locale} />
       <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-zinc-200">
@@ -275,17 +274,17 @@ export function ContactForm({ locale, defaultService }: Props) {
           autoComplete="off"
         />
       </div>
-      {captchaType === 'hcaptcha' && hcaptchaSiteKey ? (
+      {captchaType === 'hcaptcha' && captcha?.siteKey ? (
         <div className="flex justify-center">
           <Script src="https://js.hcaptcha.com/1/api.js" async defer />
           <div
             className="h-captcha"
-            data-sitekey={hcaptchaSiteKey}
+            data-sitekey={captcha.siteKey}
             data-callback="nomasoftOnHcaptcha"
           />
         </div>
       ) : null}
-      {captchaType === 'turnstile' && turnstileSiteKey ? (
+      {captchaType === 'turnstile' && captcha?.siteKey ? (
         <div className="flex justify-center">
           <Script
             src="https://challenges.cloudflare.com/turnstile/v0/api.js"
@@ -294,7 +293,7 @@ export function ContactForm({ locale, defaultService }: Props) {
           />
           <div
             className="cf-turnstile"
-            data-sitekey={turnstileSiteKey}
+            data-sitekey={captcha.siteKey}
             data-callback="nomasoftOnTurnstile"
             data-theme="dark"
           />

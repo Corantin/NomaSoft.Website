@@ -22,7 +22,9 @@ export function getAlternateLocale(locale: Locale): Locale {
   return (locales.find((item) => item !== locale) as Locale) || defaultLocale;
 }
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = await requestLocale;
+
   if (!isLocale(locale)) {
     notFound();
   }

@@ -1,14 +1,14 @@
 import Link from 'next/link';
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 import type siteContent from '@/content/site.json';
-import {Locale} from '@/lib/i18n';
-import {LangSwitcher} from './lang-switcher';
+import { Locale } from '@/lib/i18n';
+import { LangSwitcher } from './lang-switcher';
 
 const navItems = [
-  {href: '#services', key: 'services'},
-  {href: '#process', key: 'process'},
-  {href: '#portfolio', key: 'portfolio'},
-  {href: '#about', key: 'about'}
+  { href: '#services', key: 'services' },
+  { href: '#process', key: 'process' },
+  { href: '#portfolio', key: 'portfolio' },
+  { href: '#about', key: 'about' },
 ];
 
 type Props = {
@@ -16,14 +16,17 @@ type Props = {
   site: typeof siteContent;
 };
 
-export default function Navbar({locale, site}: Props) {
+export default function Navbar({ locale, site }: Props) {
   const t = useTranslations('nav');
   const languageLabel = useTranslations('language')('label');
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link href={`/${locale}`} className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+        <Link
+          href={`/${locale}`}
+          className="flex items-center gap-2 text-lg font-semibold tracking-tight"
+        >
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand/20 text-brand">
             NS
           </span>
@@ -33,7 +36,11 @@ export default function Navbar({locale, site}: Props) {
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-medium text-zinc-300 md:flex">
           {navItems.map((item) => (
-            <a key={item.key} href={item.href} className="transition hover:text-zinc-50">
+            <a
+              key={item.key}
+              href={`/${locale}${item.href}`}
+              className="transition hover:text-zinc-50"
+            >
               {t(item.key)}
             </a>
           ))}

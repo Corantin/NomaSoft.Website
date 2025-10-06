@@ -5,6 +5,10 @@ export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export type Translator = (key: string) => string;
 
+const FileCtor = typeof globalThis !== 'undefined' && typeof globalThis.File !== 'undefined'
+  ? globalThis.File
+  : undefined;
+
 export function createContactSchema(t: Translator) {
   return z
     .object({
@@ -23,10 +27,10 @@ export function createContactSchema(t: Translator) {
       token: z.string().optional(),
       honeypot: z.string().optional(),
       file:
-        typeof File === 'undefined'
+        !FileCtor
           ? z.any().optional() // On server, skip File validation
           : z
-              .instanceof(File)
+              .instanceof(FileCtor)
               .refine((file) => file.size <= MAX_FILE_SIZE, t('validation.file.size'))
               .optional(),
     })
@@ -45,7 +49,8 @@ export type ContactFormInput = z.infer<ReturnType<typeof createContactSchema>>;
 
 export function parseFormData(formData: FormData, t: Translator): ContactFormInput {
   const schema = createContactSchema(t);
-  const file = formData.get('file');
+  const fileEntry = formData.get('file');
+  const file = FileCtor && fileEntry instanceof FileCtor ? fileEntry : undefined;
   const parsed = schema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
@@ -54,7 +59,7 @@ export function parseFormData(formData: FormData, t: Translator): ContactFormInp
     service: formData.get('service'),
     token: formData.get('token') || undefined,
     honeypot: formData.get('company-website') || undefined,
-    file: file instanceof File && file.size > 0 ? file : undefined,
+    file: file && file.size > 0 ? file : undefined,
   });
 
   if (!parsed.success) {
