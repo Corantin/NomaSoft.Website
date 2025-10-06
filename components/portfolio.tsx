@@ -51,7 +51,7 @@ export function Portfolio({ locale }: PortfolioProps) {
             {typedSiteContent.hero.secondaryCta[locale]}
           </h2>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2">
           {typedSiteContent.portfolio.map((item) => {
             const image = imageMap[item.title];
             return (
@@ -96,7 +96,7 @@ export function Portfolio({ locale }: PortfolioProps) {
                     href={item.doc ?? (item.github as any)}
                     className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                   >
-                    {t('portfolio.open')}
+                    {item.doc ? t('portfolio.open') : t('portfolio.github')}
                     <span aria-hidden="true">→</span>
                   </OutboundLink>
                 </div>

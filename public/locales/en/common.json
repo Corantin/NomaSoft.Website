@@ -32,7 +32,8 @@
     "cta": "Explore engagement"
   },
   "portfolio": {
-    "open": "Open case study"
+    "open": "See documentation",
+    "github": "View on GitHub"
   },
   "about": {
     "lead": "We are an automation-first duo shipping resilient products across Web3, SaaS, and mobile.",

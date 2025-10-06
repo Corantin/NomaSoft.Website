@@ -32,7 +32,8 @@
     "cta": "Découvrir l'accompagnement"
   },
   "portfolio": {
-    "open": "Ouvrir l'étude"
+    "open": "Voir la documentation",
+    "github": "Voir sur GitHub"
   },
   "about": {
     "lead": "Nous sommes un duo orienté automatisation livrant des produits résilients pour le Web3, le SaaS et le mobile.",

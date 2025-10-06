@@ -76,7 +76,6 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
 
     const detailLines = [
       `${contactT('name')}: ${data.name}`,
-      `${contactT('email')}: ${data.email}`,
       data.company ? `${contactT('company')}: ${data.company}` : null,
       `${contactT('service')}: ${serviceTitle}`,
     ].filter((line): line is string => Boolean(line));
