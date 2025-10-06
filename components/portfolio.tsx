@@ -9,16 +9,20 @@ import { OutboundLink } from './outbound-link';
 
 const imageMap: Record<string, { src: string; alt: string }> = {
   Gardens: {
-    src: '/images/portfolio/gardens.svg',
+    src: '/images/portfolio/gardens.png',
     alt: 'Gardens dashboard illustration',
   },
   Deed3: {
-    src: '/images/portfolio/protocol-dapp.svg',
+    src: '/images/portfolio/deed3.png',
     alt: 'Deed3 interface mockup',
   },
   '1Hive Quests': {
-    src: '/images/portfolio/1hive-quests.svg',
+    src: '/images/portfolio/quests.png',
     alt: '1Hive Quests overview',
+  },
+  'Oneway Catering': {
+    src: '/images/portfolio/oneway-catering.png',
+    alt: 'Oneway Catering website screenshot',
   },
 };
 
@@ -47,7 +51,7 @@ export function Portfolio({ locale }: PortfolioProps) {
             {typedSiteContent.hero.secondaryCta[locale]}
           </h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {typedSiteContent.portfolio.map((item) => {
             const image = imageMap[item.title];
             return (
@@ -57,14 +61,20 @@ export function Portfolio({ locale }: PortfolioProps) {
               >
                 {image ? (
                   <div className="relative h-40 w-full overflow-hidden bg-zinc-900">
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      sizes="(min-width: 768px) 33vw, 100vw"
-                      className="object-cover"
-                      priority={false}
-                    />
+                    <a
+                      href={item.site ?? item.doc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="object-cover"
+                        priority={false}
+                      />
+                    </a>
                   </div>
                 ) : null}
                 <div className="flex flex-1 flex-col gap-4 p-6">
@@ -83,7 +93,7 @@ export function Portfolio({ locale }: PortfolioProps) {
                     ))}
                   </ul>
                   <OutboundLink
-                    href={item.link as any}
+                    href={item.doc ?? (item.github as any)}
                     className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                   >
                     {t('portfolio.open')}

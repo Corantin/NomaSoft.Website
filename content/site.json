@@ -180,7 +180,8 @@
         "Protocol UI",
         "Subgraph"
       ],
-      "link": "https://docs.gardens.fund/"
+      "doc": "https://docs.gardens.fund/",
+      "site": "https://app.gardens.fund/"
     },
     {
       "title": "Deed3",
@@ -193,7 +194,8 @@
         "Next.js",
         "Smart Contracts"
       ],
-      "link": "https://github.com/Deed3Labs/Protocol-DApp"
+      "github": "https://github.com/Deed3Labs/Protocol-DApp",
+      "site": "https://deed3.com/"
     },
     {
       "title": "1Hive Quests",
@@ -206,7 +208,8 @@
         "Bounties",
         "Governance"
       ],
-      "link": "https://wiki.1hive.org/projects/quests"
+      "doc": "https://wiki.1hive.org/projects/quests",
+      "site": "https://quests.1hive.org/"
     },
     {
       "title": "Oneway Catering",
@@ -217,9 +220,11 @@
       "tags": [
         "Food Ordering",
         "Stripe",
+        "Uber API",
         "Logistics"
       ],
-      "link": "https://onewaybakery.com"
+      "site": "https://oneway-catering.vercel.app/",
+      "github": "https://github.com/Corantin/Oneway-Catering"
     }
   ]
 }

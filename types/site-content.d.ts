@@ -43,6 +43,8 @@ export interface SiteContent {
     title: string;
     desc: LocalizedString;
     tags: string[];
-    link: string;
+    site?: string;
+    doc?: string;
+    github?: string;
   }>;
 }
