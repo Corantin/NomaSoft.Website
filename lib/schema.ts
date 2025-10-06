@@ -51,7 +51,7 @@ export function getPortfolioSchema(locale: Locale) {
     '@type': 'CreativeWork',
     name: item.title,
     description: item.desc[locale as keyof typeof item.desc],
-    url: item.link,
+    url: item.doc || item.site || item.github,
     keywords: item.tags.join(', '),
   }));
 }

@@ -10,8 +10,7 @@ export const metadata: Metadata = {
     default: 'NomaSoft',
     template: '%s | NomaSoft',
   },
-  description:
-    'Automation-first software engineering studio building Web, Mobile, Web3, and AI products.',
+  description: 'Engineering next-generation Web, Mobile, Web3, and AI products.',
   icons: {
     icon: '/favicon.svg',
   },
