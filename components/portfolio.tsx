@@ -71,7 +71,7 @@ export function Portfolio({ locale }: PortfolioProps) {
                         alt={image.alt}
                         fill
                         sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover"
+                        className="object-cover object-top brightness-50"
                         priority={false}
                       />
                     </a>
