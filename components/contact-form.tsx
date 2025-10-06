@@ -28,6 +28,8 @@ export function ContactForm({locale, defaultService}: Props) {
   const [status, setStatus] = useState<Status>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [captchaToken, setCaptchaToken] = useState<string | undefined>();
+  const contactEmail = siteContent.site.contact.email;
+  const [mailtoHref, setMailtoHref] = useState(() => `mailto:${contactEmail}`);
 
   const hcaptchaSiteKey = process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY;
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -58,6 +60,31 @@ export function ContactForm({locale, defaultService}: Props) {
       }
     }
     setCaptchaToken(undefined);
+  };
+
+  const buildMailtoHref = (data: {
+    name: string;
+    email: string;
+    company?: string;
+    message: string;
+    service: string;
+  }) => {
+    const serviceTitle =
+      siteContent.services.find((service) => service.key === data.service)?.title[
+        locale as keyof (typeof siteContent.services)[number]['title']
+      ] ?? data.service;
+
+    const detailLines = [
+      `${contactT('name')}: ${data.name}`,
+      `${contactT('email')}: ${data.email}`,
+      data.company ? `${contactT('company')}: ${data.company}` : null,
+      `${contactT('service')}: ${serviceTitle}`,
+    ].filter((line): line is string => Boolean(line));
+
+    const body = `${detailLines.join('\n')}\n\n${contactT('message')}:\n${data.message}`;
+    const subject = contactT('mailSubject');
+
+    return `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -105,6 +132,8 @@ export function ContactForm({locale, defaultService}: Props) {
     if (parsed.data.file) submission.append('file', parsed.data.file);
     submission.append('locale', locale);
 
+    const fallbackMailto = buildMailtoHref(parsed.data);
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -118,8 +147,10 @@ export function ContactForm({locale, defaultService}: Props) {
       setStatus('success');
       formElement.reset();
       resetCaptcha();
+      setMailtoHref(`mailto:${contactEmail}`);
     } catch (error) {
       console.error(error);
+      setMailtoHref(fallbackMailto);
       setStatus('error');
     }
   };
@@ -253,7 +284,17 @@ export function ContactForm({locale, defaultService}: Props) {
         {status === 'success' ? (
           <p className="text-brand-light">{contactT('success')}</p>
         ) : null}
-        {status === 'error' ? <p className="text-red-400">{contactT('error')}</p> : null}
+        {status === 'error' ? (
+          <div className="space-y-2">
+            <p className="text-red-400">{contactT('error')}</p>
+            <a
+              href={mailtoHref}
+              className="transition text-blue-400 hover:text-dodgerblue-600"
+            >
+              {siteContent.site.contact.email}
+            </a>
+          </div>
+        ) : null}
       </div>
     </form>
   );

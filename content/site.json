@@ -1,10 +1,10 @@
 {
   "site": {
-    "name": "NovaSoft",
+    "name": "NomaSoft",
     "tagline": "Automation-first software engineering",
     "locales": ["en", "fr"],
     "contact": {
-      "email": "dev.novasoft.labs@gmail.com",
+      "email": "contact@nomasoft.dev",
       "calendly": "https://cal.com/nova-soft"
     },
     "social": { "github": "https://github.com/Corantin/" }
@@ -74,8 +74,15 @@
     },
     {
       "title": "Deed3",
-      "desc": { "en": "Full-stack DApp from README scope.", "fr": "DApp full-stack selon README." },
-      "tags": ["DApp", "Next.js", "Smart Contracts"],
+      "desc": {
+        "en": "Real-estate tokenization platform & notary as a service.",
+        "fr": "Plateforme de tokenisation immobilière et notaire en tant que service."
+      },
+      "tags": [
+        "DApp",
+        "Next.js",
+        "Smart Contracts"
+      ],
       "link": "https://github.com/Deed3Labs/Protocol-DApp"
     },
     {

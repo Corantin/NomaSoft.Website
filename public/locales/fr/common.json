@@ -49,6 +49,7 @@
     "service": "Service ciblé",
     "servicePlaceholder": "Sélectionner un service",
     "file": "Joindre un brief (optionnel)",
+    "mailSubject": "Demande de contact NovaSoft",
     "submit": "Envoyer",
     "success": "Merci ! Nous revenons vers vous très vite.",
     "error": "Une erreur est survenue. Réessayez ou écrivez-nous directement.",

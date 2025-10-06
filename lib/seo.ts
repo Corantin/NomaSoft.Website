@@ -2,7 +2,28 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import siteContent from '@/content/site.json';
 import { Locale, locales } from './i18n';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://novasoft.dev';
+const defaultSiteUrl = 'https://nomasoft.dev';
+
+function resolveSiteUrl(value: string | undefined): string {
+  if (!value) {
+    return defaultSiteUrl;
+  }
+
+  const hasProtocol = /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value);
+  const candidate = hasProtocol
+    ? value
+    : value.startsWith('localhost') || value.startsWith('127.') || value.startsWith('[')
+      ? `http://${value}`
+      : `https://${value}`;
+
+  try {
+    return new URL(candidate).toString();
+  } catch {
+    return defaultSiteUrl;
+  }
+}
+
+const siteUrl = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 const siteName = siteContent.site.name;
 const defaultDescription = {
   en: siteContent.hero.subhead.en,

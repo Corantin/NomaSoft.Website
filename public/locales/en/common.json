@@ -49,6 +49,7 @@
     "service": "Service interest",
     "servicePlaceholder": "Select a service",
     "file": "Attach brief (optional)",
+    "mailSubject": "NovaSoft contact request",
     "submit": "Send message",
     "success": "Thanks! We'll reply shortly.",
     "error": "Something went wrong. Please retry or email us directly.",
