@@ -7,7 +7,7 @@
       "fr"
     ],
     "contact": {
-      "email": "dev.nomasoft.labs@gmail.com",
+      "email": "contact@nomasoft.dev",
       "calendly": "https://cal.com/noma-soft"
     },
     "social": {
@@ -207,6 +207,19 @@
         "Governance"
       ],
       "link": "https://wiki.1hive.org/projects/quests"
+    },
+    {
+      "title": "Oneway Catering",
+      "desc": {
+        "en": "Pickup and delivery ordering platform for Oneway Bakery with Stripe payments and Uber-powered couriers.",
+        "fr": "Plateforme de commandes à emporter et livraison pour Oneway Bakery avec paiements Stripe et livraison via Uber."
+      },
+      "tags": [
+        "Food Ordering",
+        "Stripe",
+        "Logistics"
+      ],
+      "link": "https://onewaybakery.com"
     }
   ]
 }
