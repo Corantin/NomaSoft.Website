@@ -15,10 +15,7 @@ export function Hero({ locale }: HeroProps) {
   const hero = typedSiteContent.hero;
 
   return (
-    <section
-      className="relative overflow-hidden pb-24 pt-20"
-      aria-labelledby="hero-heading"
-    >
+    <section className="relative overflow-hidden pt-24" aria-labelledby="hero-heading">
       <div className="absolute inset-x-0 top-0 -z-10 h-[480px] bg-gradient-to-b from-brand/20 via-brand/5 to-transparent blur-3xl" />
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 sm:px-6 lg:flex-row lg:items-stretch lg:gap-12 lg:px-8">
         <div className="relative hidden flex-shrink-0 self-stretch overflow-hidden lg:block lg:w-[500px] lg:h-[475px] lg:-mt-[4.5rem]">
