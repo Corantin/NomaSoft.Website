@@ -31,12 +31,6 @@ export function Services({ locale }: ServicesProps) {
           <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
             {t('sections.services')}
           </span>
-          <h2
-            id="services-heading"
-            className="text-3xl font-semibold text-white sm:text-4xl"
-          >
-            {typedSiteContent.hero.headline[locale]}
-          </h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
           {services.map((service) => {
