@@ -33,7 +33,8 @@
   },
   "portfolio": {
     "open": "Voir la documentation",
-    "github": "Voir sur GitHub"
+    "github": "Voir sur GitHub",
+    "website": "Visiter le site"
   },
   "about": {
     "lead": "Nous sommes un duo orienté automatisation livrant des produits résilients pour le Web3, le SaaS et le mobile.",

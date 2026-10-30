@@ -184,18 +184,17 @@
       "site": "https://app.gardens.fund/"
     },
     {
-      "title": "Deed3",
+      "title": "EV TrustSeal",
       "desc": {
-        "en": "Full-stack DApp from README scope.",
-        "fr": "DApp full-stack selon README."
+        "en": "EV battery health reports and verifiable certificates powered by connected vehicle data.",
+        "fr": "Rapports sur l’état de santé des batteries de véhicules électriques et certificats vérifiables basés sur les données du véhicule connecté."
       },
       "tags": [
-        "DApp",
+        "Automotive",
         "Next.js",
-        "Smart Contracts"
+        "Tesla API"
       ],
-      "github": "https://github.com/Deed3Labs/Protocol-DApp",
-      "site": "https://deedprotocol-git-dev-deed3.vercel.app/"
+      "site": "https://evtrustseal.com/"
     },
     {
       "title": "1Hive Quests",

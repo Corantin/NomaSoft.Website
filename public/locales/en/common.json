@@ -33,7 +33,8 @@
   },
   "portfolio": {
     "open": "See documentation",
-    "github": "View on GitHub"
+    "github": "View on GitHub",
+    "website": "Visit website"
   },
   "about": {
     "lead": "We are a creative engineering duo building modern Web3, SaaS, and mobile products.",

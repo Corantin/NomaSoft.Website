@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import type { Route } from 'next';
 import siteContent from '@/content/site.json';
 import type { SiteContent } from '@/types/site-content';
 
@@ -12,9 +13,9 @@ const imageMap: Record<string, { src: string; alt: string }> = {
     src: '/images/portfolio/gardens.png',
     alt: 'Gardens dashboard illustration',
   },
-  Deed3: {
-    src: '/images/portfolio/deed3.png',
-    alt: 'Deed3 interface mockup',
+  'EV TrustSeal': {
+    src: '/images/portfolio/ev-trustseal.png',
+    alt: 'EV TrustSeal battery health certificate preview',
   },
   '1Hive Quests': {
     src: '/images/portfolio/quests.png',
@@ -93,10 +94,14 @@ export function Portfolio({ locale }: PortfolioProps) {
                     ))}
                   </ul>
                   <OutboundLink
-                    href={item.doc ?? (item.github as any)}
+                    href={(item.doc ?? item.github ?? item.site) as Route}
                     className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                   >
-                    {item.doc ? t('portfolio.open') : t('portfolio.github')}
+                    {item.doc
+                      ? t('portfolio.open')
+                      : item.github
+                        ? t('portfolio.github')
+                        : t('portfolio.website')}
                     <span aria-hidden="true">→</span>
                   </OutboundLink>
                 </div>
