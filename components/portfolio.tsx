@@ -10,20 +10,31 @@ import { OutboundLink } from './outbound-link';
 type Project = SiteContent['portfolio'][number];
 const projects = (siteContent as SiteContent).portfolio;
 
-const imageMap: Record<string, { src: string; alt: string }> = {
+const imageMap: Record<string, { src: string; alt: string; aspectRatio: number }> = {
   'EV TrustSeal': {
     src: '/images/portfolio/ev-trustseal.png',
     alt: 'EV TrustSeal battery health certificate preview',
+    aspectRatio: 1200 / 630,
   },
-  Gardens: { src: '/images/portfolio/gardens.png', alt: 'Gardens dashboard' },
-  '1Hive Quests': { src: '/images/portfolio/quests.png', alt: '1Hive Quests overview' },
+  Gardens: {
+    src: '/images/portfolio/gardens.png',
+    alt: 'Gardens dashboard',
+    aspectRatio: 1414 / 821,
+  },
+  '1Hive Quests': {
+    src: '/images/portfolio/quests.png',
+    alt: '1Hive Quests overview',
+    aspectRatio: 1519 / 1019,
+  },
   'Oneway Catering': {
     src: '/images/portfolio/oneway-catering.png',
     alt: 'Oneway Catering website',
+    aspectRatio: 1525 / 1016,
   },
   Deed3: {
     src: '/images/portfolio/deed3.png',
     alt: 'Deed3 tokenized real estate platform interface',
+    aspectRatio: 1524 / 1021,
   },
 };
 
@@ -49,7 +60,7 @@ function ProjectCard({
       ? 'lg:col-span-7'
       : 'lg:col-span-5';
   const imageClass =
-    'object-contain object-center transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.02] motion-reduce:group-hover:scale-100';
+    'object-cover object-top transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.02] motion-reduce:group-hover:scale-100';
 
   return (
     <article data-project={project.title} className={`group ${span}`}>
@@ -65,7 +76,8 @@ function ProjectCard({
             <OutboundLink
               href={href as Route}
               aria-label={t('visitProject', { name: project.title })}
-              className="relative block aspect-[16/10] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+              style={{ aspectRatio: image.aspectRatio }}
+              className="relative block overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
             >
               <Image
                 src={image.src}
@@ -77,7 +89,10 @@ function ProjectCard({
               />
             </OutboundLink>
           ) : (
-            <div className="relative aspect-[16/10] overflow-hidden bg-zinc-900">
+            <div
+              style={{ aspectRatio: image.aspectRatio }}
+              className="relative overflow-hidden bg-zinc-900"
+            >
               <Image
                 src={image.src}
                 alt={image.alt}

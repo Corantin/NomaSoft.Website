@@ -59,7 +59,7 @@ test('full portfolio features EV TrustSeal first and leaves Deed3 unlinked in bo
     const cards = page.locator('#work [data-project]');
     await expect(cards).toHaveCount(5);
     await expect(cards.nth(0)).toHaveAttribute('data-project', 'EV TrustSeal');
-    await expect(cards.nth(1)).toHaveAttribute('data-project', 'Gardens');
+    await expect(cards.nth(3)).toHaveAttribute('data-project', 'Gardens');
     const deed3 = cards.filter({ has: page.getByRole('heading', { name: 'Deed3' }) });
     await expect(deed3).toContainText(
       locale === 'en'

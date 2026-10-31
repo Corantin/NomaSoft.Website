@@ -183,20 +183,6 @@
       "site": "https://evtrustseal.com/"
     },
     {
-      "title": "Gardens",
-      "desc": {
-        "en": "Decentralized & democratic community fund management protocol.",
-        "fr": "Protocole de gestion décentralisée et démocratique de fonds communautaires."
-      },
-      "tags": [
-        "Web3",
-        "Protocol UI",
-        "Subgraph"
-      ],
-      "doc": "https://docs.gardens.fund/",
-      "site": "https://app.gardens.fund/"
-    },
-    {
       "title": "1Hive Quests",
       "desc": {
         "en": "Decentralized, trustless bounty platform.",
@@ -224,6 +210,20 @@
       ],
       "site": "https://oneway-catering.vercel.app/",
       "github": "https://github.com/Corantin/Oneway-Catering"
+    },
+    {
+      "title": "Gardens",
+      "desc": {
+        "en": "Decentralized & democratic community fund management protocol.",
+        "fr": "Protocole de gestion décentralisée et démocratique de fonds communautaires."
+      },
+      "tags": [
+        "Web3",
+        "Protocol UI",
+        "Subgraph"
+      ],
+      "doc": "https://docs.gardens.fund/",
+      "site": "https://app.gardens.fund/"
     },
     {
       "title": "Deed3",
