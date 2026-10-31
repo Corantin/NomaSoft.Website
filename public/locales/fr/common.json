@@ -28,7 +28,7 @@
   "sections": {
     "services": "Ce que nous réalisons",
     "process": "Notre méthode",
-    "portfolio": "Réalisations",
+    "portfolio": "Nos projets",
     "about": "À propos de NOMASOFT",
     "contact": "Discutons",
     "servicesCta": "Discuter du projet"
@@ -52,9 +52,24 @@
     "visitProject": "Visiter {name}"
   },
   "about": {
-    "lead": "Nous sommes un duo orienté automatisation livrant des produits résilients pour le Web3, le SaaS et le mobile.",
-    "body": "Les ingénieurs NOMASOFT allient stratégie produit et exécution terrain. Nous conjuguons découverte rapide et livraison de niveau production pour que vos équipes se concentrent sur la croissance.",
-    "stack": "Stack clé"
+    "eyebrow": "Pourquoi NOMASOFT",
+    "title": "Un site web pensé pour votre entreprise.",
+    "lead": "Nous sommes un duo qui conçoit et développe des sites web distinctifs pour les entreprises ambitieuses.",
+    "body": "Du premier échange au lancement, nous réunissons stratégie, design et développement pour donner à vos idées une présence en ligne claire et convaincante.",
+    "benefits": {
+      "direction": {
+        "title": "Une direction claire",
+        "body": "Nous adaptons le message et l’expérience à votre public et aux actions que vous souhaitez susciter."
+      },
+      "presence": {
+        "title": "Une présence distinctive",
+        "body": "Un design soigné donne à votre entreprise un site web qui lui ressemble."
+      },
+      "collaboration": {
+        "title": "Une collaboration directe",
+        "body": "Vous échangez avec les personnes qui conçoivent et développent votre site, de l’idée au lancement."
+      }
+    }
   },
   "contact": {
     "title": "Parlez-nous de votre projet",

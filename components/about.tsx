@@ -1,14 +1,6 @@
-import Image from 'next/image';
-import siteContent from '@/content/site.json';
 import { useTranslations } from 'next-intl';
 
-const stack = [
-  { name: 'Next.js', src: '/images/stack/nextjs.svg' },
-  { name: 'TypeScript', src: '/images/stack/typescript.svg' },
-  { name: 'Tailwind CSS', src: '/images/stack/tailwindcss.svg' },
-  { name: 'Solidity', src: '/images/stack/solidity.svg' },
-  { name: 'PostgreSQL', src: '/images/stack/postgresql.svg' },
-];
+const benefitKeys = ['direction', 'presence', 'collaboration'] as const;
 
 export function About() {
   const t = useTranslations('about');
@@ -21,32 +13,27 @@ export function About() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-light">
-          {t('stack')}
+          {t('eyebrow')}
         </span>
         <h2
           id="about-heading"
-          className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl"
+          className="mt-4 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl"
         >
-          {siteContent.site.name}
+          {t('title')}
         </h2>
-        <p className="mt-6 max-w-3xl text-xl text-zinc-300">{t('lead')}</p>
-        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-zinc-400">
-          {t('body')}
-        </p>
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-5">
-          {stack.map((logo) => (
+        <p className="mt-6 max-w-3xl text-xl leading-relaxed text-zinc-300">{t('lead')}</p>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-zinc-400">{t('body')}</p>
+        <div className="mt-12 grid gap-8 border-t border-zinc-800 pt-9 md:grid-cols-3 md:gap-0">
+          {benefitKeys.map((key, index) => (
             <div
-              key={logo.name}
-              className="flex items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950/40 p-4"
+              key={key}
+              className={index === 0 ? 'md:pr-8' : 'md:border-l md:border-zinc-800 md:px-8'}
             >
-              <Image
-                src={logo.src}
-                alt={logo.name}
-                width={120}
-                height={40}
-                className="h-8 w-auto"
-                loading="lazy"
-              />
+              <span className="mb-6 block h-1 w-10 rounded-full bg-brand" aria-hidden="true" />
+              <h3 className="text-xl font-semibold text-white">{t(`benefits.${key}.title`)}</h3>
+              <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-400">
+                {t(`benefits.${key}.body`)}
+              </p>
             </div>
           ))}
         </div>

@@ -10,11 +10,12 @@ import { OutboundLink } from './outbound-link';
 type Project = SiteContent['portfolio'][number];
 const projects = (siteContent as SiteContent).portfolio;
 
-const imageMap: Record<string, { src: string; alt: string; aspectRatio: number }> = {
+const imageMap: Record<string, { src: string; alt: string; aspectRatio: number; position?: string }> = {
   'EV TrustSeal': {
-    src: '/images/portfolio/ev-trustseal.png',
-    alt: 'EV TrustSeal battery health certificate preview',
+    src: '/images/portfolio/ev-trustseal-home.png',
+    alt: 'EV TrustSeal website showing its battery health test and certificate',
     aspectRatio: 1200 / 630,
+    position: 'center 17%',
   },
   Gardens: {
     src: '/images/portfolio/gardens.png',
@@ -60,7 +61,7 @@ function ProjectCard({
       ? 'lg:col-span-7'
       : 'lg:col-span-5';
   const imageClass =
-    'object-cover object-top transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.02] motion-reduce:group-hover:scale-100';
+    'object-cover transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.02] motion-reduce:group-hover:scale-100';
 
   return (
     <article data-project={project.title} className={`group ${span}`}>
@@ -85,6 +86,7 @@ function ProjectCard({
                 fill
                 sizes="(min-width: 1024px) 58vw, 100vw"
                 className={imageClass}
+                style={{ objectPosition: image.position ?? 'center top' }}
                 priority={index === 0}
               />
             </OutboundLink>
@@ -98,7 +100,8 @@ function ProjectCard({
                 alt={image.alt}
                 fill
                 sizes="(min-width: 1024px) 58vw, 100vw"
-                className="object-cover object-top"
+                className="object-cover"
+                style={{ objectPosition: image.position ?? 'center top' }}
               />
             </div>
           )

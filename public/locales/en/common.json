@@ -28,7 +28,7 @@
   "sections": {
     "services": "What we build",
     "process": "Delivery process",
-    "portfolio": "Selected work",
+    "portfolio": "Our projects",
     "about": "About NOMASOFT",
     "contact": "Let's talk",
     "servicesCta": "Discuss project"
@@ -52,9 +52,24 @@
     "visitProject": "Visit {name}"
   },
   "about": {
-    "lead": "We are a creative engineering duo building modern Web3, SaaS, and mobile products.",
-    "body": "NOMASOFT engineers blend product strategy with hands-on delivery. We pair rapid discovery with production-grade execution so your teams can focus on growth.",
-    "stack": "Core stack"
+    "eyebrow": "Why NOMASOFT",
+    "title": "A website shaped around your business.",
+    "lead": "We are a hands-on duo designing and building distinctive websites for ambitious businesses.",
+    "body": "From the first conversation to launch, we bring strategy, design, and development together to make your ideas feel clear and compelling online.",
+    "benefits": {
+      "direction": {
+        "title": "A clear direction",
+        "body": "We shape the message and experience around your audience and what you want them to do."
+      },
+      "presence": {
+        "title": "A distinctive presence",
+        "body": "Thoughtful design gives your business a website that feels like yours."
+      },
+      "collaboration": {
+        "title": "Direct collaboration",
+        "body": "You work with the people designing and building your site, from first idea to launch."
+      }
+    }
   },
   "contact": {
     "title": "Tell us about your project",

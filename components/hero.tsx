@@ -51,14 +51,13 @@ export function Hero({ locale }: HeroProps) {
         </div>
         <div className="relative mx-auto w-full max-w-2xl lg:max-w-none">
           <div className="pointer-events-none absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-brand/25 via-brand/5 to-transparent blur-2xl" />
-          <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 shadow-2xl shadow-black/50 sm:rounded-3xl">
+          <div className="relative aspect-[40/21] overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 shadow-2xl shadow-black/50 sm:rounded-3xl">
             <Image
-              src="/images/portfolio/ev-trustseal.png"
-              alt="EV TrustSeal website and battery certificate preview"
-              width={1200}
-              height={630}
+              src="/images/portfolio/ev-trustseal-home.png"
+              alt="EV TrustSeal website showing its battery health test and certificate"
+              fill
               sizes="(min-width: 1024px) 55vw, 100vw"
-              className="block h-auto w-full"
+              className="object-cover object-[center_17%]"
               priority
             />
           </div>
