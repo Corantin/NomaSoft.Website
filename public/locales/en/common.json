@@ -1,10 +1,12 @@
 {
   "meta": {
-    "homeTitle": "NomaSoft — Next-generation software engineering",
+    "homeTitle": "NOMASOFT — Next-generation software engineering",
     "homeDescription": "Lean product teams shipping Web, Mobile, Web3, and AI systems with measurable outcomes.",
-    "contactTitle": "Contact NomaSoft",
-    "privacyTitle": "Privacy Policy — NomaSoft",
-    "termsTitle": "Terms of Service — NomaSoft"
+    "contactTitle": "Contact NOMASOFT",
+    "privacyTitle": "Privacy Policy — NOMASOFT",
+    "termsTitle": "Terms of Service — NOMASOFT",
+    "portfolioTitle": "Portfolio — NOMASOFT",
+    "portfolioDescription": "Explore NOMASOFT projects across Web3, electric vehicles, commerce, and real estate."
   },
   "nav": {
     "skip": "Skip to content",
@@ -14,7 +16,10 @@
     "about": "About",
     "contact": "Contact",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "mainLabel": "Main navigation",
+    "mobileLabel": "Mobile navigation",
+    "menu": "Open menu"
   },
   "hero": {
     "ctaPrimary": "Book a call",
@@ -24,7 +29,7 @@
     "services": "What we build",
     "process": "Delivery process",
     "portfolio": "Selected work",
-    "about": "About NomaSoft",
+    "about": "About NOMASOFT",
     "contact": "Let's talk",
     "servicesCta": "Discuss project"
   },
@@ -34,11 +39,21 @@
   "portfolio": {
     "open": "See documentation",
     "github": "View on GitHub",
-    "website": "Visit website"
+    "website": "Visit website",
+    "viewAll": "View all projects",
+    "count": "{count} projects",
+    "explore": "Explore below",
+    "all": "All projects",
+    "summary": "Real products, practical engineering.",
+    "intro": "A closer look at the products and platforms we have built across Web, Web3, automotive, commerce, and real estate.",
+    "nextLabel": "Next",
+    "nextTitle": "Have something ambitious in mind?",
+    "nextBody": "Let's talk about what you're building.",
+    "visitProject": "Visit {name}"
   },
   "about": {
     "lead": "We are a creative engineering duo building modern Web3, SaaS, and mobile products.",
-    "body": "NomaSoft engineers blend product strategy with hands-on delivery. We pair rapid discovery with production-grade execution so your teams can focus on growth.",
+    "body": "NOMASOFT engineers blend product strategy with hands-on delivery. We pair rapid discovery with production-grade execution so your teams can focus on growth.",
     "stack": "Core stack"
   },
   "contact": {
@@ -51,7 +66,7 @@
     "service": "Service interest",
     "servicePlaceholder": "Select a service",
     "file": "Attach brief (optional)",
-    "mailSubject": "NomaSoft contact request",
+    "mailSubject": "NOMASOFT contact request",
     "submit": "Send message",
     "success": "Thanks! We'll reply shortly.",
     "error": "Something went wrong. Please retry or email us directly.",
@@ -79,7 +94,7 @@
     "bot": "Form submission flagged as spam."
   },
   "footer": {
-    "rights": "© {year} NomaSoft. All rights reserved."
+    "rights": "© {year} NOMASOFT. All rights reserved."
   },
   "language": {
     "label": "Language",

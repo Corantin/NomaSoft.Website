@@ -7,3 +7,4 @@ out
 !.env.example
 .playwright*
 coverage
+.superdesign/tmp/

@@ -1,114 +1,182 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import type { Route } from 'next';
+import { useTranslations } from 'next-intl';
 import siteContent from '@/content/site.json';
 import type { SiteContent } from '@/types/site-content';
-
-const typedSiteContent = siteContent as SiteContent;
 import { Locale } from '@/lib/i18n';
-import { useTranslations } from 'next-intl';
 import { OutboundLink } from './outbound-link';
 
+type Project = SiteContent['portfolio'][number];
+const projects = (siteContent as SiteContent).portfolio;
+
 const imageMap: Record<string, { src: string; alt: string }> = {
-  Gardens: {
-    src: '/images/portfolio/gardens.png',
-    alt: 'Gardens dashboard illustration',
-  },
   'EV TrustSeal': {
     src: '/images/portfolio/ev-trustseal.png',
     alt: 'EV TrustSeal battery health certificate preview',
   },
-  '1Hive Quests': {
-    src: '/images/portfolio/quests.png',
-    alt: '1Hive Quests overview',
-  },
+  Gardens: { src: '/images/portfolio/gardens.png', alt: 'Gardens dashboard' },
+  '1Hive Quests': { src: '/images/portfolio/quests.png', alt: '1Hive Quests overview' },
   'Oneway Catering': {
     src: '/images/portfolio/oneway-catering.png',
-    alt: 'Oneway Catering website screenshot',
+    alt: 'Oneway Catering website',
+  },
+  Deed3: {
+    src: '/images/portfolio/deed3.png',
+    alt: 'Deed3 tokenized real estate platform interface',
   },
 };
 
-interface PortfolioProps {
+function ProjectCard({
+  project,
+  index,
+  locale,
+  full,
+}: {
+  project: Project;
+  index: number;
   locale: Locale;
+  full: boolean;
+}) {
+  const t = useTranslations('portfolio');
+  const image = imageMap[project.title];
+  const href = project.site ?? project.doc ?? project.github;
+  const isUnlinked = !href;
+  const wide = full && isUnlinked;
+  const span = wide
+    ? 'lg:col-span-12'
+    : index % 4 === 0 || index % 4 === 3
+      ? 'lg:col-span-7'
+      : 'lg:col-span-5';
+  const imageClass =
+    'object-contain object-center transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.02] motion-reduce:group-hover:scale-100';
+
+  return (
+    <article data-project={project.title} className={`group ${span}`}>
+      <div
+        className={
+          wide
+            ? 'overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 lg:grid lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.65fr)]'
+            : ''
+        }
+      >
+        {image ? (
+          href ? (
+            <OutboundLink
+              href={href as Route}
+              aria-label={t('visitProject', { name: project.title })}
+              className="relative block aspect-[16/10] overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(min-width: 1024px) 58vw, 100vw"
+                className={imageClass}
+                priority={index === 0}
+              />
+            </OutboundLink>
+          ) : (
+            <div className="relative aspect-[16/10] overflow-hidden bg-zinc-900">
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(min-width: 1024px) 58vw, 100vw"
+                className="object-cover object-top"
+              />
+            </div>
+          )
+        ) : null}
+        <div className={wide ? 'flex flex-col justify-between p-8 sm:p-10' : 'mt-6'}>
+          <p className="font-mono text-xs uppercase tracking-wide text-brand-light">
+            {String(index + 1).padStart(2, '0')} / {project.tags[0]}
+          </p>
+          <div className={wide ? 'mt-10' : 'mt-2'}>
+            <h3 className={`font-semibold text-white ${wide ? 'text-3xl' : 'text-2xl'}`}>
+              {href ? (
+                <OutboundLink
+                  href={href as Route}
+                  className="inline-flex items-center rounded-sm hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+                >
+                  {project.title}
+                  <span aria-hidden="true" className="ml-2 text-brand-light">
+                    ↗
+                  </span>
+                </OutboundLink>
+              ) : (
+                project.title
+              )}
+            </h3>
+            <p
+              className={`mt-2 leading-relaxed text-zinc-400 ${wide ? 'max-w-sm text-lg' : 'max-w-xl text-sm sm:text-base'}`}
+            >
+              {project.desc[locale]}
+            </p>
+          </div>
+          {wide ? <div className="mt-10 h-px w-full bg-zinc-800" /> : null}
+        </div>
+      </div>
+    </article>
+  );
 }
 
-export function Portfolio({ locale }: PortfolioProps) {
+export function PortfolioGrid({
+  locale,
+  full = false,
+}: {
+  locale: Locale;
+  full?: boolean;
+}) {
+  const visibleProjects = full ? projects : projects.slice(0, 4);
+
+  return (
+    <div className="grid gap-x-10 gap-y-16 lg:grid-cols-12">
+      {visibleProjects.map((project, index) => (
+        <ProjectCard
+          key={project.title}
+          project={project}
+          index={index}
+          locale={locale}
+          full={full}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function Portfolio({ locale }: { locale: Locale }) {
   const t = useTranslations();
 
   return (
     <section
       id="portfolio"
       aria-labelledby="portfolio-heading"
-      className="py-16 sm:py-24"
+      className="border-t border-zinc-900 py-20 sm:py-28"
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 space-y-3">
-          <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
-            {t('sections.portfolio')}
-          </span>
-          <h2
-            id="portfolio-heading"
-            className="text-3xl font-semibold text-white sm:text-4xl"
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-light">
+              {t('sections.portfolio')}
+            </p>
+            <h2
+              id="portfolio-heading"
+              className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
+            >
+              {t('portfolio.all')}
+            </h2>
+          </div>
+          <Link
+            href={`/${locale}/portfolio` as Route}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-fit text-sm font-semibold text-brand-light underline decoration-brand/50 underline-offset-8 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
           >
-            {typedSiteContent.hero.secondaryCta[locale]}
-          </h2>
+            {t('portfolio.viewAll')} <span aria-hidden="true">→</span>
+          </Link>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2">
-          {typedSiteContent.portfolio.map((item) => {
-            const image = imageMap[item.title];
-            return (
-              <article
-                key={item.title}
-                className="flex h-full flex-col overflow-hidden rounded-3xl border border-zinc-800/60 bg-zinc-900/40 shadow-lg shadow-black/30"
-              >
-                {image ? (
-                  <div className="relative h-40 w-full overflow-hidden bg-zinc-900">
-                    <a
-                      href={item.site ?? item.doc}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Image
-                        src={image.src}
-                        alt={image.alt}
-                        fill
-                        sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover object-top brightness-50"
-                        priority={false}
-                      />
-                    </a>
-                  </div>
-                ) : null}
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                  <header className="space-y-2">
-                    <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                    <p className="text-sm text-zinc-300">{item.desc[locale]}</p>
-                  </header>
-                  <ul className="flex flex-wrap gap-2 text-xs text-brand-light">
-                    {item.tags.map((tag) => (
-                      <li
-                        key={tag}
-                        className="rounded-full border border-brand/30 px-3 py-1"
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                  <OutboundLink
-                    href={(item.doc ?? item.github ?? item.site) as Route}
-                    className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-                  >
-                    {item.doc
-                      ? t('portfolio.open')
-                      : item.github
-                        ? t('portfolio.github')
-                        : t('portfolio.website')}
-                    <span aria-hidden="true">→</span>
-                  </OutboundLink>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+        <PortfolioGrid locale={locale} />
       </div>
     </section>
   );

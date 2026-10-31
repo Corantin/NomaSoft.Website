@@ -10,7 +10,7 @@ import { parseFormData } from '@/lib/validators';
 
 export const runtime = 'nodejs';
 
-const brandName = siteContent.site?.name ?? 'NomaSoft';
+const brandName = siteContent.site?.name ?? 'NOMASOFT';
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>'"]/g, (character) => {

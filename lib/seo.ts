@@ -50,13 +50,14 @@ export function buildMetadata({
 }: BuildMetadataParams): Metadata {
   const canonical = new URL(path.replace(/^\/+/g, ''), siteUrl).toString();
   const descriptionText = description || defaultDescription[locale];
+  const routePath = path.startsWith(`/${locale}`) ? path.slice(locale.length + 1) : path;
 
   const alternates: Metadata['alternates'] = {
     canonical,
     languages: Object.fromEntries(
       locales.map((language) => [
         language,
-        new URL(`/${language}${path}`, siteUrl).toString(),
+        new URL(`/${language}${routePath}`, siteUrl).toString(),
       ]),
     ),
   };

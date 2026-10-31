@@ -159,7 +159,7 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-8 shadow-xl shadow-black/20"
+      className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 shadow-2xl shadow-black/20 sm:p-10"
       noValidate
     >
       <input type="hidden" name="locale" value={locale} />

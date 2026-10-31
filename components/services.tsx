@@ -25,27 +25,34 @@ export function Services({ locale }: ServicesProps) {
   const cta = t('sections.servicesCta');
 
   return (
-    <section id="services" aria-labelledby="services-heading" className="py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <section
+      id="services"
+      aria-labelledby="services-heading"
+      className="border-t border-zinc-900 bg-zinc-900/30 py-20 sm:py-28"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-2xl space-y-3">
-          <span className="text-sm font-semibold uppercase tracking-wide text-brand-light">
+          <span
+            id="services-heading"
+            className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-light"
+          >
             {t('sections.services')}
           </span>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid overflow-hidden rounded-2xl border border-zinc-800 md:grid-cols-2">
           {services.map((service) => {
             const Icon = iconMap[service.key] ?? Globe;
             return (
               <article
                 key={service.key}
-                className="group flex h-full flex-col justify-between rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 shadow-lg shadow-black/20 transition hover:-translate-y-1 hover:border-brand/60 hover:bg-zinc-900/70"
+                className="group flex h-full flex-col justify-between border-b border-zinc-800 bg-zinc-950/40 p-7 transition-colors last:border-b-0 hover:bg-zinc-900/70 md:border-r md:p-9 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-last-child(-n+2)]:border-b-0"
               >
                 <div className="space-y-4">
-                  <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-brand/20 bg-brand/10 text-brand-light">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </span>
                   <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-white">
+                    <h3 className="text-2xl font-semibold text-white">
                       {service.title[locale]}
                     </h3>
                     <p className="text-sm text-zinc-300">{service.summary[locale]}</p>
@@ -64,7 +71,7 @@ export function Services({ locale }: ServicesProps) {
                 </div>
                 <Link
                   href={`/${locale}/contact?service=${service.key}`}
-                  className="mt-6 inline-flex items-center justify-center rounded-full border border-brand/50 px-4 py-2 text-sm font-medium text-brand transition hover:bg-brand hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  className="mt-8 inline-flex w-fit items-center justify-center rounded-full border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-brand hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 >
                   {cta}
                 </Link>

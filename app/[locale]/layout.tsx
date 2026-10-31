@@ -1,46 +1,46 @@
-import type {Metadata} from 'next';
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages, getTranslations} from 'next-intl/server';
-import {notFound} from 'next/navigation';
-import type {ReactNode} from 'react';
+import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import type { ReactNode } from 'react';
 import Footer from '@/components/footer';
 import Navbar from '@/components/navbar';
-import {PlausibleAnalytics} from '@/components/plausible-analytics';
-import {LocaleLang} from '@/components/locale-lang';
+import { PlausibleAnalytics } from '@/components/plausible-analytics';
+import { LocaleLang } from '@/components/locale-lang';
 import siteContent from '@/content/site.json';
-import {buildMetadata} from '@/lib/seo';
-import {Locale, isLocale, locales} from '@/lib/i18n';
+import { buildMetadata } from '@/lib/seo';
+import { Locale, isLocale, locales } from '@/lib/i18n';
 
 export function generateStaticParams() {
-  return locales.map((locale) => ({locale}));
+  return locales.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({
-  params
+  params,
 }: {
-  params: {locale: string};
+  params: { locale: string };
 }): Promise<Metadata> {
-  const {locale} = params;
+  const { locale } = params;
   if (!isLocale(locale)) {
     notFound();
   }
 
-  const t = await getTranslations({locale, namespace: 'meta'});
+  const t = await getTranslations({ locale, namespace: 'meta' });
 
   return buildMetadata({
     locale,
     title: t('homeTitle'),
     description: t('homeDescription'),
-    path: `/${locale}`
+    path: `/${locale}`,
   });
 }
 
 export default async function LocaleLayout({
   children,
-  params
+  params,
 }: {
   children: ReactNode;
-  params: {locale: string};
+  params: { locale: string };
 }) {
   const locale = params.locale;
 
@@ -48,8 +48,8 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages({locale});
-  const navMessages = await getTranslations({locale, namespace: 'nav'});
+  const messages = await getMessages({ locale });
+  const navMessages = await getTranslations({ locale, namespace: 'nav' });
 
   const skipToContent = navMessages('skip');
 
@@ -57,7 +57,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale as Locale} messages={messages} timeZone="UTC">
       <LocaleLang locale={locale} />
       <PlausibleAnalytics />
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-zinc-950 via-zinc-950 to-zinc-900">
+      <div className="flex min-h-screen flex-col bg-zinc-950">
         <a
           href="#main-content"
           className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:rounded-md focus-visible:bg-zinc-50 focus-visible:px-3 focus-visible:py-2 focus-visible:text-sm focus-visible:font-medium focus-visible:text-zinc-900"

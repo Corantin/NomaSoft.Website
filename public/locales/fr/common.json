@@ -1,10 +1,12 @@
 {
   "meta": {
-    "homeTitle": "NomaSoft — Ingénierie logicielle axée automatisation",
+    "homeTitle": "NOMASOFT — Ingénierie logicielle axée automatisation",
     "homeDescription": "Des équipes produits agiles livrant Web, Mobile, Web3 et intégrations IA avec des résultats mesurables.",
-    "contactTitle": "Contactez NomaSoft",
-    "privacyTitle": "Politique de confidentialité — NomaSoft",
-    "termsTitle": "Conditions d'utilisation — NomaSoft"
+    "contactTitle": "Contactez NOMASOFT",
+    "privacyTitle": "Politique de confidentialité — NOMASOFT",
+    "termsTitle": "Conditions d'utilisation — NOMASOFT",
+    "portfolioTitle": "Réalisations — NOMASOFT",
+    "portfolioDescription": "Découvrez les projets NOMASOFT en Web3, véhicules électriques, commerce et immobilier."
   },
   "nav": {
     "skip": "Aller au contenu",
@@ -14,7 +16,10 @@
     "about": "À propos",
     "contact": "Contact",
     "privacy": "Confidentialité",
-    "terms": "Conditions"
+    "terms": "Conditions",
+    "mainLabel": "Navigation principale",
+    "mobileLabel": "Navigation mobile",
+    "menu": "Ouvrir le menu"
   },
   "hero": {
     "ctaPrimary": "Réserver un appel",
@@ -24,7 +29,7 @@
     "services": "Ce que nous réalisons",
     "process": "Notre méthode",
     "portfolio": "Réalisations",
-    "about": "À propos de NomaSoft",
+    "about": "À propos de NOMASOFT",
     "contact": "Discutons",
     "servicesCta": "Discuter du projet"
   },
@@ -34,11 +39,21 @@
   "portfolio": {
     "open": "Voir la documentation",
     "github": "Voir sur GitHub",
-    "website": "Visiter le site"
+    "website": "Visiter le site",
+    "viewAll": "Voir tous les projets",
+    "count": "{count} projets",
+    "explore": "Découvrir ci-dessous",
+    "all": "Tous les projets",
+    "summary": "Des produits concrets, une ingénierie pragmatique.",
+    "intro": "Découvrez les produits et plateformes que nous avons créés pour le Web, le Web3, l’automobile, le commerce et l’immobilier.",
+    "nextLabel": "La suite",
+    "nextTitle": "Vous avez un projet ambitieux ?",
+    "nextBody": "Parlons de ce que vous souhaitez construire.",
+    "visitProject": "Visiter {name}"
   },
   "about": {
     "lead": "Nous sommes un duo orienté automatisation livrant des produits résilients pour le Web3, le SaaS et le mobile.",
-    "body": "Les ingénieurs NomaSoft allient stratégie produit et exécution terrain. Nous conjuguons découverte rapide et livraison de niveau production pour que vos équipes se concentrent sur la croissance.",
+    "body": "Les ingénieurs NOMASOFT allient stratégie produit et exécution terrain. Nous conjuguons découverte rapide et livraison de niveau production pour que vos équipes se concentrent sur la croissance.",
     "stack": "Stack clé"
   },
   "contact": {
@@ -51,7 +66,7 @@
     "service": "Service ciblé",
     "servicePlaceholder": "Sélectionner un service",
     "file": "Joindre un brief (optionnel)",
-    "mailSubject": "Demande de contact NomaSoft",
+    "mailSubject": "Demande de contact NOMASOFT",
     "submit": "Envoyer",
     "success": "Merci ! Nous revenons vers vous très vite.",
     "error": "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
@@ -79,7 +94,7 @@
     "bot": "Soumission détectée comme spam."
   },
   "footer": {
-    "rights": "© {year} NomaSoft. Tous droits réservés."
+    "rights": "© {year} NOMASOFT. Tous droits réservés."
   },
   "language": {
     "label": "Langue",

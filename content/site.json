@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "NomaSoft",
+    "name": "NOMASOFT",
     "tagline": "Next-generation software engineering",
     "locales": [
       "en",
@@ -28,7 +28,7 @@
       "fr": "Réserver un appel"
     },
     "secondaryCta": {
-      "en": "See our work",
+      "en": "View our work",
       "fr": "Voir nos projets"
     }
   },
@@ -170,6 +170,19 @@
   ],
   "portfolio": [
     {
+      "title": "EV TrustSeal",
+      "desc": {
+        "en": "EV battery health reports and verifiable certificates powered by connected vehicle data.",
+        "fr": "Rapports sur l’état de santé des batteries de véhicules électriques et certificats vérifiables basés sur les données du véhicule connecté."
+      },
+      "tags": [
+        "Automotive",
+        "Next.js",
+        "Tesla API"
+      ],
+      "site": "https://evtrustseal.com/"
+    },
+    {
       "title": "Gardens",
       "desc": {
         "en": "Decentralized & democratic community fund management protocol.",
@@ -182,19 +195,6 @@
       ],
       "doc": "https://docs.gardens.fund/",
       "site": "https://app.gardens.fund/"
-    },
-    {
-      "title": "EV TrustSeal",
-      "desc": {
-        "en": "EV battery health reports and verifiable certificates powered by connected vehicle data.",
-        "fr": "Rapports sur l’état de santé des batteries de véhicules électriques et certificats vérifiables basés sur les données du véhicule connecté."
-      },
-      "tags": [
-        "Automotive",
-        "Next.js",
-        "Tesla API"
-      ],
-      "site": "https://evtrustseal.com/"
     },
     {
       "title": "1Hive Quests",
@@ -224,6 +224,18 @@
       ],
       "site": "https://oneway-catering.vercel.app/",
       "github": "https://github.com/Corantin/Oneway-Catering"
+    },
+    {
+      "title": "Deed3",
+      "desc": {
+        "en": "Tokenized Real Estate escrow platform",
+        "fr": "Plateforme d’entiercement immobilier tokenisé."
+      },
+      "tags": [
+        "Real Estate",
+        "Escrow",
+        "Web3"
+      ]
     }
   ]
 }
