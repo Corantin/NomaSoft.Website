@@ -1,7 +1,7 @@
 {
   "site": {
     "name": "NOMASOFT",
-    "tagline": "Next-generation software engineering",
+    "tagline": "Website design and development studio",
     "locales": [
       "en",
       "fr"
@@ -15,13 +15,17 @@
     }
   },
   "hero": {
+    "eyebrow": {
+      "en": "Website design & development",
+      "fr": "Design et développement web"
+    },
     "headline": {
-      "en": "Ship smarter software",
-      "fr": "Créez des solutions plus intelligentes"
+      "en": "Websites that stand out.",
+      "fr": "Des sites web qui marquent."
     },
     "subhead": {
-      "en": "Web, Mobile, Web3, and AI integration—built lean and scalable.",
-      "fr": "Web, Mobile, Web3 et IA—solutions agiles et évolutives."
+      "en": "We design and build distinctive websites and digital products for ambitious businesses.",
+      "fr": "Nous concevons et développons des sites web et des produits numériques distinctifs pour les entreprises ambitieuses."
     },
     "primaryCta": {
       "en": "Book a call",

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import siteContent from '@/content/site.json';
@@ -12,54 +13,64 @@ export function Hero({ locale }: HeroProps) {
 
   return (
     <section
-      className="relative overflow-hidden pb-20 pt-20 sm:pt-24 lg:pb-28 lg:pt-32"
+      className="relative isolate overflow-hidden pb-24 pt-20 sm:pt-28 lg:pb-36 lg:pt-32"
       aria-labelledby="hero-heading"
     >
-      <div className="pointer-events-none absolute -right-48 top-0 -z-10 h-[600px] w-[800px] rounded-full bg-brand/10 blur-[120px]" />
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8">
-        <aside className="hidden border-r border-zinc-800 pr-8 text-xs text-zinc-500 lg:col-span-2 lg:block">
-          <div className="space-y-5">
-            <p className="font-mono uppercase tracking-widest">
-              <span className="text-brand">{'//'}</span> NOMASOFT
-            </p>
-            <ol className="space-y-3 font-medium">
-              <li>01. Web</li>
-              <li>02. Mobile</li>
-              <li>03. Web3</li>
-              <li>04. AI</li>
-            </ol>
-          </div>
-        </aside>
-        <div className="lg:col-span-10 lg:pl-12">
-          <p className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-brand-light">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
-            {siteContent.site.tagline}
+      <div className="pointer-events-none absolute -right-32 top-8 -z-10 h-[38rem] w-[42rem] rounded-full bg-brand/15 blur-[120px]" />
+      <div className="mx-auto grid max-w-7xl items-center gap-16 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-14 lg:px-8">
+        <div className="relative z-10 max-w-2xl">
+          <p className="inline-flex items-center gap-3 text-sm font-semibold text-brand-light">
+            <span className="h-2 w-2 rounded-full bg-brand-light" aria-hidden="true" />
+            {hero.eyebrow[locale]}
           </p>
           <h1
             id="hero-heading"
-            className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tighter text-white sm:text-6xl lg:text-[5.5rem]"
+            className="mt-7 text-5xl font-bold leading-[1.02] tracking-[-0.055em] text-white sm:text-6xl lg:text-[4.75rem] xl:text-[5.25rem]"
           >
             {hero.headline[locale]}
-            <span className="text-brand-light">.</span>
           </h1>
-          <p className="mt-8 max-w-2xl text-xl leading-relaxed text-zinc-400 sm:text-2xl">
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-zinc-300 sm:text-xl">
             {hero.subhead[locale]}
           </p>
-          <div className="mt-12 flex flex-col items-start gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row">
             <a
               href={siteContent.site.contact.calendly}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-sm font-bold text-zinc-950 transition-transform hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+              className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-bold text-zinc-950 transition-transform hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
             >
               {hero.primaryCta[locale]}
             </a>
             <Link
               href={`/${locale}/portfolio` as Route}
-              className="inline-flex items-center justify-center rounded-full border border-zinc-800 px-8 py-4 text-sm font-semibold text-white transition-colors hover:border-zinc-500 hover:bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+              className="inline-flex items-center justify-center rounded-full border border-zinc-700 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:border-zinc-400 hover:bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
             >
               {hero.secondaryCta[locale]}
             </Link>
+          </div>
+        </div>
+        <div className="relative mx-auto w-full max-w-2xl lg:max-w-none">
+          <div className="pointer-events-none absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-brand/25 via-brand/5 to-transparent blur-2xl" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 shadow-2xl shadow-black/50 sm:rounded-3xl">
+            <Image
+              src="/images/portfolio/ev-trustseal.png"
+              alt="EV TrustSeal website and battery certificate preview"
+              width={1200}
+              height={630}
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              className="block h-auto w-full"
+              priority
+            />
+          </div>
+          <div className="absolute -bottom-14 -left-9 hidden w-[56%] overflow-hidden rounded-2xl border border-white/20 bg-zinc-900 shadow-2xl shadow-black/70 md:block lg:-left-14">
+            <Image
+              src="/images/portfolio/oneway-catering.png"
+              alt="Oneway Catering ordering website designed and built by NOMASOFT"
+              width={1525}
+              height={1016}
+              sizes="(min-width: 1024px) 30vw, 50vw"
+              className="block h-auto w-full"
+            />
           </div>
         </div>
       </div>

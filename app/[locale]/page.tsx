@@ -9,7 +9,6 @@ import { Services } from '@/components/services';
 import { getCaptchaClientConfig } from '@/lib/captcha';
 import { getHomeJsonLd } from '@/lib/schema';
 import { Locale, isLocale } from '@/lib/i18n';
-import siteContent from '@/content/site.json';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const locale = params.locale;
@@ -27,16 +26,6 @@ export default async function HomePage({ params }: { params: { locale: string } 
   return (
     <>
       <Hero locale={locale as Locale} />
-      <div
-        className="border-y border-zinc-900 px-4 py-5 sm:px-6 lg:px-8"
-        aria-label={locale === 'fr' ? 'Projets sélectionnés' : 'Selected projects'}
-      >
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 font-mono text-xs uppercase tracking-widest text-zinc-500">
-          {siteContent.portfolio.slice(0, 4).map((project) => (
-            <span key={project.title}>{project.title}</span>
-          ))}
-        </div>
-      </div>
       <Services locale={locale as Locale} />
       <Process locale={locale as Locale} />
       <Portfolio locale={locale as Locale} />

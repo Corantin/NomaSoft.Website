@@ -24,6 +24,7 @@ export interface SiteContent {
     social: { github: string };
   };
   hero: {
+    eyebrow: LocalizedString;
     headline: LocalizedString;
     subhead: LocalizedString;
     primaryCta: LocalizedString;
