@@ -1,56 +1,52 @@
-import Link from 'next/link';
-import siteContent from '@/content/site.json';
-import type { SiteContent } from '@/types/site-content';
-
-const typedSiteContent = siteContent as SiteContent;
-import { Locale } from '@/lib/i18n';
 import { useTranslations } from 'next-intl';
+import siteContent from '@/content/site.json';
+import { Locale } from '@/lib/i18n';
+import { ProcessTimeline } from './process-timeline';
 
-interface ProcessProps {
-  locale: Locale;
-}
-
-export function Process({ locale }: ProcessProps) {
+export function Process({ locale }: { locale: Locale }) {
   const t = useTranslations();
+  const stageKeys = ['discover', 'design', 'build', 'launch'] as const;
+
+  const steps = siteContent.process.map((step, index) => ({
+    title: step.title[locale],
+    description: step.desc[locale],
+    aside: t(`process.stages.${stageKeys[index]}.aside`),
+    artifact: t(`process.stages.${stageKeys[index]}.artifact`),
+  }));
 
   return (
-    <section id="process" aria-labelledby="process-heading" className="py-20 sm:py-28">
+    <section id="process" aria-labelledby="process-heading" className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl space-y-3">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-light">
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,0.7fr)] md:items-end md:gap-16">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-light">
               {t('sections.process')}
-            </span>
+            </p>
             <h2
               id="process-heading"
-              className="text-3xl font-bold tracking-tight text-white sm:text-4xl"
+              className="mt-5 max-w-2xl text-4xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl"
             >
-              {typedSiteContent.hero.subhead[locale]}
+              {t('process.heading')}
             </h2>
           </div>
-          <Link
-            href={`/${locale}/contact`}
-            className="inline-flex items-center justify-center rounded-full border border-brand/60 px-4 py-2 text-sm font-medium text-brand transition hover:bg-brand hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-          >
-            {t('process.cta')}
-          </Link>
+          <p className="max-w-md text-lg leading-relaxed text-zinc-400 md:pb-1">
+            {t('process.body')}
+          </p>
         </div>
-        <div className="grid gap-8 border-t border-zinc-800 pt-8 md:grid-cols-4">
-          {typedSiteContent.process.map((step, index) => (
-            <article
-              key={step.title.en}
-              className="border-l border-zinc-800 pl-5 md:border-l-0 md:pl-0"
-            >
-              <span className="font-mono text-xs font-semibold uppercase tracking-wide text-brand-light">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h3 className="mt-5 text-lg font-semibold text-white">
-                {step.title[locale]}
-              </h3>
-              <p className="mt-2 text-sm text-zinc-400">{step.desc[locale]}</p>
-            </article>
-          ))}
-        </div>
+
+        <ProcessTimeline
+          steps={steps}
+          copy={{
+            instruction: t('process.instruction'),
+            sliderLabel: t('process.sliderLabel'),
+            progressLabel: t('process.progressLabel'),
+            previewLabel: t('process.previewLabel'),
+            previewTitle: t('process.previewTitle'),
+            launchTitle: t('process.launchTitle'),
+            previewButton: t('process.previewButton'),
+            live: t('process.live'),
+          }}
+        />
       </div>
     </section>
   );

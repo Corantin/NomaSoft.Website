@@ -34,7 +34,34 @@
     "servicesCta": "Discuter du projet"
   },
   "process": {
-    "cta": "Découvrir l'accompagnement"
+    "heading": "Un chemin clair de l’idée au lancement.",
+    "body": "Vous échangez directement avec les personnes qui conçoivent et développent votre projet, à chaque étape.",
+    "instruction": "Faites glisser le curseur et voyez votre site prendre vie.",
+    "sliderLabel": "Explorer les étapes du projet",
+    "progressLabel": "Étape",
+    "previewLabel": "Votre futur site",
+    "previewTitle": "Une belle idée prend forme.",
+    "launchTitle": "Votre nouveau site est arrivé.",
+    "previewButton": "C'est parti",
+    "live": "En ligne !",
+    "stages": {
+      "discover": {
+        "aside": "On commence par les questions qui comptent vraiment.",
+        "artifact": "Le plan"
+      },
+      "design": {
+        "aside": "Le croquis sur un coin de table se fait beau.",
+        "artifact": "Le style"
+      },
+      "build": {
+        "aside": "Chaque pixel trouve sa place et sa mission.",
+        "artifact": "Le site"
+      },
+      "launch": {
+        "aside": "Sortez les mini confettis.",
+        "artifact": "La mise en ligne"
+      }
+    }
   },
   "portfolio": {
     "open": "Voir la documentation",

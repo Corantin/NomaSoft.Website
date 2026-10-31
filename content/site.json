@@ -137,8 +137,8 @@
         "fr": "Découverte"
       },
       "desc": {
-        "en": "Scope, risks, and success metrics.",
-        "fr": "Cadrage, risques, et succès."
+        "en": "We learn about your business, audience, and what the website needs to achieve.",
+        "fr": "Nous découvrons votre entreprise, votre public et les objectifs du site."
       }
     },
     {
@@ -147,8 +147,8 @@
         "fr": "Conception"
       },
       "desc": {
-        "en": "Flows, arch, and UI prototypes.",
-        "fr": "Flux, archi, et maquettes."
+        "en": "We shape the structure, visual direction, and details together.",
+        "fr": "Nous définissons ensemble la structure, la direction visuelle et les détails."
       }
     },
     {
@@ -157,8 +157,8 @@
         "fr": "Construction"
       },
       "desc": {
-        "en": "Iterative delivery and QA.",
-        "fr": "Livraisons itératives et QA."
+        "en": "We develop in clear stages and review the work with you.",
+        "fr": "Nous développons par étapes claires et examinons le travail avec vous."
       }
     },
     {
@@ -167,8 +167,8 @@
         "fr": "Lancement"
       },
       "desc": {
-        "en": "Ops, monitoring, and iteration.",
-        "fr": "Ops, monitoring, itération."
+        "en": "We prepare the release and keep refining what comes next.",
+        "fr": "Nous préparons la mise en ligne et affinons la suite."
       }
     }
   ],

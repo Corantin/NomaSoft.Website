@@ -27,14 +27,41 @@
   },
   "sections": {
     "services": "What we build",
-    "process": "Delivery process",
+    "process": "How we work",
     "portfolio": "Our projects",
     "about": "About NOMASOFT",
     "contact": "Let's talk",
     "servicesCta": "Discuss project"
   },
   "process": {
-    "cta": "Explore engagement"
+    "heading": "A clear path from idea to launch.",
+    "body": "You work directly with the people designing and building your project, with room to shape it at every stage.",
+    "instruction": "Drag the handle and watch your website come to life.",
+    "sliderLabel": "Explore the project timeline",
+    "progressLabel": "Stage",
+    "previewLabel": "Your future website",
+    "previewTitle": "Something good is taking shape.",
+    "launchTitle": "Your new website has arrived.",
+    "previewButton": "Let's go",
+    "live": "It's live!",
+    "stages": {
+      "discover": {
+        "aside": "We ask the awkwardly useful questions first.",
+        "artifact": "The plan"
+      },
+      "design": {
+        "aside": "The napkin sketch gets dressed up.",
+        "artifact": "The look"
+      },
+      "build": {
+        "aside": "Pixels meet their responsibilities.",
+        "artifact": "The site"
+      },
+      "launch": {
+        "aside": "Cue the tiny confetti cannon.",
+        "artifact": "The launch"
+      }
+    }
   },
   "portfolio": {
     "open": "See documentation",

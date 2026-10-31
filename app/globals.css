@@ -43,3 +43,21 @@ button {
 .prose p {
   @apply text-zinc-200;
 }
+
+@keyframes process-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .process-reveal {
+    animation: process-reveal 400ms ease-out both;
+  }
+}
