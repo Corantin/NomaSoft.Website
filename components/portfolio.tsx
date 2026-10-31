@@ -115,9 +115,6 @@ function ProjectCard({
                   className="inline-flex items-center rounded-sm hover:text-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
                 >
                   {project.title}
-                  <span aria-hidden="true" className="ml-2 text-brand-light">
-                    ↗
-                  </span>
                 </OutboundLink>
               ) : (
                 project.title
@@ -188,7 +185,7 @@ export function Portfolio({ locale }: { locale: Locale }) {
             rel="noopener noreferrer"
             className="w-fit text-sm font-semibold text-brand-light underline decoration-brand/50 underline-offset-8 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
           >
-            {t('portfolio.viewAll')} <span aria-hidden="true">→</span>
+            {t('portfolio.viewAll')}
           </Link>
         </div>
         <PortfolioGrid locale={locale} />

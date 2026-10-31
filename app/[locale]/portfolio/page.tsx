@@ -54,7 +54,7 @@ export default async function PortfolioPage({ params }: { params: { locale: stri
           </div>
           <div className="mt-16 flex items-center justify-between border-t border-zinc-800 pt-5 font-mono text-xs uppercase tracking-widest text-zinc-500">
             <span>{t('portfolio.count', { count: siteContent.portfolio.length })}</span>
-            <span>{t('portfolio.explore')} ↓</span>
+            <span>{t('portfolio.explore')}</span>
           </div>
         </div>
       </section>
@@ -108,10 +108,7 @@ export default async function PortfolioPage({ params }: { params: { locale: stri
             rel="noopener noreferrer"
             className="inline-flex w-fit items-center justify-center rounded-full bg-brand px-8 py-4 text-sm font-bold text-white transition-colors hover:bg-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
           >
-            {siteContent.hero.primaryCta[locale]}{' '}
-            <span aria-hidden="true" className="ml-4">
-              ↗
-            </span>
+            {siteContent.hero.primaryCta[locale]}
           </a>
         </div>
       </section>
