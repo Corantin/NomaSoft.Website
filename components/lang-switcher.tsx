@@ -5,7 +5,13 @@ import { createNavigation } from 'next-intl/navigation';
 import { useTransition } from 'react';
 import { languageCookieName, locales } from '@/lib/i18n';
 
-export function LangSwitcher({ label }: { label: string }) {
+export function LangSwitcher({
+  label,
+  variant = 'pill',
+}: {
+  label: string;
+  variant?: 'pill' | 'footer';
+}) {
   const navigation = createNavigation();
   const locale = useLocale();
   const pathname = navigation.usePathname();
@@ -21,6 +27,39 @@ export function LangSwitcher({ label }: { label: string }) {
       router.push(pathname, { locale: nextLocale });
     });
   };
+
+  if (variant === 'footer') {
+    return (
+      <div
+        role="group"
+        aria-label={label}
+        aria-busy={isPending}
+        className="flex items-center gap-5"
+      >
+        {(['fr', 'en'] as const).map((option, index) => (
+          <div key={option} className="flex items-center gap-5">
+            {index > 0 ? (
+              <span aria-hidden="true" className="text-zinc-800">
+                /
+              </span>
+            ) : null}
+            <button
+              type="button"
+              lang={option}
+              aria-pressed={locale === option}
+              disabled={isPending}
+              onClick={() => handleChange(option)}
+              className={`text-xs font-bold uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-light disabled:cursor-wait ${
+                locale === option ? 'text-white' : 'text-zinc-500 hover:text-zinc-200'
+              }`}
+            >
+              {option === 'fr' ? 'Français' : 'English'}
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div

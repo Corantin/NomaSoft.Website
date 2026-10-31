@@ -72,22 +72,35 @@
     }
   },
   "contact": {
-    "title": "Parlez-nous de votre projet",
-    "subtitle": "Réponse sous un jour ouvré.",
+    "title": "Engageons la conversation.",
+    "subtitle": "Nous répondons généralement sous un jour ouvré.",
     "name": "Nom",
+    "namePlaceholder": "Votre nom",
     "email": "Email",
+    "emailPlaceholder": "vous@exemple.com",
     "company": "Entreprise",
-    "message": "Comment pouvons-nous aider ?",
+    "message": "Message",
+    "messagePlaceholder": "Parlez-nous de votre projet",
     "service": "Service ciblé",
+    "serviceOptions": {
+      "web": "Design et développement web",
+      "mobile": "Expériences mobiles",
+      "web3": "Produits Web3",
+      "ai": "Intégration de l’IA"
+    },
     "servicePlaceholder": "Sélectionner un service",
     "file": "Joindre un brief (optionnel)",
     "mailSubject": "Demande de contact NOMASOFT",
-    "submit": "Envoyer",
+    "submit": "Envoyer le brief",
     "success": "Merci ! Nous revenons vers vous très vite.",
     "error": "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
     "validating": "Validation…",
     "sending": "Envoi…",
-    "lead": "Partagez votre contexte et vos contraintes, nous proposerons une feuille de route."
+    "lead": "Vous avez un projet ambitieux en tête ? Nous vous aiderons à définir la prochaine étape. Réservez un appel ou envoyez-nous votre brief.",
+    "eyebrow": "Parlons-en",
+    "bookCall": "Réserver un appel découverte",
+    "bookCallDetail": "Choisissez un créneau qui vous convient",
+    "emailDirect": "Nous écrire directement"
   },
   "validation": {
     "name": {
@@ -109,7 +122,12 @@
     "bot": "Soumission détectée comme spam."
   },
   "footer": {
-    "rights": "© {year} NOMASOFT. Tous droits réservés."
+    "rights": "© {year} NOMASOFT. Tous droits réservés.",
+    "tagline": "Des produits numériques distinctifs, créés avec soin.",
+    "connect": "Contact",
+    "explore": "Explorer",
+    "legal": "Mentions légales",
+    "email": "Courriel"
   },
   "language": {
     "label": "Langue",
