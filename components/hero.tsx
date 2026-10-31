@@ -64,10 +64,10 @@ export function Hero({ locale }: HeroProps) {
           </div>
           <div className="absolute -bottom-14 -left-9 hidden w-[56%] overflow-hidden rounded-2xl border border-white/20 bg-zinc-900 shadow-2xl shadow-black/70 md:block lg:-left-14">
             <Image
-              src="/images/portfolio/oneway-catering.png"
-              alt="Oneway Catering ordering website designed and built by NOMASOFT"
-              width={1525}
-              height={1016}
+              src="/images/portfolio/gardens.png"
+              alt="Gardens community governance website preview"
+              width={1414}
+              height={821}
               sizes="(min-width: 1024px) 30vw, 50vw"
               className="block h-auto w-full"
             />
