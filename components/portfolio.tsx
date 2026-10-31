@@ -23,9 +23,9 @@ const imageMap: Record<string, { src: string; alt: string; aspectRatio: number; 
     aspectRatio: 1414 / 821,
   },
   '1Hive Quests': {
-    src: '/images/portfolio/quests.png',
-    alt: '1Hive Quests overview',
-    aspectRatio: 1519 / 1019,
+    src: '/images/portfolio/quests-bounties.png',
+    alt: '1Hive Quests open bounties dashboard',
+    aspectRatio: 2556 / 1318,
   },
   'Oneway Catering': {
     src: '/images/portfolio/oneway-catering.png',
