@@ -1,4 +1,24 @@
 {
+  "card": {
+    "metaTitle": "Digital business card",
+    "metaDescription": "Connect with NomaSoft, software engineering studio. Save our contact, share the card, or scan the QR code.",
+    "eyebrow": "NomaSoft / Digital card",
+    "title": "A better way to stay in touch.",
+    "intro": "Software engineering with a human connection. Reach us in one tap, save our details, or share this card with someone new.",
+    "flip": "Flip the card to see the details",
+    "flipBack": "Flip the card to see the logo",
+    "call": "Call us",
+    "email": "Email us",
+    "website": "Visit our website",
+    "linkedin": "LinkedIn",
+    "save": "Save contact",
+    "share": "Share card",
+    "copied": "Card link copied to clipboard.",
+    "shareError": "Sharing is unavailable in this browser. Use the link below.",
+    "qrTitle": "Take this card with you",
+    "qrDescription": "Scan this code to open the permanent card link on any device.",
+    "permanent": "Permanent link"
+  },
   "meta": {
     "homeTitle": "Website design and development",
     "homeDescription": "Distinctive websites and digital products designed and built for ambitious businesses.",

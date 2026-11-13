@@ -55,6 +55,9 @@ export default function Footer({ locale, site }: FooterProps) {
               <Link href={`/${locale}/portfolio`} className="hover:text-white">
                 {t('nav.portfolio')}
               </Link>
+              <Link href={`/${locale}/card`} className="hover:text-white">
+                {t('card.metaTitle')}
+              </Link>
             </div>
             <div className="flex flex-col gap-5">
               <span className="text-xs font-semibold uppercase tracking-widest text-zinc-600">

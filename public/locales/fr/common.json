@@ -1,4 +1,24 @@
 {
+  "card": {
+    "metaTitle": "Carte professionnelle numérique",
+    "metaDescription": "Communiquez avec NomaSoft, studio de génie logiciel. Enregistrez nos coordonnées, partagez la carte ou scannez le code QR.",
+    "eyebrow": "NomaSoft / Carte numérique",
+    "title": "Gardons le contact.",
+    "intro": "Du génie logiciel et des échanges humains. Contactez-nous en un geste, enregistrez nos coordonnées ou partagez cette carte.",
+    "flip": "Retourner la carte pour voir les coordonnées",
+    "flipBack": "Retourner la carte pour voir le logo",
+    "call": "Nous appeler",
+    "email": "Nous écrire",
+    "website": "Visiter notre site",
+    "linkedin": "LinkedIn",
+    "save": "Enregistrer le contact",
+    "share": "Partager la carte",
+    "copied": "Lien de la carte copié.",
+    "shareError": "Le partage n’est pas disponible dans ce navigateur. Utilisez le lien ci-dessous.",
+    "qrTitle": "Emportez cette carte",
+    "qrDescription": "Scannez ce code pour ouvrir le lien permanent de la carte sur tout appareil.",
+    "permanent": "Lien permanent"
+  },
   "meta": {
     "homeTitle": "Design et développement web",
     "homeDescription": "Des sites web et des produits numériques distinctifs conçus et développés pour les entreprises ambitieuses.",
