@@ -59,14 +59,12 @@ export default function Navbar({ locale, site }: Props) {
           <div className="hidden sm:block">
             <LangSwitcher label={languageLabel} />
           </div>
-          <a
-            href={site.site.contact.calendly}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href={`/${locale}/contact`}
             className="rounded-full bg-brand px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:px-5"
           >
             {t('contact')}
-          </a>
+          </Link>
           <details className="group relative md:hidden">
             <summary
               className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border border-zinc-700 text-zinc-200 marker:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"

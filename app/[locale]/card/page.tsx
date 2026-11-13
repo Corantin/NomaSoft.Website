@@ -5,6 +5,7 @@ import { CardExperience } from '@/components/card-experience';
 import { companyCard } from '@/lib/card';
 import { isLocale } from '@/lib/i18n';
 import { buildMetadata } from '@/lib/seo';
+import { getWalletAvailability } from '@/lib/wallet/config';
 
 export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
   const { locale } = params;
@@ -24,7 +25,7 @@ export default async function CardPage({ params }: { params: { locale: string } 
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'card' });
 
-  return <CardExperience profile={companyCard} labels={{
+  return <CardExperience profile={companyCard} wallet={getWalletAvailability()} labels={{
     eyebrow: t('eyebrow'), title: t('title'), intro: t('intro'),
     flip: t('flip'), flipBack: t('flipBack'),
     call: t('call'), email: t('email'), website: t('website'),
@@ -32,5 +33,6 @@ export default async function CardPage({ params }: { params: { locale: string } 
     copied: t('copied'), shareError: t('shareError'),
     qrTitle: t('qrTitle'), qrDescription: t('qrDescription'),
     permanent: t('permanent'),
+    appleWallet: t('appleWallet'), googleWallet: t('googleWallet'),
   }} />;
 }

@@ -89,6 +89,34 @@ Deploy to Vercel:
 
 Vercel automatically handles image optimization and edge middleware for locale routing.
 
+### Digital card and Wallet passes
+
+The bilingual card lives at `/card` (redirecting to `/en/card` or `/fr/card`). Its
+vCard download works without credentials. Wallet buttons appear only when the
+corresponding server configuration is complete.
+
+For Apple Wallet, create a Pass Type ID and Pass Type ID certificate in the Apple
+Developer account. Export the certificate and its private key as PEM, and obtain
+the Apple WWDR intermediate certificate. Base64-encode each PEM file and set
+`APPLE_WALLET_PASS_TYPE_ID`, `APPLE_WALLET_TEAM_ID`,
+`APPLE_WALLET_SIGNER_CERT_B64`, `APPLE_WALLET_SIGNER_KEY_B64`, and
+`APPLE_WALLET_WWDR_CERT_B64` as server-only environment variables. Set
+`APPLE_WALLET_SIGNER_KEY_PASSPHRASE` if the key is encrypted. The Apple route
+signs a `.pkpass` with the branded images in `wallet/assets/`.
+
+For Google Wallet, create a Wallet issuer account, authorize a Google Cloud
+service account in that issuer, and enable the Wallet API. Base64-encode the
+service account JSON and set `GOOGLE_WALLET_ISSUER_ID` and
+`GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_B64` as server-only environment variables.
+Run `node --env-file=.env scripts/setup-google-wallet.mjs` from a machine with
+those variables configured. This creates or verifies the shared generic class
+and object. After testing the save link and obtaining Google publishing access,
+set `GOOGLE_WALLET_READY=true` and redeploy. The production button then signs
+a save link that references that shared object.
+
+Keep all certificates, private keys, and service account JSON out of Git and
+client-side variables. The pass routes return HTTP 503 while unconfigured.
+
 ### Testing
 
 Run the Playwright suite locally:

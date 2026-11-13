@@ -17,7 +17,9 @@
     "shareError": "Sharing is unavailable in this browser. Use the link below.",
     "qrTitle": "Take this card with you",
     "qrDescription": "Scan this code to open the permanent card link on any device.",
-    "permanent": "Permanent link"
+    "permanent": "Permanent link",
+    "appleWallet": "Add to Apple Wallet",
+    "googleWallet": "Add to Google Wallet"
   },
   "meta": {
     "homeTitle": "Website design and development",

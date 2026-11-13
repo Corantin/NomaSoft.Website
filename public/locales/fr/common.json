@@ -17,7 +17,9 @@
     "shareError": "Le partage n’est pas disponible dans ce navigateur. Utilisez le lien ci-dessous.",
     "qrTitle": "Emportez cette carte",
     "qrDescription": "Scannez ce code pour ouvrir le lien permanent de la carte sur tout appareil.",
-    "permanent": "Lien permanent"
+    "permanent": "Lien permanent",
+    "appleWallet": "Ajouter à Apple Wallet",
+    "googleWallet": "Ajouter à Google Wallet"
   },
   "meta": {
     "homeTitle": "Design et développement web",

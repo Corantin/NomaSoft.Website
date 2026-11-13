@@ -1,13 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowUpRight, Download, Globe2, Linkedin, Mail, Phone, Share2, RotateCcw } from 'lucide-react';
+import { ArrowUpRight, Download, Globe2, Linkedin, Mail, Phone, Share2, RotateCcw, Wallet } from 'lucide-react';
 import { useState } from 'react';
 import type { CardProfile } from '@/lib/card';
 
-type Labels = Record<'eyebrow' | 'title' | 'intro' | 'flip' | 'flipBack' | 'call' | 'email' | 'website' | 'linkedin' | 'save' | 'share' | 'copied' | 'shareError' | 'qrTitle' | 'qrDescription' | 'permanent', string>;
+type Labels = Record<'eyebrow' | 'title' | 'intro' | 'flip' | 'flipBack' | 'call' | 'email' | 'website' | 'linkedin' | 'save' | 'share' | 'copied' | 'shareError' | 'qrTitle' | 'qrDescription' | 'permanent' | 'appleWallet' | 'googleWallet', string>;
 
-export function CardExperience({ profile, labels }: { profile: CardProfile; labels: Labels }) {
+export function CardExperience({ profile, labels, wallet }: { profile: CardProfile; labels: Labels; wallet: { apple: boolean; google: boolean } }) {
   const [flipped, setFlipped] = useState(false);
   const [shareStatus, setShareStatus] = useState('');
 
@@ -90,6 +90,12 @@ export function CardExperience({ profile, labels }: { profile: CardProfile; labe
               <a href={profile.vcardPath} download={`${profile.name}.vcf`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-4 text-center text-sm font-semibold text-black transition hover:bg-zinc-200"><Download aria-hidden="true" className="h-4 w-4" />{labels.save}</a>
               <button type="button" onClick={share} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-zinc-600 px-4 text-sm font-semibold text-white transition hover:border-white hover:bg-zinc-800"><Share2 aria-hidden="true" className="h-4 w-4" />{labels.share}</button>
             </div>
+            {wallet.apple || wallet.google ? (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {wallet.apple ? <a href="/card/wallet/apple" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-zinc-600 px-4 text-center text-sm font-semibold text-white transition hover:border-white hover:bg-zinc-800"><Wallet aria-hidden="true" className="h-4 w-4" />{labels.appleWallet}</a> : null}
+                {wallet.google ? <a href="/card/wallet/google" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-zinc-600 px-4 text-center text-sm font-semibold text-white transition hover:border-white hover:bg-zinc-800"><Wallet aria-hidden="true" className="h-4 w-4" />{labels.googleWallet}</a> : null}
+              </div>
+            ) : null}
             <p role="status" aria-live="polite" className="mt-3 min-h-5 text-center text-xs text-zinc-300">{shareStatus}</p>
           </div>
         </div>

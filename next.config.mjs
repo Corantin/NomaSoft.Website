@@ -53,6 +53,10 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   experimental: {
     typedRoutes: true,
+    serverComponentsExternalPackages: ['passkit-generator'],
+    outputFileTracingIncludes: {
+      '/card/wallet/apple': ['./wallet/assets/*'],
+    },
   },
   images: {
     formats: ['image/avif', 'image/webp'],
