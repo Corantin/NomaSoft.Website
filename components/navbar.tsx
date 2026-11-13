@@ -60,7 +60,7 @@ export default function Navbar({ locale, site }: Props) {
             <LangSwitcher label={languageLabel} />
           </div>
           <Link
-            href={`/${locale}/contact`}
+            href="/contact"
             className="rounded-full bg-brand px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-brand-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:px-5"
           >
             {t('contact')}
