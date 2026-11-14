@@ -50,7 +50,10 @@ async function getOrCreate(kind, id, body) {
   const headers = { Authorization: `Bearer ${accessToken}` };
   const existing = await fetch(url, { headers });
   if (existing.ok) return { created: false, value: await existing.json() };
-  if (existing.status !== 404) throw new Error(`Reading ${kind} failed (${existing.status}).`);
+  if (existing.status !== 404) {
+    const message = await existing.text();
+    throw new Error(`Reading ${kind} failed (${existing.status}): ${message.slice(0, 500)}`);
+  }
 
   const created = await fetch(`${api}/${kind}`, {
     method: 'POST',
@@ -68,8 +71,8 @@ const passClass = await getOrCreate('genericClass', classId, {
   id: classId,
   multipleDevicesAndHoldersAllowedStatus: 'MULTIPLE_HOLDERS',
 });
-if (passClass.value.multipleDevicesAndHoldersAllowedStatus !== 'MULTIPLE_HOLDERS') {
-  throw new Error('The existing class must allow MULTIPLE_HOLDERS for a shared business card.');
+if (!['MULTIPLE_HOLDERS', 'multipleHolders'].includes(passClass.value.multipleDevicesAndHoldersAllowedStatus)) {
+  throw new Error(`The existing class must allow MULTIPLE_HOLDERS for a shared business card (current: ${passClass.value.multipleDevicesAndHoldersAllowedStatus ?? 'unspecified'}).`);
 }
 
 const passObject = await getOrCreate('genericObject', objectId, {
@@ -87,7 +90,7 @@ const passObject = await getOrCreate('genericObject', objectId, {
   barcode: { type: 'QR_CODE', value: 'https://nomasoft.dev/card', alternateText: 'nomasoft.dev/card' },
   textModulesData: [
     { id: 'phone', header: 'Phone', body: '514-298-7682' },
-    { id: 'email', header: 'Email', body: 'contact@nomasoft.dev' },
+    { id: 'email', header: 'Email', body: 'team@nomasoft.dev' },
     { id: 'website', header: 'Website', body: 'nomasoft.dev' },
   ],
   linksModuleData: {
@@ -99,6 +102,31 @@ const passObject = await getOrCreate('genericObject', objectId, {
 });
 if (passObject.value.classId !== classId || passObject.value.barcode?.value !== 'https://nomasoft.dev/card') {
   throw new Error('The existing object does not match the NomaSoft card.');
+}
+
+const email = 'team@nomasoft.dev';
+const currentEmail = passObject.value.textModulesData?.find((item) => item.id === 'email')?.body;
+if (currentEmail !== email) {
+  const textModulesData = [...(passObject.value.textModulesData ?? [])];
+  const emailIndex = textModulesData.findIndex((item) => item.id === 'email');
+  const emailModule = { id: 'email', header: 'Email', body: email };
+  if (emailIndex === -1) textModulesData.push(emailModule);
+  else textModulesData[emailIndex] = { ...textModulesData[emailIndex], body: email };
+
+  const updated = await fetch(`${api}/genericObject/${encodeURIComponent(objectId)}`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ textModulesData }),
+  });
+  if (!updated.ok) {
+    const message = await updated.text();
+    throw new Error(`Updating Google Wallet email failed (${updated.status}): ${message.slice(0, 500)}`);
+  }
+  const result = await updated.json();
+  if (result.textModulesData?.find((item) => item.id === 'email')?.body !== email) {
+    throw new Error('Google Wallet did not confirm the updated email address.');
+  }
+  console.log(`Google Wallet object email updated: ${email}`);
 }
 
 console.log(`Google Wallet class ${passClass.created ? 'created' : 'verified'}: ${classId}`);

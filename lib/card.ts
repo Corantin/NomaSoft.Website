@@ -20,7 +20,7 @@ export const companyCard: CardProfile = {
   role: 'Software Engineering',
   phone: '+15142987682',
   phoneDisplay: '514-298-7682',
-  email: 'contact@nomasoft.dev',
+  email: 'team@nomasoft.dev',
   website: 'https://nomasoft.dev',
   websiteDisplay: 'nomasoft.dev',
   url: 'https://nomasoft.dev/card',
