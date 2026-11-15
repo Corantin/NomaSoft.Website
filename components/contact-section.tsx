@@ -1,4 +1,4 @@
-import { CalendarDays, Mail } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, Mail } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import siteContent from '@/content/site.json';
 import type { CaptchaClientConfig } from '@/lib/captcha';
@@ -41,24 +41,25 @@ export async function ContactSection({
           <p className="mt-9 max-w-lg text-lg leading-relaxed text-zinc-400 sm:text-xl">
             {t('lead')}
           </p>
-          <div className="mt-12 space-y-6">
+          <div className="mt-12 max-w-lg space-y-6">
             <a
               href={siteContent.site.contact.calendly}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex w-fit items-center gap-4 rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-light"
+              className="group flex min-h-28 w-full items-center gap-4 rounded-2xl bg-brand px-5 py-5 shadow-lg shadow-brand/20 transition-colors hover:bg-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-light sm:gap-5 sm:px-6 motion-reduce:transition-none"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-zinc-950 transition-transform group-hover:scale-105 motion-reduce:transition-none">
-                <CalendarDays className="h-5 w-5" aria-hidden="true" />
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-brand-dark">
+                <CalendarDays className="h-6 w-6" aria-hidden="true" />
               </span>
-              <span>
-                <span className="block text-sm font-semibold text-white">
+              <span className="min-w-0 flex-1">
+                <span className="block text-base font-bold text-white sm:text-lg">
                   {t('bookCall')}
                 </span>
-                <span className="mt-1 block text-sm text-zinc-500">
+                <span className="mt-1 block text-sm text-white/90">
                   {t('bookCallDetail')}
                 </span>
               </span>
+              <ArrowUpRight className="h-6 w-6 shrink-0 text-white" aria-hidden="true" />
             </a>
             <a
               href={`mailto:${siteContent.site.contact.email}`}
