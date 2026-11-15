@@ -1,10 +1,17 @@
 import { Buffer } from 'node:buffer';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { createTranslator } from 'next-intl';
 import { ZodError } from 'zod';
 import siteContent from '@/content/site.json';
-import { verifyCaptcha } from '@/lib/captcha';
+import { getCaptchaConfig, verifyCaptcha } from '@/lib/captcha';
+import {
+  CAPTCHA_SESSION_COOKIE,
+  CAPTCHA_SESSION_MAX_AGE,
+  CONTACT_SUBMISSION_COOKIE,
+  createCaptchaSession,
+  isCaptchaSessionValid,
+} from '@/lib/captcha-session';
 import { Locale, defaultLocale, isLocale } from '@/lib/i18n';
 import { parseFormData } from '@/lib/validators';
 
@@ -187,7 +194,55 @@ async function appendToSheet(data: Record<string, unknown>) {
   }
 }
 
-export async function POST(request: Request) {
+function isChallengeRequired(request: NextRequest) {
+  const config = getCaptchaConfig();
+  if (!config) return false;
+  const submitted = isCaptchaSessionValid(
+    request.cookies.get(CONTACT_SUBMISSION_COOKIE)?.value,
+    config,
+    'submitted',
+  );
+  const verified = isCaptchaSessionValid(
+    request.cookies.get(CAPTCHA_SESSION_COOKIE)?.value,
+    config,
+    'human',
+  );
+  return submitted && !verified;
+}
+
+export async function GET(request: NextRequest) {
+  return NextResponse.json(
+    { challengeRequired: isChallengeRequired(request) },
+    { headers: { 'Cache-Control': 'private, no-store' } },
+  );
+}
+
+export async function POST(request: NextRequest) {
+  let newCaptchaSession: string | undefined;
+  let newSubmissionSession: string | undefined;
+
+  const respond = (response: NextResponse) => {
+    if (newSubmissionSession) {
+      response.cookies.set(CONTACT_SUBMISSION_COOKIE, newSubmissionSession, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/api/contact',
+        maxAge: CAPTCHA_SESSION_MAX_AGE,
+      });
+    }
+    if (newCaptchaSession) {
+      response.cookies.set(CAPTCHA_SESSION_COOKIE, newCaptchaSession, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/api/contact',
+        maxAge: CAPTCHA_SESSION_MAX_AGE,
+      });
+    }
+    return response;
+  };
+
   try {
     const form = await request.formData();
     const localeParam = form.get('locale');
@@ -199,9 +254,11 @@ export async function POST(request: Request) {
     const translator = createTranslator({ locale, messages });
     const parsed = parseFormData(form, (key) => translator(key));
 
-    const captchaValid = await verifyCaptcha(parsed.token);
-    if (!captchaValid) {
-      return NextResponse.json({ error: 'captcha_failed' }, { status: 400 });
+    const config = getCaptchaConfig();
+    if (config && isChallengeRequired(request)) {
+      const captchaValid = await verifyCaptcha(parsed.token);
+      if (captchaValid) newCaptchaSession = createCaptchaSession(config, 'human');
+      else return NextResponse.json({ error: 'captcha_failed' }, { status: 400 });
     }
 
     const { file, token, honeypot, ...rest } = parsed;
@@ -223,6 +280,13 @@ export async function POST(request: Request) {
       serviceLabel,
       attachment,
     });
+    if (config && !isCaptchaSessionValid(
+      request.cookies.get(CONTACT_SUBMISSION_COOKIE)?.value,
+      config,
+      'submitted',
+    )) {
+      newSubmissionSession = createCaptchaSession(config, 'submitted');
+    }
     await appendToSheet({
       ...rest,
       service: serviceLabel,
@@ -231,7 +295,7 @@ export async function POST(request: Request) {
       receivedAt: new Date().toISOString(),
     });
 
-    return NextResponse.json({ ok: true });
+    return respond(NextResponse.json({ ok: true }));
   } catch (error) {
     if (error instanceof ZodError) {
       const fieldErrors: Record<string, string> = {};
@@ -241,34 +305,34 @@ export async function POST(request: Request) {
           fieldErrors[field] = issue.message;
         }
       }
-      return NextResponse.json(
+      return respond(NextResponse.json(
         { error: 'validation_error', errors: fieldErrors },
         { status: 422 },
-      );
+      ));
     }
 
     if (error instanceof Error) {
       switch (error.message) {
         case 'contact_recipient_missing':
-          return NextResponse.json(
+          return respond(NextResponse.json(
             { error: 'contact_recipient_missing' },
             { status: 500 },
-          );
+          ));
         case 'mail_provider_not_configured':
-          return NextResponse.json(
+          return respond(NextResponse.json(
             { error: 'mail_provider_not_configured' },
             { status: 500 },
-          );
+          ));
         case 'resend_request_failed':
-          return NextResponse.json({ error: 'email_failed' }, { status: 502 });
+          return respond(NextResponse.json({ error: 'email_failed' }, { status: 502 }));
         default:
           break;
       }
       console.error('Contact form error', error);
-      return NextResponse.json({ error: 'invalid_request' }, { status: 500 });
+      return respond(NextResponse.json({ error: 'invalid_request' }, { status: 500 }));
     }
 
     console.error('Unknown contact form error', error);
-    return NextResponse.json({ error: 'invalid_request' }, { status: 500 });
+    return respond(NextResponse.json({ error: 'invalid_request' }, { status: 500 }));
   }
 }

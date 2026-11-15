@@ -32,7 +32,7 @@ Copy `.env.example` to `.env.local` and fill in the values that apply to your de
 - `CONTACT_FROM_EMAIL`: Optional default "from" address if different from the recipient
 - `RESEND_API_KEY` or `SMTP_*`: Configure at least one mail provider
 - `RESEND_FROM_EMAIL`: Verified sender when using Resend (falls back to `CONTACT_FROM_EMAIL`)
-- `HCAPTCHA_SECRET`/`NEXT_PUBLIC_HCAPTCHA_SITE_KEY` or `TURNSTILE_SECRET`/`NEXT_PUBLIC_TURNSTILE_SITE_KEY`: Enable bot protection (set both the secret and site key for a provider to activate verification)
+- `HCAPTCHA_SECRET`/`NEXT_PUBLIC_HCAPTCHA_SITE_KEY` or `TURNSTILE_SECRET`/`NEXT_PUBLIC_TURNSTILE_SITE_KEY`: Enable bot protection (set both the secret and site key for a provider to activate verification). The first successful contact submission in a browser skips the challenge. Another submission within 24 hours requires a check, then successful human verification is remembered in a signed, HttpOnly cookie for 24 hours. hCaptcha challenge difficulty is configured on the sitekey in the hCaptcha dashboard; changing the secret does not adjust it.
 - `SHEET_WEBHOOK_URL`: Optional Google Sheets webhook to append new submissions
 
 ### Commands

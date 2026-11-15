@@ -131,7 +131,15 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
 
     try {
       let verifiedToken = parsed.data.token;
-      if (captchaType === 'hcaptcha') {
+      let challengeRequired = Boolean(captchaType);
+      if (captchaType) {
+        const statusResponse = await fetch('/api/contact', { cache: 'no-store' });
+        if (statusResponse.ok) {
+          const status = (await statusResponse.json()) as { challengeRequired?: boolean };
+          challengeRequired = status.challengeRequired === true;
+        }
+      }
+      if (captchaType === 'hcaptcha' && challengeRequired) {
         if (!window.hcaptcha?.execute) {
           throw new Error('Captcha is not ready');
         }

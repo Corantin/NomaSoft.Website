@@ -10,7 +10,7 @@ interface CaptchaEnv {
 const HCAPTCHA_DEV_SITE_KEY = '10000000-ffff-ffff-ffff-000000000001';
 const HCAPTCHA_DEV_SECRET = '0x0000000000000000000000000000000000000000';
 
-interface CaptchaConfig {
+export interface CaptchaConfig {
   type: CaptchaProvider;
   siteKey: string;
   secret: string;
@@ -54,7 +54,7 @@ function logPartialConfiguration(env: CaptchaEnv) {
   }
 }
 
-function getCaptchaConfig(): CaptchaConfig | null {
+export function getCaptchaConfig(): CaptchaConfig | null {
   const env = readCaptchaEnv();
 
   if (env.turnstileSecret && env.turnstileSiteKey) {
@@ -100,14 +100,17 @@ export async function verifyCaptcha(token: string | undefined): Promise<boolean>
   }
 
   if (config.type === 'hcaptcha') {
-    const response = await fetch('https://hcaptcha.com/siteverify', {
+    const response = await fetch('https://api.hcaptcha.com/siteverify', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: new URLSearchParams({
         secret: config.secret,
-        response: token
-      })
+        response: token,
+        sitekey: config.siteKey
+      }),
+      cache: 'no-store'
     });
+    if (!response.ok) return false;
     const result = (await response.json()) as {success: boolean};
     return result.success;
   }
@@ -118,8 +121,10 @@ export async function verifyCaptcha(token: string | undefined): Promise<boolean>
     body: JSON.stringify({
       secret: config.secret,
       response: token
-    })
+    }),
+    cache: 'no-store'
   });
+  if (!response.ok) return false;
   const result = (await response.json()) as {success: boolean};
   return result.success;
 }
