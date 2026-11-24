@@ -210,15 +210,15 @@ export default function Workspace() {
   const [dragged, setDragged] = useState('');
   const [target, setTarget] = useState('');
   const [move, setMove] = useState<Draft | null>(null);
-  function beginMove(id: string, stage?: Engagement['stage']) {
+  function beginMove(id: string) {
     const deal = deals.find((d) => d.id === id);
     const customer = clients.find((c) => c.id === deal?.customerId);
-    if (!board || !deal || !customer || busy || stage === deal.stage) return;
+    if (!board || !deal || !customer || busy) return;
     setError('');
     setMove({
       client: customer,
       version: board.version,
-      deal: { ...deal, stage: stage ?? deal.stage },
+      deal: { ...deal },
     });
   }
   const updateProgress = useCallback(
@@ -432,10 +432,16 @@ export default function Workspace() {
                     }}
                     onDrop={(e) => {
                       e.preventDefault();
-                      const id = e.dataTransfer.getData('text/plain') || dragged;
-                      beginMove(id, stage);
+                      const deal = deals.find((d) => d.id === dragged);
                       setDragged('');
                       setTarget('');
+                      if (!deal || deal.stage === stage || busy) return;
+                      void request({
+                        action: 'move',
+                        engagementId: deal.id,
+                        stage,
+                        version: board.version,
+                      });
                     }}
                   >
                     <h2>
