@@ -135,3 +135,14 @@ CI (`.github/workflows/ci.yml`) runs linting, type-checking, and `next build` on
 - Metadata and Open Graph tags are localized per page.
 - JSON-LD defines Organization, Service, CreativeWork, WebSite, and Breadcrumb schemas.
 - CSP, HSTS, Referrer-Policy, Permissions-Policy, and X-Content-Type-Options headers are configured in `next.config.ts`.
+
+### Customer workspace
+
+Open `/crm` to reach the workspace sign-in form and sign in as `corantin` or `kafan` with the corresponding server-side password in `.env.example`. Configure these credentials on the deployment and use HTTPS. Sessions last 12 hours. Sign out from the workspace navigation. Rotating a teammate’s password invalidates their existing sessions.
+
+To connect the NomaSoft hours workbook:
+
+1. Open the workbook in Google Sheets, select **Extensions → Apps Script**, and add the code in `scripts/crm/Code.gs` as a new script file. If the workbook already serves another web app with a `doPost` handler, use a separate Apps Script project and set its script property `BOOK_ID` to the workbook ID before setup.
+2. Enable **Google Sheets API** under **Services**. Set script property `CRM_SECRET` to a long random secret, then run `setupCRM` once. It adds dedicated CRM tabs and preserves the existing hours tabs. Keep the CRM headers and IDs intact. Payments are stored in CAD cents.
+3. Deploy as a web app executing as the workbook owner with access for **Anyone**. The script authenticates requests with the shared secret. Set the deployment's `/exec` URL as `CRM_SHEETS_WEB_APP_URL` and the same secret as `CRM_SHEETS_SECRET` on the website. Redeploy the website after configuring environment variables.
+4. Add a customer with an engagement, edit it from its detail panel, and refresh. Use the existing customer selector for additional engagements. Use the stage dropdown for keyboard or touch access and drag cards on desktop. Payments roll up across all engagements for the selected customer.
