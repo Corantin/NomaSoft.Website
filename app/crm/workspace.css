@@ -406,3 +406,44 @@
   color: var(--green);
   text-decoration: underline;
 }
+
+.crm-login {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(145deg, #e3ece4, #fafbf7 65%);
+}
+.crm-login section {
+  width: min(100%, 420px);
+  padding: clamp(24px, 5vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 40px #18372d0c;
+}
+.crm-login-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 17px;
+}
+.crm-login h1 {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+  margin: 28px 0 22px;
+}
+.crm-login .crm-primary {
+  width: 100%;
+  margin-top: 10px;
+}
+.crm nav form {
+  margin-left: auto;
+}
+.crm nav form button {
+  color: white;
+  padding: 5px 8px;
+}

@@ -138,7 +138,7 @@ CI (`.github/workflows/ci.yml`) runs linting, type-checking, and `next build` on
 
 ### Customer workspace
 
-Open `/crm` and sign in as `corantin` or `kafan` with the corresponding server-side password in `.env.example`. Configure these credentials on the deployment and use HTTPS. The board and its API fail closed without a configured password.
+Open `/crm` to reach the workspace sign-in form and sign in as `corantin` or `kafan` with the corresponding server-side password in `.env.example`. Configure these credentials on the deployment and use HTTPS. Sessions last 12 hours. Sign out from the workspace navigation. Rotating a teammate’s password invalidates their existing sessions.
 
 To connect the NomaSoft hours workbook:
 

@@ -14,6 +14,7 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import { signOut } from './login/actions';
 import AgreementLedger from './agreement-ledger';
 import {
   models,
@@ -133,6 +134,10 @@ export default function Workspace() {
           : undefined,
         body: body ? JSON.stringify(body) : undefined,
       });
+      if (res.status === 401) {
+        window.location.replace('/crm/login');
+        return false;
+      }
       const data = await res.json();
       if (!res.ok) throw Error(data.error || 'Unable to open the workbook.');
       setBoard(data);
@@ -210,6 +215,9 @@ export default function Workspace() {
         </strong>
         <span className="crm-nav-rule" />
         Customer workspace
+        <form action={signOut}>
+          <button>Sign out</button>
+        </form>
       </nav>
       <div className="crm-main">
         <div className="crm-title">

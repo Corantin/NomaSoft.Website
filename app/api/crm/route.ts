@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authorized } from '@/lib/crm/auth';
+import { hasSession } from '@/lib/crm/auth';
 import { command } from '@/lib/crm/model';
 export const dynamic = 'force-dynamic';
 
@@ -44,14 +44,12 @@ async function callSheet(payload: unknown) {
   }
 }
 
-export function GET(req: NextRequest) {
-  if (!authorized(req.headers.get('authorization')))
-    return new Response(null, { status: 401 });
+export function GET() {
+  if (!hasSession()) return new Response(null, { status: 401 });
   return callSheet({ action: 'read' });
 }
 export async function POST(req: NextRequest) {
-  if (!authorized(req.headers.get('authorization')))
-    return new Response(null, { status: 401 });
+  if (!hasSession()) return new Response(null, { status: 401 });
   // Cross-origin browser scripts cannot send this header without a successful CORS preflight.
   if (
     req.headers.get('x-nomasoft-crm') !== '1' ||
