@@ -7,15 +7,17 @@ export const members = new Map([
   ['corantin.noll@gmail.com', 'Corantin'],
   ['kevinmansour@hotmail.com', 'Kevin'],
 ]);
+export class CrmAuthFailure extends Error {}
 export function authSecret() {
   const secret = process.env.NEXTAUTH_SECRET;
-  if (!secret) throw new Error('NEXTAUTH_SECRET is missing');
+  if (!secret) throw new CrmAuthFailure('NEXTAUTH_SECRET is missing');
   return secret;
 }
 async function ledger(action: string, email: string, extra: Record<string, string> = {}) {
   const url = process.env.CRM_SHEETS_WEB_APP_URL,
     secret = process.env.CRM_SHEETS_SECRET;
-  if (!url || !secret) throw new Error('CRM authentication store is unconfigured');
+  if (!url) throw new CrmAuthFailure('CRM_SHEETS_WEB_APP_URL is missing');
+  if (!secret) throw new CrmAuthFailure('CRM_SHEETS_SECRET is missing');
   const response = await fetch(url, {
     method: 'POST',
     cache: 'no-store',
@@ -23,10 +25,15 @@ async function ledger(action: string, email: string, extra: Record<string, strin
     signal: AbortSignal.timeout(15000),
     body: JSON.stringify({ secret, payload: { action, email, ...extra } }),
   });
-  if (!response.ok) throw new Error('CRM authentication store unavailable');
-  const result = await response.json();
+  if (!response.ok)
+    throw new CrmAuthFailure('Apps Script returned HTTP ' + response.status);
+  const result = await response.json().catch(() => {
+    throw new CrmAuthFailure('Apps Script returned a non-JSON response');
+  });
+  if (result?.error === 'Access denied')
+    throw new CrmAuthFailure('Apps Script rejected CRM_SHEETS_SECRET');
   if (typeof result.ok !== 'boolean')
-    throw new Error('CRM authentication store needs the current script deployment');
+    throw new CrmAuthFailure('Apps Script did not return the OTP response format');
   return result.ok as boolean;
 }
 function codeDigest(email: string, code: string) {
@@ -42,7 +49,7 @@ export async function sendCode(email: string) {
     process.env.CONTACT_FROM_EMAIL ||
     process.env.CONTACT_TO_EMAIL ||
     siteContent.site.contact.email;
-  if (!apiKey || !from) throw new Error('Resend is unconfigured');
+  if (!apiKey || !from) throw new CrmAuthFailure('Resend sender or API key is missing');
   const code = randomInt(100000000).toString().padStart(8, '0');
   if (!(await ledger('otp.issue', email, { digest: codeDigest(email, code) }))) return;
   const response = await fetch('https://api.resend.com/emails', {
@@ -60,7 +67,7 @@ export async function sendCode(email: string) {
         '. It expires in 10 minutes. If you did not request it, ignore this email.',
     }),
   });
-  if (!response.ok) throw new Error('Resend could not send the sign-in code');
+  if (!response.ok) throw new CrmAuthFailure('Resend returned HTTP ' + response.status);
 }
 export async function verifyCode(email: string, code: string) {
   if (!members.has(email) || !/^\d{8}$/.test(code)) return null;
