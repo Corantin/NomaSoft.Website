@@ -1,6 +1,6 @@
 'use client';
-import { useState, type FormEvent } from 'react';
-import type { Board, Engagement } from '@/lib/crm/model';
+import { useState, useCallback, useEffect, type FormEvent } from 'react';
+import type { Board, Engagement, work as workSchema } from '@/lib/crm/model';
 
 const cad = (value: number) =>
   new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(
@@ -24,7 +24,46 @@ export default function AgreementLedger({
     .filter((p) => p.engagementId === deal.id)
     .reduce((s, p) => s + p.cents, 0);
   const balance = charges.filter((c) => c.issued).reduce((s, c) => s + c.cents, 0) - paid;
-  const work = board.work.filter((w) => w.engagementId === deal.id);
+  const [work, setWork] = useState<(typeof workSchema._type)[]>([]);
+  const [hoursBusy, setHoursBusy] = useState(true);
+  const [hoursError, setHoursError] = useState('');
+  const loadHours = useCallback(
+    async (entry?: unknown) => {
+      setHoursBusy(true);
+      setHoursError('');
+      try {
+        const send = () =>
+          fetch('/api/crm/hours?project=' + deal.id, {
+            method: entry ? 'POST' : 'GET',
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', 'x-nomasoft-crm': '1' },
+            body: entry ? JSON.stringify(entry) : undefined,
+          });
+        let response = await send();
+        if (response.status === 401) {
+          const renewed = await fetch('/api/crm/renew', {
+            method: 'POST',
+            headers: { 'x-nomasoft-crm': '1' },
+          });
+          if (renewed.status === 401) window.location.replace('/crm/login');
+          if (!renewed.ok) throw Error();
+          response = await send();
+        }
+        if (!response.ok) throw Error();
+        setWork(await response.json());
+        return true;
+      } catch {
+        setHoursError('Could not reach the hours sheet.');
+        return false;
+      } finally {
+        setHoursBusy(false);
+      }
+    },
+    [deal.id],
+  );
+  useEffect(() => {
+    void loadHours();
+  }, [loadHours]);
   function start(action: 'charge' | 'work') {
     setId(crypto.randomUUID());
     setForm(action);
@@ -46,7 +85,12 @@ export default function AgreementLedger({
             minutes: Number(fields.get('minutes')),
             description: fields.get('description'),
           };
-    if (await request({ action: form, [form]: { id, engagementId: deal.id, ...record } }))
+    const row = { id, engagementId: deal.id, ...record };
+    if (
+      form === 'work'
+        ? await loadHours(row)
+        : await request({ action: form, [form]: row })
+    )
       setForm('');
   }
   return (
@@ -105,9 +149,19 @@ export default function AgreementLedger({
         </form>
       )}
       <h3>
-        Time tracked · {Number((work.reduce((s, w) => s + w.minutes, 0) / 60).toFixed(2))}{' '}
-        h
+        Time tracked{' '}
+        {hoursBusy
+          ? '…'
+          : !hoursError &&
+            '· ' +
+              Number((work.reduce((s, w) => s + w.minutes, 0) / 60).toFixed(2)) +
+              ' h'}
       </h3>
+      {hoursError && (
+        <p role="alert">
+          {hoursError} <button onClick={() => void loadHours()}>Retry</button>
+        </p>
+      )}
       {work.map((w) => (
         <div key={w.id} className="crm-ledger-row">
           <span>
@@ -121,7 +175,11 @@ export default function AgreementLedger({
         </div>
       ))}
       {form !== 'work' ? (
-        <button className="crm-secondary" onClick={() => start('work')}>
+        <button
+          className="crm-secondary"
+          disabled={hoursBusy}
+          onClick={() => start('work')}
+        >
           Log time
         </button>
       ) : (
@@ -144,7 +202,7 @@ export default function AgreementLedger({
             Description
             <input name="description" />
           </label>
-          <button className="crm-secondary" disabled={busy}>
+          <button className="crm-secondary" disabled={busy || hoursBusy}>
             Save time
           </button>
         </form>

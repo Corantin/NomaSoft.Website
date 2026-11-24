@@ -3,33 +3,17 @@ import { hasSession } from '@/lib/crm/auth';
 import { command } from '@/lib/crm/model';
 import { redisPipeline, projectTaskKey } from '@/lib/crm/redis';
 import { taskProgress } from '@/lib/crm/task';
+import { crmRecords, BoardConflict, InvalidRecord } from '@/lib/crm/board-store';
+import { z } from 'zod';
 export const dynamic = 'force-dynamic';
 
-async function callSheet(payload: unknown) {
-  const url = process.env.CRM_SHEETS_WEB_APP_URL;
-  const secret = process.env.CRM_SHEETS_SECRET;
-  if (!url || !secret)
-    return NextResponse.json(
-      { error: 'Connect the CRM workbook to load this workspace.' },
-      { status: 503 },
-    );
+async function boardResponse(cmd?: Exclude<z.infer<typeof command>, { action: 'work' }>) {
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret, payload }),
-      signal: AbortSignal.timeout(25000),
-    });
-    if (!response.ok) throw new Error();
-    const result = await response.json();
-    if (result.conflict)
-      return NextResponse.json({ error: 'The workbook changed.' }, { status: 409 });
-    if (!result.board) throw new Error();
+    const board = { ...(await crmRecords(cmd)), progress: {} };
     try {
-      const ids: string[] = result.board.engagements.map((e: { id: string }) => e.id);
+      const ids: string[] = board.engagements.map((e: { id: string }) => e.id);
       const lists = await redisPipeline(ids.map((id) => ['HVALS', projectTaskKey(id)]));
-      result.board.progress = Object.fromEntries(
+      board.progress = Object.fromEntries(
         ids.map((id, i) => [
           id,
           taskProgress(lists[i].map((row: string) => JSON.parse(row))),
@@ -38,14 +22,20 @@ async function callSheet(payload: unknown) {
     } catch {
       console.warn('[crm] Task counts unavailable');
     }
-    return NextResponse.json(result.board, {
+    return NextResponse.json(board, {
       headers: { 'Cache-Control': 'private, no-store' },
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof BoardConflict)
+      return NextResponse.json({ error: 'The board changed.' }, { status: 409 });
+    if (error instanceof InvalidRecord)
+      return NextResponse.json(
+        { error: 'Unknown project or billing record.' },
+        { status: 400 },
+      );
     return NextResponse.json(
       {
-        error:
-          'The workbook could not be reached. Refresh to check the latest saved data.',
+        error: 'The CRM board could not be reached.',
       },
       { status: 502 },
     );
@@ -54,7 +44,7 @@ async function callSheet(payload: unknown) {
 
 export async function GET() {
   if (!(await hasSession())) return new Response(null, { status: 401 });
-  return callSheet({ action: 'read' });
+  return boardResponse();
 }
 export async function POST(req: NextRequest) {
   if (!(await hasSession())) return new Response(null, { status: 401 });
@@ -74,5 +64,7 @@ export async function POST(req: NextRequest) {
       { error: 'Check the fields and enter valid dates, amounts, and HTTPS links.' },
       { status: 400 },
     );
-  return callSheet(data.data);
+  if (data.data.action === 'work')
+    return NextResponse.json({ error: 'Reload the CRM to log hours.' }, { status: 409 });
+  return boardResponse(data.data);
 }

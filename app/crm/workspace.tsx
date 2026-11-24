@@ -222,7 +222,7 @@ export default function Workspace() {
       const conflict = !!body && res.status === 409;
       if (conflict) res = await sendWithSession();
       const data = await res.json();
-      if (!res.ok) throw Error(data.error || 'Unable to open the workbook.');
+      if (!res.ok) throw Error(data.error || 'Unable to open the board.');
       const board = lastSnapshot.current;
       lastSnapshot.current = data;
       setBoard(data);
@@ -234,7 +234,7 @@ export default function Workspace() {
       }
       return true;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not load the workbook.');
+      setError(e instanceof Error ? e.message : 'Could not load the board.');
       return false;
     } finally {
       saving.current = false;
@@ -367,8 +367,8 @@ export default function Workspace() {
             Closed
           </label>
           <button
-            title="Refresh workbook"
-            aria-label="Refresh workbook"
+            title="Refresh board"
+            aria-label="Refresh board"
             disabled={busy}
             onClick={() => request()}
           >
@@ -378,7 +378,7 @@ export default function Workspace() {
         {!draft && !selected && warning}
         {!board ? (
           <p className="crm-status">
-            {busy ? 'Loading customer workbook…' : 'Workbook unavailable'}
+            {busy ? 'Loading customer board…' : 'Board unavailable'}
           </p>
         ) : (
           <div className="crm-board">

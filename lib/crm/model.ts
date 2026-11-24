@@ -110,6 +110,6 @@ export type Board = {
   engagements: Engagement[];
   payments: Payment[];
   charges: z.infer<typeof charge>[];
-  work: z.infer<typeof work>[];
+
   version: string;
 };
