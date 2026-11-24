@@ -128,7 +128,9 @@ export default function Workspace() {
       const res = await fetch('/api/crm', {
         method: body ? 'POST' : 'GET',
         cache: 'no-store',
-        headers: body ? { 'Content-Type': 'application/json' } : undefined,
+        headers: body
+          ? { 'Content-Type': 'application/json', 'x-nomasoft-crm': '1' }
+          : undefined,
         body: body ? JSON.stringify(body) : undefined,
       });
       const data = await res.json();

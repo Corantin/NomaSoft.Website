@@ -52,8 +52,16 @@ export function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   if (!authorized(req.headers.get('authorization')))
     return new Response(null, { status: 401 });
-  const origin = req.headers.get('origin');
-  if (origin !== req.nextUrl.origin) return new Response(null, { status: 403 });
+  // Cross-origin browser scripts cannot send this header without a successful CORS preflight.
+  if (
+    req.headers.get('x-nomasoft-crm') !== '1' ||
+    req.headers.get('sec-fetch-site') === 'cross-site'
+  ) {
+    return NextResponse.json(
+      { error: 'Open the CRM on this website to save changes.' },
+      { status: 403 },
+    );
+  }
   const data = command.safeParse(await req.json().catch(() => null));
   if (!data.success)
     return NextResponse.json(
