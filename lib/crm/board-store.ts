@@ -2,7 +2,7 @@ import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { command, type Board } from './model';
-import { redisCommand } from './redis';
+import { projectTaskKey, redisCommand } from './redis';
 
 type Records = Pick<
   Board,
@@ -30,6 +30,48 @@ async function snapshot(): Promise<string> {
   const winner = await redisCommand(['GET', key]);
   if (winner === null) throw Error('CRM initialization failed');
   return winner;
+}
+// An old board may still contain manually entered actions. Preserve each as a task
+// before removing the field. Concurrent readers can safely repeat the migration.
+const importAction = `
+for _, raw in ipairs(redis.call('HVALS',KEYS[1])) do
+  local task=cjson.decode(raw)
+  if not task.done and task.title == ARGV[2] then return 0 end
+end
+return redis.call('HSETNX',KEYS[1],ARGV[1],ARGV[3])`;
+async function migrateActions(raw: string, records: Records) {
+  let migrated = false;
+  for (const deal of records.engagements) {
+    if (!('nextAction' in deal)) continue;
+    const title = String(deal.nextAction || '').trim();
+    if (title) {
+      const task = {
+        id: deal.id,
+        title,
+        due: deal.due,
+        assignee: '',
+        done: false,
+        position: -1,
+        revision: 1,
+      };
+      await redisCommand([
+        'EVAL',
+        importAction,
+        1,
+        projectTaskKey(deal.id),
+        task.id,
+        title,
+        JSON.stringify(task),
+      ]);
+    }
+    delete deal.nextAction;
+    migrated = true;
+  }
+  if (migrated) {
+    records.version = randomUUID();
+    await redisCommand(['EVAL', compareAndSet, 1, key, raw, JSON.stringify(records)]);
+  }
+  return migrated;
 }
 function put<T extends { id: string }>(list: T[], row: T) {
   const index = list.findIndex((item) => item.id === row.id);
@@ -78,6 +120,7 @@ export async function crmRecords(cmd?: Change): Promise<Records> {
   for (let attempt = 0; attempt < 4; attempt++) {
     const raw = await snapshot();
     const records: Records = JSON.parse(raw);
+    if (await migrateActions(raw, records)) continue;
     if (!cmd || !change(records, cmd)) return records;
     if (await redisCommand(['EVAL', compareAndSet, 1, key, raw, JSON.stringify(records)]))
       return records;

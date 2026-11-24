@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Pencil, Plus } from 'lucide-react';
-import { taskProgress, type ProjectTask } from '@/lib/crm/task';
+import { Pencil, Plus, ChevronUp, ChevronDown } from 'lucide-react';
+import { taskProgress, type ProjectTask, type TaskOrder } from '@/lib/crm/task';
 
 export default function ProjectTasks({
   engagementId,
@@ -16,7 +16,7 @@ export default function ProjectTasks({
   const [busy, setBusy] = useState(true);
   const pending = useRef(false);
   const request = useCallback(
-    async (task?: ProjectTask) => {
+    async (task?: ProjectTask | TaskOrder) => {
       if (pending.current) return false;
       pending.current = true;
       setBusy(true);
@@ -60,13 +60,15 @@ export default function ProjectTasks({
   useEffect(() => {
     void request();
   }, [request]);
-  const tasks = items
-    .slice()
-    .sort(
-      (a, b) =>
-        Number(a.done) - Number(b.done) ||
-        (a.due || '9999').localeCompare(b.due || '9999'),
-    );
+  const tasks = items;
+  function move(index: number, offset: number) {
+    const reordered = [...tasks];
+    [reordered[index], reordered[index + offset]] = [
+      reordered[index + offset],
+      reordered[index],
+    ];
+    void request({ order: reordered.map(({ id, revision }) => ({ id, revision })) });
+  }
   function edit(task: ProjectTask) {
     setDraft({ ...task });
   }
@@ -96,7 +98,7 @@ export default function ProjectTasks({
         </p>
       )}
       <ul>
-        {tasks.map((t) => (
+        {tasks.map((t, index) => (
           <li key={t.id}>
             <label>
               <input
@@ -108,17 +110,41 @@ export default function ProjectTasks({
               <span>
                 <strong>{t.title}</strong>
                 <small>
-                  {[t.assignee || 'Corantin & Kafan', t.due].filter(Boolean).join(' · ')}
+                  {[
+                    index === 0 && !t.done ? 'Next action' : '',
+                    t.assignee || 'Corantin & Kafan',
+                    t.due,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
                 </small>
               </span>
             </label>
-            <button
-              disabled={busy || !!draft}
-              aria-label={'Edit task ' + t.title}
-              onClick={() => edit(t)}
-            >
-              <Pencil size={14} />
-            </button>
+            <div className="crm-task-controls">
+              <button
+                type="button"
+                aria-label={'Move ' + t.title + ' up'}
+                disabled={busy || !!draft || tasks[index - 1]?.done !== t.done}
+                onClick={() => move(index, -1)}
+              >
+                <ChevronUp size={16} />
+              </button>
+              <button
+                type="button"
+                aria-label={'Move ' + t.title + ' down'}
+                disabled={busy || !!draft || tasks[index + 1]?.done !== t.done}
+                onClick={() => move(index, 1)}
+              >
+                <ChevronDown size={16} />
+              </button>
+              <button
+                disabled={busy || !!draft}
+                aria-label={'Edit task ' + t.title}
+                onClick={() => edit(t)}
+              >
+                <Pencil size={14} />
+              </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -185,6 +211,7 @@ export default function ProjectTasks({
             edit({
               id: crypto.randomUUID(),
               revision: 0,
+              position: Date.now(),
               title: '',
               assignee: '',
               due: '',

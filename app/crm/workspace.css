@@ -534,3 +534,8 @@
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
+.crm-task-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}

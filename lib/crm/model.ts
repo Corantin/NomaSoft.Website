@@ -42,7 +42,6 @@ export const engagement = z.object({
   title: required,
   stage: z.enum(stages),
   owner: short,
-  nextAction: short,
   due: z.union([date, z.literal('')]),
   model: z.enum(models),
   scope: note,
@@ -105,7 +104,7 @@ export type Client = z.infer<typeof customer>;
 export type Engagement = z.infer<typeof engagement>;
 export type Payment = z.infer<typeof payment>;
 export type Board = {
-  progress?: Record<string, { done: number; total: number }>;
+  progress?: Record<string, { done: number; total: number; nextAction: string }>;
   customers: Client[];
   engagements: Engagement[];
   payments: Payment[];

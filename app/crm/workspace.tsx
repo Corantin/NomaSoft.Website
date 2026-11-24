@@ -34,15 +34,6 @@ import {
   type Engagement,
 } from '@/lib/crm/model';
 
-const stageQuestions: Record<Engagement['stage'], string> = {
-  'New lead': 'What is the first follow-up?',
-  'Meeting to schedule': 'What needs to happen to book the meeting?',
-  Proposal: 'What is the next step for the proposal?',
-  Ongoing: 'What is the next deliverable?',
-  Maintenance: 'What maintenance or check-in is next?',
-  'On ice': 'Why is this engagement paused?',
-  Closed: 'What was the outcome?',
-};
 const partners = ['Corantin', 'Kafan'];
 const sharedTeam = partners.join(' & ');
 const money = (cents: number) =>
@@ -144,7 +135,6 @@ function blank(stage: Engagement['stage'] = 'New lead'): Draft {
       title: '',
       stage,
       owner: '',
-      nextAction: '',
       due: '',
       model: 'Undecided',
       scope: '',
@@ -179,7 +169,7 @@ export default function Workspace() {
     });
   }
   const updateProgress = useCallback(
-    (id: string, progress: { done: number; total: number }) => {
+    (id: string, progress: { done: number; total: number; nextAction: string }) => {
       setBoard(
         (current) =>
           current && { ...current, progress: { ...current.progress, [id]: progress } },
@@ -252,7 +242,11 @@ export default function Workspace() {
   const visible = deals.filter(
     (d) =>
       (!owner || (d.owner ? d.owner === owner : partners.includes(owner))) &&
-      [d.title, clients.find((c) => c.id === d.customerId)?.name, d.nextAction]
+      [
+        d.title,
+        clients.find((c) => c.id === d.customerId)?.name,
+        board?.progress?.[d.id]?.nextAction,
+      ]
         .join(' ')
         .toLowerCase()
         .includes(search.toLowerCase()),
@@ -468,10 +462,10 @@ export default function Workspace() {
                                 {board.progress[d.id].done}/{board.progress[d.id].total}
                               </span>
                             )}
-                            {d.nextAction && (
+                            {board?.progress?.[d.id]?.nextAction && (
                               <span className="crm-next">
                                 <ArrowRight size={13} />
-                                {d.nextAction}
+                                {board?.progress?.[d.id]?.nextAction}
                               </span>
                             )}
                             {(d.owner || d.due) && (
@@ -555,15 +549,6 @@ export default function Workspace() {
                   <option key={s}>{s}</option>
                 ))}
               </select>
-            </Field>
-            <Field label={stageQuestions[move.deal.stage]}>
-              <input
-                maxLength={180}
-                value={move.deal.nextAction}
-                onChange={(e) =>
-                  setMove({ ...move, deal: { ...move.deal, nextAction: e.target.value } })
-                }
-              />
             </Field>
             <Field
               label={move.deal.stage === 'On ice' ? 'Revisit date' : 'Follow-up date'}
@@ -686,12 +671,6 @@ export default function Workspace() {
                 </select>
               </Field>
             </div>
-            <Field label="Next action">
-              <input
-                value={draft.deal.nextAction}
-                onChange={(e) => updateDeal('nextAction', e.target.value)}
-              />
-            </Field>
             <Field label="Follow-up date">
               <input
                 type="date"
@@ -762,11 +741,6 @@ export default function Workspace() {
             >
               <Pencil size={15} /> Edit customer & engagement
             </button>
-            <h3>Next action</h3>
-            <p>
-              {selected.nextAction || 'No next action set'}{' '}
-              {selected.due && ' · ' + selected.due}
-            </p>
             <ProjectTasks
               key={selected.id}
               engagementId={selected.id}
