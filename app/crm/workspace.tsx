@@ -108,6 +108,31 @@ function Drawer({
   );
 }
 type Draft = { client: Client; deal: Engagement; version: string };
+function mergeFields<T extends Client | Engagement>(
+  draft: T,
+  before: T | undefined,
+  latest: T | undefined,
+) {
+  if (!latest || !before) return draft;
+  const merged = { ...latest };
+  for (const key of Object.keys(draft) as (keyof T)[]) {
+    if (draft[key] !== before[key]) merged[key] = draft[key];
+  }
+  return merged;
+}
+function refreshDraft(draft: Draft | null, before: Board, latest: Board): Draft | null {
+  if (!draft) return null;
+  const oldClient = before.customers.find((c) => c.id === draft.client.id);
+  const newClient = latest.customers.find((c) => c.id === draft.client.id);
+  const oldDeal = before.engagements.find((d) => d.id === draft.deal.id);
+  const newDeal = latest.engagements.find((d) => d.id === draft.deal.id);
+  if ((oldClient && !newClient) || (oldDeal && !newDeal)) return null;
+  return {
+    client: mergeFields(draft.client, oldClient, newClient),
+    deal: mergeFields(draft.deal, oldDeal, newDeal),
+    version: latest.version,
+  };
+}
 function blank(stage: Engagement['stage'] = 'New lead'): Draft {
   const id = crypto.randomUUID();
   return {
@@ -163,37 +188,50 @@ export default function Workspace() {
     [],
   );
   const saving = useRef(false);
-  async function request(body?: unknown) {
+  const lastSnapshot = useRef<Board | null>(null);
+  const request = useCallback(async (body?: unknown) => {
     if (saving.current) return false;
     saving.current = true;
     setBusy(true);
     setError('');
     try {
-      const send = () =>
+      const send = (payload?: unknown) =>
         fetch('/api/crm', {
-          method: body ? 'POST' : 'GET',
+          method: payload ? 'POST' : 'GET',
           cache: 'no-store',
-          headers: body
+          headers: payload
             ? { 'Content-Type': 'application/json', 'x-nomasoft-crm': '1' }
             : undefined,
-          body: body ? JSON.stringify(body) : undefined,
+          body: payload ? JSON.stringify(payload) : undefined,
         });
-      let res = await send();
-      if (res.status === 401) {
+      async function sendWithSession(payload?: unknown) {
+        const response = await send(payload);
+        if (response.status !== 401) return response;
         const renewed = await fetch('/api/crm/renew', {
           method: 'POST',
           headers: { 'x-nomasoft-crm': '1' },
         });
         if (renewed.status === 401) {
           window.location.replace('/crm/login');
-          return false;
+          throw Error('Sign in to continue.');
         }
         if (!renewed.ok) throw Error('Could not renew your session. Try again.');
-        res = await send();
+        return send(payload);
       }
+      let res = await sendWithSession(body);
+      const conflict = !!body && res.status === 409;
+      if (conflict) res = await sendWithSession();
       const data = await res.json();
       if (!res.ok) throw Error(data.error || 'Unable to open the workbook.');
+      const board = lastSnapshot.current;
+      lastSnapshot.current = data;
       setBoard(data);
+      if (conflict && board) {
+        setDraft((current) => refreshDraft(current, board, data));
+        setMove((current) => refreshDraft(current, board, data));
+        setError('Board refreshed. Review the latest details before saving.');
+        return false;
+      }
       return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load the workbook.');
@@ -202,10 +240,10 @@ export default function Workspace() {
       saving.current = false;
       setBusy(false);
     }
-  }
+  }, []);
   useEffect(() => {
     void request();
-  }, []);
+  }, [request]);
   const deals = board?.engagements || [],
     clients = board?.customers || [],
     payments = board?.payments || [];

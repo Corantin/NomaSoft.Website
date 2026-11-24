@@ -24,13 +24,7 @@ async function callSheet(payload: unknown) {
     if (!response.ok) throw new Error();
     const result = await response.json();
     if (result.conflict)
-      return NextResponse.json(
-        {
-          error:
-            'The workbook changed. Close this panel and refresh before editing again.',
-        },
-        { status: 409 },
-      );
+      return NextResponse.json({ error: 'The workbook changed.' }, { status: 409 });
     if (!result.board) throw new Error();
     try {
       const ids: string[] = result.board.engagements.map((e: { id: string }) => e.id);
