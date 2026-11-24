@@ -453,3 +453,45 @@
   margin-top: 14px;
   color: var(--green);
 }
+.crm-card {
+  position: relative;
+  cursor: grab;
+}
+.crm-open-card {
+  width: 100%;
+  display: block;
+  text-align: left;
+}
+.crm-open-card .crm-card-client {
+  padding-right: 29px;
+}
+.crm-open-card > strong {
+  display: block;
+  font-size: 16px;
+  letter-spacing: -0.025em;
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.crm-move-handle {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  padding: 7px;
+  color: var(--muted);
+  cursor: grab !important;
+}
+.crm-move-handle:hover {
+  background: #e7eee8;
+  border-radius: 5px;
+}
+.crm-drop-target {
+  outline: 2px solid var(--tone);
+  outline-offset: -2px;
+}
+.crm-drawer[aria-label='Move engagement'] {
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  border-radius: 12px;
+  width: min(92vw, 460px);
+}

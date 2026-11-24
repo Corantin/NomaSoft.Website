@@ -5,6 +5,7 @@ import {
   ArrowRight,
   CalendarDays,
   Columns3,
+  GripVertical,
   ExternalLink,
   Layers3,
   Pencil,
@@ -24,6 +25,15 @@ import {
   type Engagement,
 } from '@/lib/crm/model';
 
+const stageQuestions: Record<Engagement['stage'], string> = {
+  'New lead': 'What is the first follow-up?',
+  'Meeting to schedule': 'What needs to happen to book the meeting?',
+  Proposal: 'What is the next step for the proposal?',
+  Ongoing: 'What is the next deliverable?',
+  Maintenance: 'What maintenance or check-in is next?',
+  'On ice': 'Why is this engagement paused?',
+  Closed: 'What was the outcome?',
+};
 const partners = ['Corantin', 'Kafan'];
 const sharedTeam = partners.join(' & ');
 const money = (cents: number) =>
@@ -121,6 +131,19 @@ export default function Workspace() {
     [draft, setDraft] = useState<Draft | null>(null),
     [pay, setPay] = useState('');
   const [dragged, setDragged] = useState('');
+  const [target, setTarget] = useState('');
+  const [move, setMove] = useState<Draft | null>(null);
+  function beginMove(id: string, stage?: Engagement['stage']) {
+    const deal = deals.find((d) => d.id === id);
+    const customer = clients.find((c) => c.id === deal?.customerId);
+    if (!board || !deal || !customer || busy || stage === deal.stage) return;
+    setError('');
+    setMove({
+      client: customer,
+      version: board.version,
+      deal: { ...deal, stage: stage ?? deal.stage },
+    });
+  }
   const saving = useRef(false);
   async function request(body?: unknown) {
     if (saving.current) return false;
@@ -312,18 +335,23 @@ export default function Workspace() {
                 return (
                   <section
                     key={stage}
-                    className={'crm-lane tone-' + i}
-                    onDragOver={(e) => e.preventDefault()}
+                    data-stage={stage}
+                    className={
+                      'crm-lane tone-' + i + (target === stage ? ' crm-drop-target' : '')
+                    }
+                    onDragOver={(e) => {
+                      if (dragged) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        setTarget(stage);
+                      }
+                    }}
                     onDrop={(e) => {
                       e.preventDefault();
-                      if (dragged && deals.find((d) => d.id === dragged)?.stage !== stage)
-                        void request({
-                          action: 'move',
-                          engagementId: dragged,
-                          stage,
-                          version: board.version,
-                        });
+                      const id = e.dataTransfer.getData('text/plain') || dragged;
+                      beginMove(id, stage);
                       setDragged('');
+                      setTarget('');
                     }}
                   >
                     <h2>
@@ -343,43 +371,60 @@ export default function Workspace() {
                         clients.find((c) => c.id === d.customerId)?.name ||
                         'Unknown customer';
                       return (
-                        <button
+                        <article
                           className="crm-card"
                           key={d.id}
                           draggable={!busy}
                           onDragStart={(e) => {
                             setDragged(d.id);
+                            e.dataTransfer.effectAllowed = 'move';
                             e.dataTransfer.setData('text/plain', d.id);
                           }}
-                          onDragEnd={() => setDragged('')}
-                          onClick={() => {
-                            setActive(d.id);
-                            setError('');
+                          onDragEnd={() => {
+                            setDragged('');
+                            setTarget('');
                           }}
                         >
-                          <span className="crm-card-client">
-                            <b>{initials(name)}</b>
-                            {name}
-                          </span>
-                          <strong>{d.title}</strong>
-                          {d.nextAction && (
-                            <span className="crm-next">
-                              <ArrowRight size={13} />
-                              {d.nextAction}
+                          <button
+                            className="crm-open-card"
+                            onClick={() => {
+                              setActive(d.id);
+                              setError('');
+                            }}
+                          >
+                            <span className="crm-card-client">
+                              <b>{initials(name)}</b>
+                              {name}
                             </span>
-                          )}
-                          {(d.owner || d.due) && (
-                            <span className="crm-card-foot">
-                              {d.owner && <span>{d.owner}</span>}
-                              {d.due && (
-                                <span>
-                                  <CalendarDays size={12} />
-                                  {d.due}
-                                </span>
-                              )}
-                            </span>
-                          )}
-                        </button>
+                            <strong>{d.title}</strong>
+                            {d.nextAction && (
+                              <span className="crm-next">
+                                <ArrowRight size={13} />
+                                {d.nextAction}
+                              </span>
+                            )}
+                            {(d.owner || d.due) && (
+                              <span className="crm-card-foot">
+                                {d.owner && <span>{d.owner}</span>}
+                                {d.due && (
+                                  <span>
+                                    <CalendarDays size={12} />
+                                    {d.due}
+                                  </span>
+                                )}
+                              </span>
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            className="crm-move-handle"
+                            title="Move engagement"
+                            aria-label={'Move ' + d.title}
+                            onClick={() => beginMove(d.id)}
+                          >
+                            <GripVertical size={17} />
+                          </button>
+                        </article>
                       );
                     })}
                     {!cards.length && (
@@ -397,6 +442,82 @@ export default function Workspace() {
           </div>
         )}
       </div>
+      {move && (
+        <Drawer
+          title="Move engagement"
+          onClose={() => {
+            if (!busy) {
+              setMove(null);
+              setError('');
+            }
+          }}
+        >
+          <form
+            className="crm-content"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (
+                await request({
+                  action: 'save',
+                  customer: move.client,
+                  engagement: move.deal,
+                  version: move.version,
+                })
+              ) {
+                setMove(null);
+                if (move.deal.stage === 'Closed') setClosed(true);
+              }
+            }}
+          >
+            <h2>{move.deal.title}</h2>
+            <Field label="Move to stage">
+              <select
+                value={move.deal.stage}
+                onChange={(e) =>
+                  setMove({
+                    ...move,
+                    deal: { ...move.deal, stage: e.target.value as Engagement['stage'] },
+                  })
+                }
+              >
+                {stages.map((s) => (
+                  <option key={s}>{s}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label={stageQuestions[move.deal.stage]}>
+              <input
+                maxLength={180}
+                value={move.deal.nextAction}
+                onChange={(e) =>
+                  setMove({ ...move, deal: { ...move.deal, nextAction: e.target.value } })
+                }
+              />
+            </Field>
+            <Field
+              label={move.deal.stage === 'On ice' ? 'Revisit date' : 'Follow-up date'}
+            >
+              <input
+                type="date"
+                value={move.deal.due}
+                onChange={(e) =>
+                  setMove({ ...move, deal: { ...move.deal, due: e.target.value } })
+                }
+              />
+            </Field>
+            {warning}
+            <button
+              className="crm-primary"
+              disabled={
+                busy ||
+                deals.find((d) => d.id === move.deal.id)?.stage === move.deal.stage
+              }
+            >
+              Confirm move
+            </button>
+          </form>
+        </Drawer>
+      )}
       {draft && (
         <Drawer
           title={
