@@ -114,8 +114,7 @@
   color: var(--green);
   margin-right: auto;
 }
-.crm-search,
-.crm-owner {
+.crm-search {
   background: white;
   border: 1px solid var(--line);
   border-radius: 6px;
@@ -176,6 +175,26 @@
   font-size: 14px;
   margin: 2px 3px 13px;
 }
+.crm-stage-help {
+  position: relative;
+}
+.crm-stage-label {
+  cursor: help;
+  font: inherit;
+}
+.crm-stage-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 3;
+  width: 185px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #23372b;
+  color: white;
+  font: 400 13px/1.45 system-ui;
+  box-shadow: 0 3px 10px #23372b25;
+}
 .crm-lane h2 i {
   width: 9px;
   height: 9px;
@@ -189,7 +208,7 @@
   background: #dce2db;
   border-radius: 6px;
 }
-.crm-lane h2 button {
+.crm-lane h2 > button {
   margin-left: auto;
   padding: 3px;
 }

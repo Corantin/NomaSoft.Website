@@ -22,7 +22,6 @@ import {
   Plus,
   RefreshCw,
   Search,
-  Users,
   X,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
@@ -36,6 +35,19 @@ import {
   type Engagement,
 } from '@/lib/crm/model';
 
+const stageDescriptions: Record<Engagement['stage'], string> = {
+  'New lead':
+    'A potential customer or project has been identified. The next step is an initial conversation.',
+  'Meeting to schedule':
+    'A conversation is needed to discuss the project. A meeting time still needs to be agreed.',
+  Proposal: 'Scope and pricing are being prepared or reviewed with the customer.',
+  Ongoing: 'The project is active and delivery work is underway.',
+  Maintenance:
+    'The main delivery is complete. Support, fixes, or routine updates continue.',
+  'On ice': 'Work or discussions are paused and may resume later.',
+  Closed:
+    'The engagement has ended, either after delivery or because the opportunity did not proceed.',
+};
 const partners = ['Corantin', 'Kafan'];
 const sharedTeam = partners.join(' & ');
 const money = (cents: number) =>
@@ -190,11 +202,11 @@ export default function Workspace() {
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
   const [search, setSearch] = useState(''),
-    [owner, setOwner] = useState(''),
     [closed, setClosed] = useState(false);
   const [active, setActive] = useState(''),
     [draft, setDraft] = useState<Draft | null>(null),
     [pay, setPay] = useState('');
+  const [stageTip, setStageTip] = useState<Engagement['stage'] | null>(null);
   const [dragged, setDragged] = useState('');
   const [target, setTarget] = useState('');
   const [move, setMove] = useState<Draft | null>(null);
@@ -280,17 +292,15 @@ export default function Workspace() {
     payments = board?.payments || [];
   const selected = deals.find((d) => d.id === active),
     client = clients.find((c) => c.id === selected?.customerId);
-  const visible = deals.filter(
-    (d) =>
-      (!owner || (d.owner ? d.owner === owner : partners.includes(owner))) &&
-      [
-        d.title,
-        clients.find((c) => c.id === d.customerId)?.name,
-        board?.progress?.[d.id]?.nextAction,
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(search.toLowerCase()),
+  const visible = deals.filter((d) =>
+    [
+      d.title,
+      clients.find((c) => c.id === d.customerId)?.name,
+      board?.progress?.[d.id]?.nextAction,
+    ]
+      .join(' ')
+      .toLowerCase()
+      .includes(search.toLowerCase()),
   );
   const open = deals.filter((d) => d.stage !== 'Closed');
   function close() {
@@ -376,23 +386,6 @@ export default function Workspace() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </label>
-          <label className="crm-owner">
-            <Users size={16} />
-            <select
-              aria-label="Filter by team member"
-              value={owner}
-              onChange={(e) => setOwner(e.target.value)}
-            >
-              <option value="">All team members</option>
-              {Array.from(
-                new Set([...partners, ...deals.map((d) => d.owner).filter(Boolean)]),
-              )
-                .sort()
-                .map((o) => (
-                  <option key={o}>{o}</option>
-                ))}
-            </select>
-          </label>
           <label>
             <input
               type="checkbox"
@@ -447,7 +440,38 @@ export default function Workspace() {
                   >
                     <h2>
                       <i />
-                      {stage}
+                      <span
+                        className="crm-stage-help"
+                        onMouseEnter={() => setStageTip(stage)}
+                        onMouseLeave={() => setStageTip(null)}
+                      >
+                        <button
+                          type="button"
+                          className="crm-stage-label"
+                          aria-describedby={
+                            stageTip === stage
+                              ? 'stage-tip-' + stages.indexOf(stage)
+                              : undefined
+                          }
+                          onFocus={() => setStageTip(stage)}
+                          onBlur={() => setStageTip(null)}
+                          onClick={() => setStageTip(stage)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Escape') setStageTip(null);
+                          }}
+                        >
+                          {stage}
+                        </button>
+                        {stageTip === stage && (
+                          <span
+                            role="tooltip"
+                            id={'stage-tip-' + stages.indexOf(stage)}
+                            className="crm-stage-tooltip"
+                          >
+                            {stageDescriptions[stage]}
+                          </span>
+                        )}
+                      </span>
                       <small>{cards.length}</small>
                       <button
                         aria-label={'Add customer in ' + stage}
