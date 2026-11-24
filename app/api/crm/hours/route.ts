@@ -12,7 +12,7 @@ async function hours(id: string | null, entry?: typeof work._type) {
     const result = await hoursService(
       entry ? { action: 'work', work: entry } : { action: 'read' },
     );
-    const rows = result.work ?? result.board?.work;
+    const rows = result.work;
     if (!Array.isArray(rows)) throw Error();
     return NextResponse.json(
       rows.filter((row) => row.engagementId === id),

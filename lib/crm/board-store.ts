@@ -3,7 +3,6 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { command, type Board } from './model';
 import { redisCommand } from './redis';
-import { hoursService } from './hours';
 
 type Records = Pick<
   Board,
@@ -14,21 +13,19 @@ const key = 'nomasoft:crm:board:' + (process.env.VERCEL_ENV || process.env.NODE_
 export class BoardConflict extends Error {}
 export class InvalidRecord extends Error {}
 
-// Seed once from the old deployment, retaining the IDs referenced by tasks and time entries.
 async function snapshot(): Promise<string> {
   const existing = await redisCommand(['GET', key]);
   if (existing !== null) return existing;
-  const { board } = await hoursService({ action: 'read' });
-  if (
-    !board ||
-    !['customers', 'engagements', 'charges', 'payments'].every((k) =>
-      Array.isArray(board[k]),
-    ) ||
-    !board.version
-  )
-    throw Error('Legacy CRM snapshot unavailable');
-  const { customers, engagements, charges, payments, version } = board;
-  const raw = JSON.stringify({ customers, engagements, charges, payments, version });
+  // Production has been migrated. A missing board must be recovered from backup.
+  if (process.env.VERCEL_ENV === 'production')
+    throw Error('Missing production CRM board');
+  const raw = JSON.stringify({
+    customers: [],
+    engagements: [],
+    charges: [],
+    payments: [],
+    version: randomUUID(),
+  });
   if (await redisCommand(['SET', key, raw, 'NX'])) return raw;
   const winner = await redisCommand(['GET', key]);
   if (winner === null) throw Error('CRM initialization failed');
