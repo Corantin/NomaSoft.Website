@@ -495,3 +495,31 @@
   border-radius: 12px;
   width: min(92vw, 460px);
 }
+.crm-tasks h3,
+.crm-tasks li,
+.crm-tasks li label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.crm-tasks h3,
+.crm-tasks li {
+  justify-content: space-between;
+}
+.crm-tasks small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.crm-tasks li {
+  border-bottom: 1px solid var(--line);
+  padding: 9px 0;
+}
+.crm-tasks li:last-child {
+  margin-bottom: 10px;
+}
+.crm-tasks li input:checked + span strong {
+  text-decoration: line-through;
+  color: var(--muted);
+}
