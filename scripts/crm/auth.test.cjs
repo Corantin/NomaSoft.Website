@@ -1,51 +1,57 @@
+// Run against a local Redis server with redis-cli on PATH.
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
+const { randomUUID } = require('node:crypto');
 const fs = require('node:fs');
-const vm = require('node:vm');
 const test = require('node:test');
 
-function authFixture() {
-  const context = vm.createContext({});
-  vm.runInContext(fs.readFileSync(__dirname + '/Code.gs', 'utf8'), context);
-  const data = new Map();
-  const props = {
-    getProperty: (key) => data.get(key),
-    setProperty: (key, value) => data.set(key, value),
-  };
-  return (action, time, overrides = {}) =>
-    context.crmAuth(
-      props,
-      {
-        action: 'otp.' + action,
-        email: 'kevinmansour@hotmail.com',
-        digest: 'example-code-digest',
-        grant: 'example-session',
-        ...overrides,
-      },
-      time,
+const source = fs.readFileSync(__dirname + '/../../lib/crm/redis-auth.ts', 'utf8');
+const script = (name) => source.split('const ' + name + ' = `')[1].split('`')[0];
+const cmd = (...args) =>
+  execFileSync(
+    'redis-cli',
+    [
+      '-h',
+      '127.0.0.1',
+      '-p',
+      process.env.REDIS_TEST_PORT || '6379',
+      '--raw',
+      ...args.map(String),
+    ],
+    { encoding: 'utf8' },
+  ).trim();
+test('Redis limits issuance and guesses, consumes codes atomically and bounds session grants', (t) => {
+  const prefix = 'test:crm:' + randomUUID(),
+    key = (n) => prefix + ':' + n;
+  t.after(() => cmd('DEL', key('sends'), key('code'), key('sessions')));
+  const issue = (n) =>
+    cmd('EVAL', script('issue'), 2, key('sends'), key('code'), n, 'digest' + n);
+  const verify = (digest, i) =>
+    cmd(
+      'EVAL',
+      script('verify'),
+      2,
+      key('code'),
+      key('sessions'),
+      digest,
+      'grant' + i,
+      3000000000000 + i,
     );
-}
-
-test('allowlist, expiration and guess limit', () => {
-  const auth = authFixture();
-  assert.equal(auth('issue', 0, { email: 'unlisted@example.com' }), false);
-  assert.equal(auth('issue', 0), true);
-  assert.equal(auth('issue', 5000), false);
-  assert.equal(auth('verify', 600000), false);
-  assert.equal(auth('issue', 600001), true);
-  for (let i = 0; i < 5; i++)
-    assert.equal(auth('verify', 600002, { digest: 'bad' }), false);
-  assert.equal(auth('verify', 600003), false);
-});
-
-test('one-time consumption, renewal deadline, and revocation', () => {
-  const auth = authFixture();
-  assert.equal(auth('issue', 0), true);
-  assert.equal(auth('verify', 100), true);
-  assert.equal(auth('verify', 100), false);
-  assert.equal(auth('active', 1000), true);
-  assert.equal(auth('active', 100 + 30 * 86400000), false);
-  assert.equal(auth('issue', 60000), true);
-  assert.equal(auth('verify', 60010), true);
-  assert.equal(auth('revoke', 60020), true);
-  assert.equal(auth('active', 60021), false);
+  assert.equal(issue(0), '1');
+  assert.equal(issue(5), '0');
+  assert.ok(Number(cmd('TTL', key('code'))) <= 600);
+  for (let i = 0; i < 5; i++) assert.equal(verify('wrong', i), '0');
+  assert.equal(verify('digest0', 0), '0');
+  for (let i = 1; i <= 4; i++) assert.equal(issue(i * 60000), '1');
+  assert.equal(issue(300000), '0');
+  for (let i = 1; i <= 21; i++) {
+    const n = i * 3600000;
+    assert.equal(issue(n), '1');
+    assert.equal(verify('digest' + n, i), '1');
+    assert.equal(verify('digest' + n, i), '0');
+  }
+  assert.equal(cmd('ZCARD', key('sessions')), '20');
+  assert.equal(cmd('ZSCORE', key('sessions'), 'grant1'), '');
+  assert.ok(Number(cmd('TTL', key('sessions'))) > 2591900);
+  assert.equal(cmd('ZREM', key('sessions'), 'grant21'), '1');
 });
