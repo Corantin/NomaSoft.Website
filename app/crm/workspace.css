@@ -447,3 +447,9 @@
   color: white;
   padding: 5px 8px;
 }
+.crm-login-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  color: var(--green);
+}

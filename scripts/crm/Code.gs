@@ -25,6 +25,9 @@ function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.waitLock(15000);
   try {
+    if (typeof payload.action === 'string' && payload.action.startsWith('otp.')) {
+      return output({ok: crmAuth(props, payload, Date.now())});
+    }
     const book = SpreadsheetApp.openById(props.getProperty('BOOK_ID'));
     const snapshot = () => {
       const board = {};
@@ -82,4 +85,51 @@ function doPost(e) {
     for (const key of Object.keys(tables)) board[key] = board[key].filter(r=>r.id);
     return output({board});
   } finally {lock.releaseLock();}
+}
+
+// Runs under the same script lock as all other CRM writes. Keep auth state outside workbook cells.
+function crmAuth(props, payload, now) {
+  if (!['corantin.noll@gmail.com','kevinmansour@hotmail.com'].includes(payload.email)) return false;
+  const key = 'auth.v1.' + payload.email;
+  const state = JSON.parse(props.getProperty(key) || '{"grants":{}}');
+  for (const grant of Object.keys(state.grants)) {
+    if (state.grants[grant] <= now) delete state.grants[grant];
+  }
+  let ok = false;
+  switch (payload.action) {
+    case 'otp.issue': {
+      const hour = 3600000;
+      state.sends = (state.sends || []).filter(t => now - t < hour);
+      const recent = state.sends.some(t => now - t < 60000);
+      if (!recent && state.sends.length < 5) {
+        state.sends.push(now);
+        state.code = {digest:payload.digest, expires:now + 600000, tries:0};
+        ok = true;
+      }
+      break;
+    }
+    case 'otp.verify': {
+      const code = state.code;
+      if (code && code.expires > now && code.tries < 5) {
+        code.tries++;
+        if (code.digest === payload.digest) {
+          delete state.code;
+          state.grants[payload.grant] = now + 30 * 86400000;
+          // Bound the property size for this two-person workspace.
+          const grants = Object.keys(state.grants).sort((a,b)=>state.grants[a]-state.grants[b]);
+          while (grants.length > 20) delete state.grants[grants.shift()];
+          ok = true;
+        }
+      }
+      break;
+    }
+    case 'otp.active':
+      return Object.prototype.hasOwnProperty.call(state.grants,payload.grant) && state.grants[payload.grant] > now;
+    case 'otp.revoke':
+      delete state.grants[payload.grant];
+      ok = true;
+      break;
+  }
+  props.setProperty(key, JSON.stringify(state));
+  return ok;
 }

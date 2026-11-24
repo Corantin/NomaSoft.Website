@@ -44,12 +44,12 @@ async function callSheet(payload: unknown) {
   }
 }
 
-export function GET() {
-  if (!hasSession()) return new Response(null, { status: 401 });
+export async function GET() {
+  if (!(await hasSession())) return new Response(null, { status: 401 });
   return callSheet({ action: 'read' });
 }
 export async function POST(req: NextRequest) {
-  if (!hasSession()) return new Response(null, { status: 401 });
+  if (!(await hasSession())) return new Response(null, { status: 401 });
   // Cross-origin browser scripts cannot send this header without a successful CORS preflight.
   if (
     req.headers.get('x-nomasoft-crm') !== '1' ||

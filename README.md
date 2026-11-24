@@ -138,7 +138,7 @@ CI (`.github/workflows/ci.yml`) runs linting, type-checking, and `next build` on
 
 ### Customer workspace
 
-Open `/crm` to reach the workspace sign-in form and sign in as `corantin` or `kafan` with the corresponding server-side password in `.env.example`. Configure these credentials on the deployment and use HTTPS. Sessions last 12 hours. Sign out from the workspace navigation. Rotating a teammate’s password invalidates their existing sessions.
+Open `/crm` and request an eight-digit sign-in code using your approved team email. NextAuth handles sign-in and sign-out. Codes expire in ten minutes and allow five attempts. Resend uses the site's configured sender. The encrypted HttpOnly access cookie lasts 15 minutes and renews through the HttpOnly NextAuth session cookie. Each browser session has a 30-day absolute lifetime and is revoked on sign-out. Set `NEXTAUTH_SECRET` to a strong random value and `NEXTAUTH_URL` to the canonical production origin. Allow Vercel to infer the host on previews. OTP verification and session revocation use private script properties in the same Apps Script deployment as the CRM. Update the script deployment to the current version when upgrading an existing workspace.
 
 To connect the NomaSoft hours workbook:
 

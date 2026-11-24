@@ -14,7 +14,7 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import { signOut } from './login/actions';
+import { signOut } from 'next-auth/react';
 import AgreementLedger from './agreement-ledger';
 import {
   models,
@@ -126,17 +126,27 @@ export default function Workspace() {
     setBusy(true);
     setError('');
     try {
-      const res = await fetch('/api/crm', {
-        method: body ? 'POST' : 'GET',
-        cache: 'no-store',
-        headers: body
-          ? { 'Content-Type': 'application/json', 'x-nomasoft-crm': '1' }
-          : undefined,
-        body: body ? JSON.stringify(body) : undefined,
-      });
+      const send = () =>
+        fetch('/api/crm', {
+          method: body ? 'POST' : 'GET',
+          cache: 'no-store',
+          headers: body
+            ? { 'Content-Type': 'application/json', 'x-nomasoft-crm': '1' }
+            : undefined,
+          body: body ? JSON.stringify(body) : undefined,
+        });
+      let res = await send();
       if (res.status === 401) {
-        window.location.replace('/crm/login');
-        return false;
+        const renewed = await fetch('/api/crm/renew', {
+          method: 'POST',
+          headers: { 'x-nomasoft-crm': '1' },
+        });
+        if (renewed.status === 401) {
+          window.location.replace('/crm/login');
+          return false;
+        }
+        if (!renewed.ok) throw Error('Could not renew your session. Try again.');
+        res = await send();
       }
       const data = await res.json();
       if (!res.ok) throw Error(data.error || 'Unable to open the workbook.');
@@ -215,7 +225,12 @@ export default function Workspace() {
         </strong>
         <span className="crm-nav-rule" />
         Customer workspace
-        <form action={signOut}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void signOut({ callbackUrl: '/crm/login' });
+          }}
+        >
           <button>Sign out</button>
         </form>
       </nav>
