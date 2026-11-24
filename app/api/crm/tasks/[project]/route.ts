@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { hasSession } from '@/lib/crm/auth';
-import { redisCommand } from '@/lib/crm/redis';
+import { redisCommand, projectTaskKey } from '@/lib/crm/redis';
 import { projectTask } from '@/lib/crm/task';
 
 export const dynamic = 'force-dynamic';
@@ -17,11 +17,7 @@ async function handle(req: Request, { params }: Context) {
   if (!(await hasSession())) return new Response(null, { status: 401 });
   if (!z.string().uuid().safeParse(params.project).success)
     return new Response(null, { status: 400 });
-  const key =
-    'nomasoft:crm:tasks:' +
-    (process.env.VERCEL_ENV || process.env.NODE_ENV) +
-    ':' +
-    params.project;
+  const key = projectTaskKey(params.project);
   try {
     if (req.method === 'POST') {
       if (

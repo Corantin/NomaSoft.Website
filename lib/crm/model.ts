@@ -105,6 +105,7 @@ export type Client = z.infer<typeof customer>;
 export type Engagement = z.infer<typeof engagement>;
 export type Payment = z.infer<typeof payment>;
 export type Board = {
+  progress?: Record<string, { done: number; total: number }>;
   customers: Client[];
   engagements: Engagement[];
   payments: Payment[];

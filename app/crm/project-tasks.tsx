@@ -1,9 +1,15 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Pencil, Plus } from 'lucide-react';
-import type { ProjectTask } from '@/lib/crm/task';
+import { taskProgress, type ProjectTask } from '@/lib/crm/task';
 
-export default function ProjectTasks({ engagementId }: { engagementId: string }) {
+export default function ProjectTasks({
+  engagementId,
+  onProgress,
+}: {
+  engagementId: string;
+  onProgress: (id: string, progress: ReturnType<typeof taskProgress>) => void;
+}) {
   const [draft, setDraft] = useState<ProjectTask | null>(null);
   const [items, setItems] = useState<ProjectTask[]>([]);
   const [error, setError] = useState('');
@@ -39,6 +45,7 @@ export default function ProjectTasks({ engagementId }: { engagementId: string })
         const data = await res.json();
         if (!res.ok) throw Error(data.error || 'Unable to load project tasks.');
         setItems(data);
+        onProgress(engagementId, taskProgress(data));
         return true;
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Unable to load project tasks.');
@@ -48,7 +55,7 @@ export default function ProjectTasks({ engagementId }: { engagementId: string })
         setBusy(false);
       }
     },
-    [engagementId],
+    [engagementId, onProgress],
   );
   useEffect(() => {
     void request();

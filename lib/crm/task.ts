@@ -8,3 +8,7 @@ export const projectTask = z.object({
   revision: z.number().int().nonnegative(),
 });
 export type ProjectTask = z.infer<typeof projectTask>;
+
+export function taskProgress(tasks: Pick<ProjectTask, 'done'>[]) {
+  return { done: tasks.filter((t) => t.done).length, total: tasks.length };
+}

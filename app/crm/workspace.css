@@ -523,3 +523,14 @@
   text-decoration: line-through;
   color: var(--muted);
 }
+.crm-task-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  background: #eaf2eb;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}

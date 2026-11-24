@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hasSession } from '@/lib/crm/auth';
 import { command } from '@/lib/crm/model';
+import { redisPipeline, projectTaskKey } from '@/lib/crm/redis';
+import { taskProgress } from '@/lib/crm/task';
 export const dynamic = 'force-dynamic';
 
 async function callSheet(payload: unknown) {
@@ -30,6 +32,18 @@ async function callSheet(payload: unknown) {
         { status: 409 },
       );
     if (!result.board) throw new Error();
+    try {
+      const ids: string[] = result.board.engagements.map((e: { id: string }) => e.id);
+      const lists = await redisPipeline(ids.map((id) => ['HVALS', projectTaskKey(id)]));
+      result.board.progress = Object.fromEntries(
+        ids.map((id, i) => [
+          id,
+          taskProgress(lists[i].map((row: string) => JSON.parse(row))),
+        ]),
+      );
+    } catch {
+      console.warn('[crm] Task counts unavailable');
+    }
     return NextResponse.json(result.board, {
       headers: { 'Cache-Control': 'private, no-store' },
     });

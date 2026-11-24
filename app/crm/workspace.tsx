@@ -1,10 +1,18 @@
 'use client';
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from 'react';
 import {
   ArrowDownLeft,
   ArrowRight,
   CalendarDays,
   Columns3,
+  ListChecks,
   GripVertical,
   ExternalLink,
   Layers3,
@@ -145,6 +153,15 @@ export default function Workspace() {
       deal: { ...deal, stage: stage ?? deal.stage },
     });
   }
+  const updateProgress = useCallback(
+    (id: string, progress: { done: number; total: number }) => {
+      setBoard(
+        (current) =>
+          current && { ...current, progress: { ...current.progress, [id]: progress } },
+      );
+    },
+    [],
+  );
   const saving = useRef(false);
   async function request(body?: unknown) {
     if (saving.current) return false;
@@ -398,6 +415,21 @@ export default function Workspace() {
                               {name}
                             </span>
                             <strong>{d.title}</strong>
+                            {!!board.progress?.[d.id]?.total && (
+                              <span
+                                className="crm-task-progress"
+                                aria-label={
+                                  board.progress[d.id].done +
+                                  ' of ' +
+                                  board.progress[d.id].total +
+                                  ' tasks complete'
+                                }
+                                title="Tasks completed"
+                              >
+                                <ListChecks size={14} aria-hidden="true" />
+                                {board.progress[d.id].done}/{board.progress[d.id].total}
+                              </span>
+                            )}
                             {d.nextAction && (
                               <span className="crm-next">
                                 <ArrowRight size={13} />
@@ -697,7 +729,11 @@ export default function Workspace() {
               {selected.nextAction || 'No next action set'}{' '}
               {selected.due && ' · ' + selected.due}
             </p>
-            <ProjectTasks key={selected.id} engagementId={selected.id} />
+            <ProjectTasks
+              key={selected.id}
+              engagementId={selected.id}
+              onProgress={updateProgress}
+            />
             <h3>Contact</h3>
             <p>
               {client.contact || 'No contact assigned'}{' '}
