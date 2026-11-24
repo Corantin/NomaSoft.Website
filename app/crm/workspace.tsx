@@ -24,6 +24,8 @@ import {
   type Engagement,
 } from '@/lib/crm/model';
 
+const partners = ['Corantin', 'Kafan'];
+const sharedTeam = partners.join(' & ');
 const money = (cents: number) =>
   new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(
     cents / 100,
@@ -170,7 +172,7 @@ export default function Workspace() {
     client = clients.find((c) => c.id === selected?.customerId);
   const visible = deals.filter(
     (d) =>
-      (!owner || d.owner === owner) &&
+      (!owner || (d.owner ? d.owner === owner : partners.includes(owner))) &&
       [d.title, clients.find((c) => c.id === d.customerId)?.name, d.nextAction]
         .join(' ')
         .toLowerCase()
@@ -263,12 +265,14 @@ export default function Workspace() {
           <label className="crm-owner">
             <Users size={16} />
             <select
-              aria-label="Filter by owner"
+              aria-label="Filter by team member"
               value={owner}
               onChange={(e) => setOwner(e.target.value)}
             >
-              <option value="">All owners</option>
-              {Array.from(new Set(deals.map((d) => d.owner).filter(Boolean)))
+              <option value="">All team members</option>
+              {Array.from(
+                new Set([...partners, ...deals.map((d) => d.owner).filter(Boolean)]),
+              )
                 .sort()
                 .map((o) => (
                   <option key={o}>{o}</option>
@@ -364,15 +368,17 @@ export default function Workspace() {
                               {d.nextAction}
                             </span>
                           )}
-                          <span className="crm-card-foot">
-                            <span>{d.owner || 'Unassigned'}</span>
-                            {d.due && (
-                              <span>
-                                <CalendarDays size={12} />
-                                {d.due}
-                              </span>
-                            )}
-                          </span>
+                          {(d.owner || d.due) && (
+                            <span className="crm-card-foot">
+                              {d.owner && <span>{d.owner}</span>}
+                              {d.due && (
+                                <span>
+                                  <CalendarDays size={12} />
+                                  {d.due}
+                                </span>
+                              )}
+                            </span>
+                          )}
                         </button>
                       );
                     })}
@@ -474,16 +480,18 @@ export default function Workspace() {
                   ))}
                 </select>
               </Field>
-              <Field label="Owner">
-                <input
-                  list="crm-owners"
+              <Field label="Project team">
+                <select
                   value={draft.deal.owner}
                   onChange={(e) => updateDeal('owner', e.target.value)}
-                />
-                <datalist id="crm-owners">
-                  <option>Corantin</option>
-                  <option>Kafan</option>
-                </datalist>
+                >
+                  <option value="">{sharedTeam}</option>
+                  {Array.from(
+                    new Set([...partners, ...deals.map((d) => d.owner).filter(Boolean)]),
+                  ).map((name) => (
+                    <option key={name}>{name}</option>
+                  ))}
+                </select>
               </Field>
             </div>
             <Field label="Next action">
@@ -548,7 +556,7 @@ export default function Workspace() {
             </div>
             <h2>{selected.title}</h2>
             <p>
-              {selected.stage} · {selected.owner || 'Unassigned'}
+              {selected.stage} · {selected.owner || sharedTeam}
             </p>
             <button
               className="crm-secondary"
