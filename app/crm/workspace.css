@@ -472,6 +472,27 @@
   margin: 10px 0;
   overflow-wrap: anywhere;
 }
+.crm-card-links {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.crm-card-links:empty {
+  display: none;
+}
+.crm-card-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  color: var(--green);
+}
+.crm-card-links a:hover,
+.crm-card-links a:focus-visible {
+  background: #e7eee8;
+}
 .crm-move-handle {
   position: absolute;
   right: 5px;

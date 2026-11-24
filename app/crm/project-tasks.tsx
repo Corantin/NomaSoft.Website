@@ -15,11 +15,13 @@ export default function ProjectTasks({
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(true);
   const pending = useRef(false);
+  const [saving, setSaving] = useState(false);
   const request = useCallback(
     async (task?: ProjectTask | TaskOrder) => {
       if (pending.current) return false;
       pending.current = true;
       setBusy(true);
+      setSaving(!!task);
       setError('');
       const send = () =>
         fetch('/api/crm/tasks/' + engagementId, {
@@ -53,6 +55,7 @@ export default function ProjectTasks({
       } finally {
         pending.current = false;
         setBusy(false);
+        setSaving(false);
       }
     },
     [engagementId, onProgress],
@@ -73,7 +76,7 @@ export default function ProjectTasks({
     setDraft({ ...task });
   }
   return (
-    <section className="crm-tasks">
+    <section className="crm-tasks" data-saving={saving}>
       <h3>
         Tasks{' '}
         {tasks.length > 0 && (

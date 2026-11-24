@@ -14,6 +14,8 @@ import {
   Columns3,
   ListChecks,
   GripVertical,
+  Globe,
+  Github,
   ExternalLink,
   Layers3,
   Pencil,
@@ -56,16 +58,45 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
     </label>
   );
 }
+function formValues(form: HTMLFormElement) {
+  return JSON.stringify(
+    Array.from(form.elements).flatMap((field) => {
+      if (field instanceof HTMLInputElement)
+        return [
+          field.type === 'checkbox' || field.type === 'radio'
+            ? String(field.checked)
+            : field.value,
+        ];
+      if (field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement)
+        return [field.value];
+      return [];
+    }),
+  );
+}
 function Drawer({
   title,
+  pending = false,
   onClose,
   children,
 }: {
   title: string;
+  pending?: boolean;
   onClose: () => void;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const originals = useRef(new WeakMap<HTMLFormElement, string>());
+  function hasPendingChanges() {
+    const dialog = ref.current;
+    return (
+      pending ||
+      !!dialog?.querySelector('[data-saving="true"]') ||
+      Array.from(dialog?.querySelectorAll('form') ?? []).some(
+        (form) =>
+          originals.current.has(form) && originals.current.get(form) !== formValues(form),
+      )
+    );
+  }
   useEffect(() => {
     const dialog = ref.current!;
     dialog.showModal();
@@ -76,6 +107,15 @@ function Drawer({
       ref={ref}
       className="crm-drawer"
       aria-label={title}
+      onFocusCapture={(e) => {
+        const form = e.target.closest('form');
+        if (form && !originals.current.has(form))
+          originals.current.set(form, formValues(form));
+      }}
+      onChangeCapture={(e) => {
+        const form = (e.target as HTMLElement).closest('form');
+        if (form && !originals.current.has(form)) originals.current.set(form, 'changed');
+      }}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
@@ -83,7 +123,8 @@ function Drawer({
       onClick={(e) => {
         if (
           e.target === ref.current &&
-          e.clientX < ref.current.getBoundingClientRect().left
+          e.clientX < ref.current.getBoundingClientRect().left &&
+          !hasPendingChanges()
         )
           onClose();
       }}
@@ -480,6 +521,28 @@ export default function Workspace() {
                               </span>
                             )}
                           </button>
+                          <div className="crm-card-links">
+                            {(['vercel', 'github'] as const)
+                              .filter((key) => /^https:\/\//i.test(d[key]))
+                              .map((key) => {
+                                const Icon = key === 'github' ? Github : Globe;
+                                const label =
+                                  key === 'github' ? 'GitHub repository' : 'Website';
+                                return (
+                                  <a
+                                    key={key}
+                                    href={d[key]}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    draggable={false}
+                                    aria-label={d.title + ' ' + label}
+                                    title={label}
+                                  >
+                                    <Icon size={16} aria-hidden="true" />
+                                  </a>
+                                );
+                              })}
+                          </div>
                           <button
                             type="button"
                             className="crm-move-handle"
@@ -510,6 +573,9 @@ export default function Workspace() {
       {move && (
         <Drawer
           title="Move engagement"
+          pending={
+            busy || deals.find((d) => d.id === move.deal.id)?.stage !== move.deal.stage
+          }
           onClose={() => {
             if (!busy) {
               setMove(null);
