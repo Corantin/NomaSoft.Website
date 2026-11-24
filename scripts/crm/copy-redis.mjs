@@ -1,0 +1,12 @@
+const e=process.env;
+const src=[e.KV_REST_API_URL,e.KV_REST_API_READ_ONLY_TOKEN||e.KV_REST_API_TOKEN],dst=[e.UPSTASH_REDIS_REST_URL,e.UPSTASH_REDIS_REST_TOKEN];
+if(!src.every(Boolean)||!dst.every(Boolean)||src[0]===dst[0])throw Error('Invalid migration connections');
+async function run([url,token],args){const response=await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(args)});const r=await response.json();if(!response.ok||r.error)throw Error('Redis '+args[0]+' failed: '+(r.error||response.status));return r.result}
+const prefix='nomasoft:crm:';
+async function keys(db){let cursor='0';const found=new Set();do{const page=await run(db,['SCAN',cursor,'MATCH',prefix+'*','COUNT',100]);cursor=String(page[0]);for(const k of page[1]){if(!k.startsWith(prefix))throw Error('Key namespace mismatch');found.add(k)}}while(cursor!=='0');return [...found].sort()}
+async function read(db,k){const type=await run(db,['TYPE',k]);if(type==='none')return null;const verb={hash:'HGETALL',string:'GET',zset:'ZRANGE'}[type];if(!verb)throw Error('Unexpected CRM data type '+type);const v=await run(db,[verb,k,...(type==='zset'?['0','-1','WITHSCORES']:[])]);if(type==='hash'){const pairs=[];for(let i=0;i<v.length;i+=2)pairs.push([v[i],v[i+1]]);pairs.sort((a,b)=>a[0].localeCompare(b[0]));return [type,pairs.flat()]}return [type,v]}
+const sourceKeys=await keys(src);if(!sourceKeys.includes(prefix+'board:production'))throw Error('Source production board missing');
+const apply="if redis.call('EXISTS',KEYS[1])==1 then return 0 end local a=cjson.decode(ARGV[1]);redis.call(unpack(a));local t=tonumber(ARGV[2]);if t>0 then redis.call('PEXPIRE',KEYS[1],t) end return 1";
+for(const k of sourceKeys){const s=await read(src,k);if(!s)continue;const ttl=await run(src,['PTTL',k]);if(ttl===-2||ttl===0)continue;const [t,v]=s;const cmd=t==='string'?['SET',k,v]:t==='hash'?['HSET',k,...v]:['ZADD',k,...v.flatMap((x,i)=>i%2===0?[v[i+1],x]:[])];await run(dst,['EVAL',apply,1,k,JSON.stringify(cmd),ttl]);}
+const verifyKeys=await keys(src);let permanent=0;for(const k of verifyKeys){const s=await read(src,k);if(!s)continue;if(JSON.stringify(s)!==JSON.stringify(await read(dst,k)))throw Error('Source and destination differ');const a=await run(src,['PTTL',k]),b=await run(dst,['PTTL',k]);if(a===-1){permanent++;if(b!==-1)throw Error('Persistent TTL mismatch')}else if(a>0&&(b<0||Math.abs(a-b)>5000))throw Error('Expiry mismatch')}
+console.log('CRM migration verified:',verifyKeys.length,'keys,',permanent,'persistent');
