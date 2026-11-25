@@ -1,15 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hoursService } from '@/lib/crm/hours';
 import { crmRecords } from '@/lib/crm/board-store';
-import { work } from '@/lib/crm/model';
+import { work, editWork } from '@/lib/crm/model';
 
-async function hours(id: string | null, entry?: typeof work._output) {
+async function hours(
+  id: string | null,
+  entry?: typeof work._output,
+  previous?: typeof work._output,
+) {
   try {
     if (!(await crmRecords()).engagements.some((project) => project.id === id))
       return NextResponse.json({ error: 'Unknown project.' }, { status: 404 });
     const result = await hoursService(
-      entry ? { action: 'work', work: entry } : { action: 'read' },
+      entry
+        ? { action: previous ? 'editWork' : 'work', work: entry, previous }
+        : { action: 'read' },
     );
+    if (result.error === 'conflict')
+      return NextResponse.json(
+        {
+          error:
+            'This time entry changed. Cancel and reopen it to edit the latest version.',
+        },
+        { status: 409 },
+      );
+    if (result.error === 'not_found')
+      return NextResponse.json(
+        { error: 'Time entry no longer exists.' },
+        { status: 404 },
+      );
     const rows = result.work;
     if (!Array.isArray(rows)) throw Error();
     return NextResponse.json(
@@ -32,7 +51,18 @@ export async function POST(req: NextRequest) {
     req.headers.get('sec-fetch-site') === 'cross-site'
   )
     return new Response(null, { status: 403 });
-  const parsed = work.safeParse(await req.json().catch(() => null));
+  const body = await req.json().catch(() => null);
+  if (body?.action === 'editWork') {
+    const parsed = editWork.safeParse(body);
+    if (
+      !parsed.success ||
+      parsed.data.work.id !== parsed.data.previous.id ||
+      parsed.data.work.engagementId !== parsed.data.previous.engagementId
+    )
+      return NextResponse.json({ error: 'Invalid time entry edit.' }, { status: 400 });
+    return hours(parsed.data.work.engagementId, parsed.data.work, parsed.data.previous);
+  }
+  const parsed = work.safeParse(body);
   if (!parsed.success)
     return NextResponse.json({ error: 'Check the time entry.' }, { status: 400 });
   return hours(parsed.data.engagementId, parsed.data);

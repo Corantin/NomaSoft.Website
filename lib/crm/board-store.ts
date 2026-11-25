@@ -1,7 +1,7 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod/v4';
-import { command, type Board } from './model';
+import { acceptsPayments, command, type Board } from './model';
 import { projectTaskKey, redisCommand } from './redis';
 
 type Records = Pick<
@@ -12,6 +12,7 @@ type Change = Exclude<z.infer<typeof command>, { action: 'work' }>;
 const key = 'nomasoft:crm:board:' + (process.env.VERCEL_ENV || process.env.NODE_ENV);
 export class BoardConflict extends Error {}
 export class InvalidRecord extends Error {}
+export class InvalidBillingModel extends Error {}
 
 async function snapshot(): Promise<string> {
   const existing = await redisCommand(['GET', key]);
@@ -109,17 +110,23 @@ function change(records: Records, cmd: Change) {
     case 'issue': {
       const charge = records.charges.find((row) => row.id === cmd.chargeId);
       if (!charge) throw new InvalidRecord();
+      if (!charge.issued && project(charge.engagementId).model !== 'Fixed installments')
+        throw new InvalidBillingModel();
       charge.issued = true;
       break;
     }
     case 'charge':
       project(cmd.charge.engagementId);
       if (records.charges.some((row) => row.id === cmd.charge.id)) return false;
+      if (project(cmd.charge.engagementId).model !== 'Fixed installments')
+        throw new InvalidBillingModel();
       records.charges.push(cmd.charge);
       break;
     case 'payment':
       project(cmd.payment.engagementId);
       if (records.payments.some((row) => row.id === cmd.payment.id)) return false;
+      if (!acceptsPayments(project(cmd.payment.engagementId).model))
+        throw new InvalidBillingModel();
       records.payments.push(cmd.payment);
       break;
   }

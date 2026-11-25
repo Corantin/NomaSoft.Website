@@ -6,6 +6,7 @@ import * as hours from '@/lib/crm/handlers/hours';
 import * as notes from '@/lib/crm/handlers/notes';
 import {
   edit,
+  editWork,
   move,
   receive,
   addCharge,
@@ -88,21 +89,21 @@ export const crmTools = [
   ),
   tool(
     'crm_add_installment',
-    'Add an installment in CAD cents. Reuse its UUID on retry.',
+    'Add an installment in CAD cents to a fixed-installment project. Reuse its UUID on retry.',
     addCharge.omit({ action: true }),
     false,
     (a) => board.POST(request('', { ...a, action: 'charge' })),
   ),
   tool(
     'crm_issue_installment',
-    'Mark an installment issued.',
+    'Mark an installment issued on a fixed-installment project.',
     issue.omit({ action: true }),
     false,
     (a) => board.POST(request('', { ...a, action: 'issue' })),
   ),
   tool(
     'crm_record_payment',
-    'Record a payment received in CAD cents. Reuse its UUID on retry.',
+    'Record a payment received in CAD cents on a fixed-installment, hourly, prepaid hours or maintenance retainer project. Reuse its UUID on retry.',
     receive.omit({ action: true }),
     false,
     (a) => board.POST(request('', { ...a, action: 'payment' })),
@@ -134,6 +135,13 @@ export const crmTools = [
     project,
     true,
     (a) => hours.GET(request('/hours?project=' + a.project)),
+  ),
+  tool(
+    'crm_edit_hours',
+    'Edit an existing time log in place. Supply the original row from crm_list_hours as previous and the updated row as work, preserving both IDs.',
+    editWork.omit({ action: true }),
+    false,
+    (a) => hours.POST(request('/hours', { ...a, action: 'editWork' })),
   ),
   tool(
     'crm_log_hours',

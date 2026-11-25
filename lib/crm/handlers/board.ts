@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { command } from '@/lib/crm/model';
 import { redisPipeline, projectTaskKey } from '@/lib/crm/redis';
 import { taskProgress } from '@/lib/crm/task';
-import { crmRecords, BoardConflict, InvalidRecord } from '@/lib/crm/board-store';
+import {
+  crmRecords,
+  BoardConflict,
+  InvalidBillingModel,
+  InvalidRecord,
+} from '@/lib/crm/board-store';
 import { z } from 'zod/v4';
 
 async function boardResponse(cmd?: Exclude<z.infer<typeof command>, { action: 'work' }>) {
@@ -26,6 +31,11 @@ async function boardResponse(cmd?: Exclude<z.infer<typeof command>, { action: 'w
   } catch (error) {
     if (error instanceof BoardConflict)
       return NextResponse.json({ error: 'The board changed.' }, { status: 409 });
+    if (error instanceof InvalidBillingModel)
+      return NextResponse.json(
+        { error: 'This billing model does not support this operation.' },
+        { status: 400 },
+      );
     if (error instanceof InvalidRecord)
       return NextResponse.json(
         { error: 'Unknown project or billing record.' },

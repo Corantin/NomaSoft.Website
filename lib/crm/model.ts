@@ -107,6 +107,10 @@ export const work = z.object({
   minutes: z.number().int().positive().max(1440),
   description: short,
 });
+export const editWork = z.object({ action: z.literal('editWork'), work, previous: work });
+export function acceptsPayments(model: Engagement['model']) {
+  return model !== 'Undecided' && model !== 'Exchange';
+}
 export const addCharge = z.object({ action: z.literal('charge'), charge });
 export const addWork = z.object({ action: z.literal('work'), work });
 export const issue = z.object({

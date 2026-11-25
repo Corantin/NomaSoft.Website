@@ -30,6 +30,7 @@ import ProjectNotes from './project-notes';
 import AgreementLedger from './agreement-ledger';
 import {
   models,
+  acceptsPayments,
   stages,
   type Board,
   type Client,
@@ -877,71 +878,83 @@ export default function Workspace() {
             <strong>{selected.model}</strong>
             <p>{selected.scope || 'No scope recorded'}</p>
             {selected.terms && <p>{selected.terms}</p>}
-            <h3>Payments</h3>
-            <div className="crm-paid">
-              <span>Received from {client.name}</span>
-              <strong>
-                {money(
-                  payments
-                    .filter((p) =>
-                      deals.some(
-                        (d) => d.customerId === client.id && d.id === p.engagementId,
-                      ),
-                    )
-                    .reduce((a, p) => a + p.cents, 0),
-                )}
-              </strong>
-            </div>
-            {payments
-              .filter((p) => p.engagementId === selected.id)
-              .sort((a, b) => b.date.localeCompare(a.date))
-              .map((p) => (
-                <p key={p.id}>
-                  {p.date} · {money(p.cents)} {p.reference}
-                </p>
-              ))}
-            {pay ? (
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const f = new FormData(e.currentTarget);
-                  if (
-                    await request({
-                      action: 'payment',
-                      payment: {
-                        id: pay,
-                        engagementId: selected.id,
-                        date: f.get('date'),
-                        cents: Math.round(Number(f.get('amount')) * 100),
-                        reference: f.get('reference'),
-                      },
-                    })
-                  )
-                    setPay('');
-                }}
-              >
-                <div className="crm-pair">
-                  <Field label="Amount (CAD)">
-                    <input required name="amount" type="number" min=".01" step=".01" />
-                  </Field>
-                  <Field label="Payment date">
-                    <input required name="date" type="date" />
-                  </Field>
+            {(acceptsPayments(selected.model) ||
+              payments.some((p) => p.engagementId === selected.id)) && (
+              <>
+                <h3>Payments</h3>
+                <div className="crm-paid">
+                  <span>Received from {client.name}</span>
+                  <strong>
+                    {money(
+                      payments
+                        .filter((p) =>
+                          deals.some(
+                            (d) => d.customerId === client.id && d.id === p.engagementId,
+                          ),
+                        )
+                        .reduce((a, p) => a + p.cents, 0),
+                    )}
+                  </strong>
                 </div>
-                <Field label="Payment reference">
-                  <input name="reference" />
-                </Field>
-                <button className="crm-secondary" disabled={busy}>
-                  Save payment
-                </button>
-              </form>
-            ) : (
-              <button
-                className="crm-secondary"
-                onClick={() => setPay(crypto.randomUUID())}
-              >
-                <ArrowDownLeft size={16} /> Record payment
-              </button>
+                {payments
+                  .filter((p) => p.engagementId === selected.id)
+                  .sort((a, b) => b.date.localeCompare(a.date))
+                  .map((p) => (
+                    <p key={p.id}>
+                      {p.date} · {money(p.cents)} {p.reference}
+                    </p>
+                  ))}
+                {acceptsPayments(selected.model) &&
+                  (pay ? (
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const f = new FormData(e.currentTarget);
+                        if (
+                          await request({
+                            action: 'payment',
+                            payment: {
+                              id: pay,
+                              engagementId: selected.id,
+                              date: f.get('date'),
+                              cents: Math.round(Number(f.get('amount')) * 100),
+                              reference: f.get('reference'),
+                            },
+                          })
+                        )
+                          setPay('');
+                      }}
+                    >
+                      <div className="crm-pair">
+                        <Field label="Amount (CAD)">
+                          <input
+                            required
+                            name="amount"
+                            type="number"
+                            min=".01"
+                            step=".01"
+                          />
+                        </Field>
+                        <Field label="Payment date">
+                          <input required name="date" type="date" />
+                        </Field>
+                      </div>
+                      <Field label="Payment reference">
+                        <input name="reference" />
+                      </Field>
+                      <button className="crm-secondary" disabled={busy}>
+                        Save payment
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      className="crm-secondary"
+                      onClick={() => setPay(crypto.randomUUID())}
+                    >
+                      <ArrowDownLeft size={16} /> Record payment
+                    </button>
+                  ))}
+              </>
             )}
             <AgreementLedger
               key={'ledger-' + selected.id}
