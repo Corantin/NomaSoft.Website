@@ -598,3 +598,18 @@
 .crm-notes > button {
   margin-top: 8px;
 }
+
+.crm-project-link {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  margin-bottom: .4rem;
+}
+.crm-project-link a {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.crm-project-link button {
+  padding: .35rem;
+}

@@ -86,11 +86,23 @@ function change(records: Records, cmd: Change) {
     return found;
   };
   switch (cmd.action) {
-    case 'save':
+    case 'save': {
       if (cmd.customer.id !== cmd.engagement.customerId) throw new InvalidRecord();
       put(records.customers, cmd.customer);
-      put(records.engagements, cmd.engagement);
+      const current = records.engagements.find((row) => row.id === cmd.engagement.id);
+      put(records.engagements, { ...current, ...cmd.engagement });
       break;
+    }
+    case 'saveLink': {
+      const target = project(cmd.engagementId);
+      put((target.links ??= []), cmd.link);
+      break;
+    }
+    case 'removeLink': {
+      const target = project(cmd.engagementId);
+      target.links = (target.links ?? []).filter((link) => link.id !== cmd.linkId);
+      break;
+    }
     case 'move':
       project(cmd.engagementId).stage = cmd.stage;
       break;

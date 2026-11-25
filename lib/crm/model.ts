@@ -30,6 +30,28 @@ const link = z.union([
     .regex(/^https:\/\//i),
 ]);
 const id = z.string().uuid();
+export const projectLink = z.object({
+  id,
+  label: required,
+  url: z
+    .string()
+    .trim()
+    .max(8192)
+    .url()
+    .regex(/^https?:\/\//i),
+});
+export const saveLink = z.object({
+  action: z.literal('saveLink'),
+  engagementId: id,
+  link: projectLink,
+  version: z.string().max(100),
+});
+export const removeLink = z.object({
+  action: z.literal('removeLink'),
+  engagementId: id,
+  linkId: id,
+  version: z.string().max(100),
+});
 export const customer = z.object({
   id,
   name: required,
@@ -98,10 +120,13 @@ export const command = z.discriminatedUnion('action', [
   receive,
   addCharge,
   addWork,
+  saveLink,
+  removeLink,
   issue,
 ]);
 export type Client = z.infer<typeof customer>;
-export type Engagement = z.infer<typeof engagement>;
+export type ProjectLink = z.infer<typeof projectLink>;
+export type Engagement = z.infer<typeof engagement> & { links?: ProjectLink[] };
 export type Payment = z.infer<typeof payment>;
 export type Board = {
   progress?: Record<string, { done: number; total: number; nextAction: string }>;

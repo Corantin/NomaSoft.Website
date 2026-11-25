@@ -4,7 +4,16 @@ import * as board from '@/lib/crm/handlers/board';
 import * as tasks from '@/lib/crm/handlers/tasks';
 import * as hours from '@/lib/crm/handlers/hours';
 import * as notes from '@/lib/crm/handlers/notes';
-import { edit, move, receive, addCharge, issue, work } from '@/lib/crm/model';
+import {
+  edit,
+  move,
+  receive,
+  addCharge,
+  issue,
+  work,
+  saveLink,
+  removeLink,
+} from '@/lib/crm/model';
 import { projectTask, taskOrder } from '@/lib/crm/task';
 import { maxNoteLength, maxNoteBytes } from '@/lib/crm/note';
 const project = z.object({ project: z.string().uuid() });
@@ -44,7 +53,7 @@ function tool<S extends z.ZodObject>(
 export const crmTools = [
   tool(
     'crm_board',
-    'Read all projects and customers, stages, next actions, task counts, installments, payments and the current board version. Filter the result for board search or closed projects.',
+    'Read all projects and customers, labeled project links with IDs and URLs, stages, next actions, task counts, installments, payments and the current board version. Filter the result for board search or closed projects.',
     z.object({}),
     true,
     () => board.GET(),
@@ -55,6 +64,20 @@ export const crmTools = [
     edit.omit({ action: true }),
     false,
     (a) => board.POST(request('', { ...a, action: 'save' })),
+  ),
+  tool(
+    'crm_save_project_link',
+    'Add or edit a labeled HTTP or HTTPS project link. Use a new UUID to add, or the existing link ID to edit. Read crm_board for links and the current version.',
+    saveLink.omit({ action: true }),
+    false,
+    (a) => board.POST(request('', { ...a, action: 'saveLink' })),
+  ),
+  tool(
+    'crm_remove_project_link',
+    'Remove a labeled project link using its ID and the current version from crm_board.',
+    removeLink.omit({ action: true }),
+    false,
+    (a) => board.POST(request('', { ...a, action: 'removeLink' })),
   ),
   tool(
     'crm_move_project',

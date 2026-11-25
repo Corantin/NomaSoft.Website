@@ -16,7 +16,6 @@ import {
   GripVertical,
   Globe,
   Github,
-  ExternalLink,
   Layers3,
   Pencil,
   Plus,
@@ -26,6 +25,7 @@ import {
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import ProjectTasks from './project-tasks';
+import ProjectLinks from './project-links';
 import ProjectNotes from './project-notes';
 import AgreementLedger from './agreement-ledger';
 import {
@@ -843,6 +843,7 @@ export default function Workspace() {
               engagementId={selected.id}
               onProgress={updateProgress}
             />
+            <ProjectLinks key={'links-' + selected.id} project={selected} version={board.version} busy={busy} request={request} />
             <ProjectNotes key={selected.id} id={selected.id} />
             <h3>Contact</h3>
             <p>
@@ -918,25 +919,6 @@ export default function Workspace() {
               >
                 <ArrowDownLeft size={16} /> Record payment
               </button>
-            )}
-            {(selected.github || selected.vercel) && (
-              <>
-                <h3>Project links</h3>
-                {(['github', 'vercel'] as const)
-                  .filter((k) => /^https:\/\//i.test(selected[k]))
-                  .map((k) => (
-                    <a
-                      className="crm-link"
-                      key={k}
-                      href={selected[k]}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {k === 'github' ? 'GitHub repository' : 'Vercel project'}{' '}
-                      <ExternalLink size={14} />
-                    </a>
-                  ))}
-              </>
             )}
             <AgreementLedger
               key={selected.id}
