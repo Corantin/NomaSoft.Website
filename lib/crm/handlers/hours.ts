@@ -6,7 +6,7 @@ import { work, editWork } from '@/lib/crm/model';
 async function hours(
   id: string | null,
   entry?: typeof work._output,
-  previous?: typeof work._output,
+  previous?: typeof editWork._output.previous,
 ) {
   try {
     if (!(await crmRecords()).engagements.some((project) => project.id === id))

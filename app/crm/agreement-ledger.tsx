@@ -1,6 +1,12 @@
 'use client';
 import { useState, useRef, useCallback, useEffect, type FormEvent } from 'react';
-import type { Board, Engagement, work as workSchema } from '@/lib/crm/model';
+import {
+  timeMembers,
+  timeMember,
+  type Board,
+  type Engagement,
+  type editWork,
+} from '@/lib/crm/model';
 
 const cad = (value: number) =>
   new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(
@@ -19,14 +25,14 @@ export default function AgreementLedger({
 }) {
   const [form, setForm] = useState<'' | 'charge' | 'work'>(''),
     [id, setId] = useState('');
-  const [editing, setEditing] = useState<typeof workSchema._output | null>(null);
+  const [editing, setEditing] = useState<typeof editWork._output.previous | null>(null);
   const fixed = deal.model === 'Fixed installments';
   const charges = board.charges.filter((c) => c.engagementId === deal.id);
   const paid = board.payments
     .filter((p) => p.engagementId === deal.id)
     .reduce((s, p) => s + p.cents, 0);
   const balance = charges.filter((c) => c.issued).reduce((s, c) => s + c.cents, 0) - paid;
-  const [work, setWork] = useState<(typeof workSchema._output)[]>([]);
+  const [work, setWork] = useState<(typeof editWork._output.previous)[]>([]);
   const [hoursBusy, setHoursBusy] = useState(true);
   const [hoursError, setHoursError] = useState('');
   const loadHours = useCallback(
@@ -77,17 +83,17 @@ export default function AgreementLedger({
   useEffect(() => {
     void loadHours();
   }, [loadHours]);
-  const editDialog = useRef<HTMLDialogElement>(null);
-  const editTrigger = useRef<HTMLButtonElement | null>(null);
+  const timeDialog = useRef<HTMLDialogElement>(null);
+  const timeTrigger = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
-    if (!editing) return;
-    const dialog = editDialog.current!;
+    if (form !== 'work') return;
+    const dialog = timeDialog.current!;
     dialog.showModal();
     return () => {
       dialog.close();
-      editTrigger.current?.focus();
+      timeTrigger.current?.focus();
     };
-  }, [editing]);
+  }, [form]);
   function closeTimeForm() {
     setForm('');
     setEditing(null);
@@ -126,10 +132,23 @@ export default function AgreementLedger({
   }
   const timeForm = (
     <form key={id} onSubmit={save} data-saving={hoursBusy}>
-      {editing && <h2 id="crm-edit-time-title">Edit time entry</h2>}
+      <h2 id="crm-time-title">{editing ? 'Edit time entry' : 'Log time'}</h2>
       <label className="crm-field">
         Team member
-        <input required name="member" defaultValue={editing?.member ?? deal.owner} />
+        <select
+          required
+          name="member"
+          defaultValue={timeMember(editing?.member ?? deal.owner)}
+        >
+          <option value="" disabled>
+            Select team member
+          </option>
+          {timeMembers.map((member) => (
+            <option key={member} value={member}>
+              {member}
+            </option>
+          ))}
+        </select>
       </label>
       <div className="crm-pair">
         <label className="crm-field">
@@ -153,7 +172,7 @@ export default function AgreementLedger({
         Description
         <input name="description" maxLength={180} defaultValue={editing?.description} />
       </label>
-      {editing && hoursError && <p role="alert">{hoursError}</p>}
+      {hoursError && <p role="alert">{hoursError}</p>}
       <div className="crm-time-actions">
         <button className="crm-primary" disabled={busy || hoursBusy}>
           {editing ? 'Save changes' : 'Save time'}
@@ -239,7 +258,7 @@ export default function AgreementLedger({
               Number((work.reduce((s, w) => s + w.minutes, 0) / 60).toFixed(2)) +
               ' h'}
       </h3>
-      {hoursError && !editing && (
+      {hoursError && form !== 'work' && (
         <p role="alert">
           {hoursError} <button onClick={() => void loadHours()}>Retry</button>
         </p>
@@ -248,7 +267,7 @@ export default function AgreementLedger({
         <div key={w.id} className="crm-ledger-row">
           <span>
             <strong>
-              {w.member} · {w.minutes} min
+              {timeMember(w.member) || w.member} · {w.minutes} min
             </strong>
             <small>
               {w.date} {w.description}
@@ -260,7 +279,7 @@ export default function AgreementLedger({
             disabled={hoursBusy || form === 'work'}
             aria-label={'Edit time entry for ' + w.member + ' on ' + w.date}
             onClick={(event) => {
-              editTrigger.current = event.currentTarget;
+              timeTrigger.current = event.currentTarget;
               setId(w.id);
               setEditing(w);
               setForm('work');
@@ -271,19 +290,22 @@ export default function AgreementLedger({
           </button>
         </div>
       ))}
-      {form !== 'work' ? (
-        <button
-          className="crm-secondary"
-          disabled={hoursBusy}
-          onClick={() => start('work')}
-        >
-          Log time
-        </button>
-      ) : editing ? (
+      <button
+        className="crm-secondary"
+        disabled={hoursBusy}
+        onClick={(event) => {
+          timeTrigger.current = event.currentTarget;
+          setHoursError('');
+          start('work');
+        }}
+      >
+        Log time
+      </button>
+      {form === 'work' && (
         <dialog
-          ref={editDialog}
+          ref={timeDialog}
           className="crm-time-dialog"
-          aria-labelledby="crm-edit-time-title"
+          aria-labelledby="crm-time-title"
           onCancel={(event) => {
             event.preventDefault();
             event.stopPropagation();
@@ -292,8 +314,6 @@ export default function AgreementLedger({
         >
           {timeForm}
         </dialog>
-      ) : (
-        timeForm
       )}
     </>
   );

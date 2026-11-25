@@ -99,7 +99,20 @@ export const charge = z.object({
   cents: z.number().int().positive().max(10000000000),
   issued: z.boolean(),
 });
-export const work = z.object({
+export const timeMembers = ['Corantin', 'Kevin'] as const;
+export function timeMember(name: string) {
+  switch (name.trim().toLowerCase()) {
+    case 'corantin':
+      return 'Corantin';
+    case 'kafan':
+    case 'kev':
+    case 'kevin':
+      return 'Kevin';
+    default:
+      return '';
+  }
+}
+const storedWork = z.object({
   id,
   engagementId: id,
   date,
@@ -107,7 +120,12 @@ export const work = z.object({
   minutes: z.number().int().positive().max(1440),
   description: short,
 });
-export const editWork = z.object({ action: z.literal('editWork'), work, previous: work });
+export const work = storedWork.extend({ member: z.enum(timeMembers) });
+export const editWork = z.object({
+  action: z.literal('editWork'),
+  work,
+  previous: storedWork,
+});
 export function acceptsPayments(model: Engagement['model']) {
   return model !== 'Undecided' && model !== 'Exchange';
 }
