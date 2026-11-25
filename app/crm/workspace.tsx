@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import ProjectTasks from './project-tasks';
+import ProjectNotes from './project-notes';
 import AgreementLedger from './agreement-ledger';
 import {
   models,
@@ -842,6 +843,7 @@ export default function Workspace() {
               engagementId={selected.id}
               onProgress={updateProgress}
             />
+            <ProjectNotes key={selected.id} id={selected.id} />
             <h3>Contact</h3>
             <p>
               {client.contact || 'No contact assigned'}{' '}

@@ -579,3 +579,22 @@
   align-items: center;
   gap: 2px;
 }
+.crm-notes article {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 0;
+  overflow-wrap: anywhere;
+}
+.crm-notes article time {
+  font-size: 12px;
+  color: var(--muted);
+}
+.crm-notes article p {
+  white-space: pre-wrap;
+}
+.crm-notes article a {
+  color: var(--green);
+  text-decoration: underline;
+}
+.crm-notes > button {
+  margin-top: 8px;
+}
