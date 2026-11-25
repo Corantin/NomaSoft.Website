@@ -7,13 +7,17 @@ export default function ProjectLinks({
   version,
   busy,
   request,
+  initiallyAdding,
 }: {
   project: Engagement;
   version: string;
   busy: boolean;
+  initiallyAdding: boolean;
   request: (body: unknown) => Promise<boolean>;
 }) {
-  const [draft, setDraft] = useState<ProjectLink | null>(null);
+  const [draft, setDraft] = useState<ProjectLink | null>(() =>
+    initiallyAdding ? { id: crypto.randomUUID(), label: '', url: '' } : null,
+  );
   const [error, setError] = useState('');
   const links = [
     ...(['github', 'vercel'] as const)
@@ -33,46 +37,6 @@ export default function ProjectLinks({
   return (
     <section aria-label="Project links">
       <h3>Project links</h3>
-      {links.map((link) => (
-        <div className="crm-project-link" key={link.id}>
-          <a
-            className="crm-link"
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={link.url}
-          >
-            {link.label} <ExternalLink size={14} />
-          </a>
-          {link.custom && (
-            <>
-              <button
-                type="button"
-                disabled={busy || !!draft}
-                aria-label={'Edit ' + link.label}
-                onClick={() => edit(link)}
-              >
-                <Pencil size={15} />
-              </button>
-              <button
-                type="button"
-                disabled={busy || !!draft}
-                aria-label={'Remove ' + link.label}
-                onClick={() =>
-                  void request({
-                    action: 'removeLink',
-                    engagementId: project.id,
-                    linkId: link.id,
-                    version,
-                  })
-                }
-              >
-                <Trash2 size={15} />
-              </button>
-            </>
-          )}
-        </div>
-      ))}
       {draft ? (
         <form
           className="crm-form"
@@ -141,6 +105,46 @@ export default function ProjectLinks({
           <Plus size={15} /> Add link
         </button>
       )}
+      {links.map((link) => (
+        <div className="crm-project-link" key={link.id}>
+          <a
+            className="crm-link"
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={link.url}
+          >
+            {link.label} <ExternalLink size={14} />
+          </a>
+          {link.custom && (
+            <>
+              <button
+                type="button"
+                disabled={busy || !!draft}
+                aria-label={'Edit ' + link.label}
+                onClick={() => edit(link)}
+              >
+                <Pencil size={15} />
+              </button>
+              <button
+                type="button"
+                disabled={busy || !!draft}
+                aria-label={'Remove ' + link.label}
+                onClick={() =>
+                  void request({
+                    action: 'removeLink',
+                    engagementId: project.id,
+                    linkId: link.id,
+                    version,
+                  })
+                }
+              >
+                <Trash2 size={15} />
+              </button>
+            </>
+          )}
+        </div>
+      ))}
     </section>
   );
 }

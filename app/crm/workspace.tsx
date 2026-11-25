@@ -208,6 +208,7 @@ export default function Workspace() {
     [draft, setDraft] = useState<Draft | null>(null),
     [pay, setPay] = useState('');
   const [stageTip, setStageTip] = useState<Engagement['stage'] | null>(null);
+  const [openLinkForm, setOpenLinkForm] = useState(false);
   const [dragged, setDragged] = useState('');
   const [target, setTarget] = useState('');
   const [move, setMove] = useState<Draft | null>(null);
@@ -307,6 +308,7 @@ export default function Workspace() {
   function close() {
     if (busy) return;
     setActive('');
+    setOpenLinkForm(false);
     setDraft(null);
     setPay('');
     setError('');
@@ -510,6 +512,7 @@ export default function Workspace() {
                           <button
                             className="crm-open-card"
                             onClick={() => {
+                              setOpenLinkForm(false);
                               setActive(d.id);
                               setError('');
                             }}
@@ -553,6 +556,19 @@ export default function Workspace() {
                             )}
                           </button>
                           <div className="crm-card-links">
+                            <button
+                              type="button"
+                              className="crm-card-add-link"
+                              disabled={busy}
+                              aria-label={'Add link to ' + d.title}
+                              onClick={() => {
+                                setOpenLinkForm(true);
+                                setActive(d.id);
+                                setError('');
+                              }}
+                            >
+                              <Plus size={14} aria-hidden="true" /> Add link
+                            </button>
                             {(['vercel', 'github'] as const)
                               .filter((key) => /^https:\/\//i.test(d[key]))
                               .map((key) => {
@@ -838,13 +854,20 @@ export default function Workspace() {
             >
               <Pencil size={15} /> Edit customer & engagement
             </button>
+            <ProjectLinks
+              key={'links-' + selected.id}
+              project={selected}
+              version={board.version}
+              busy={busy}
+              request={request}
+              initiallyAdding={openLinkForm}
+            />
             <ProjectTasks
-              key={selected.id}
+              key={'tasks-' + selected.id}
               engagementId={selected.id}
               onProgress={updateProgress}
             />
-            <ProjectLinks key={'links-' + selected.id} project={selected} version={board.version} busy={busy} request={request} />
-            <ProjectNotes key={selected.id} id={selected.id} />
+            <ProjectNotes key={'notes-' + selected.id} id={selected.id} />
             <h3>Contact</h3>
             <p>
               {client.contact || 'No contact assigned'}{' '}
@@ -921,7 +944,7 @@ export default function Workspace() {
               </button>
             )}
             <AgreementLedger
-              key={selected.id}
+              key={'ledger-' + selected.id}
               board={board}
               deal={selected}
               busy={busy}

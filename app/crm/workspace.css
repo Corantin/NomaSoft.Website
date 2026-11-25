@@ -613,3 +613,20 @@
 .crm-project-link button {
   padding: .35rem;
 }
+
+.crm-card-add-link {
+  order: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--green);
+  font-size: 13px;
+}
+.crm-card-add-link:hover,
+.crm-card-add-link:focus-visible {
+  background: #e7eee8;
+}
