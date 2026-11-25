@@ -1,6 +1,6 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { command, type Board } from './model';
 import { projectTaskKey, redisCommand } from './redis';
 

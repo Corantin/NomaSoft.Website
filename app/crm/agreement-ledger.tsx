@@ -24,7 +24,7 @@ export default function AgreementLedger({
     .filter((p) => p.engagementId === deal.id)
     .reduce((s, p) => s + p.cents, 0);
   const balance = charges.filter((c) => c.issued).reduce((s, c) => s + c.cents, 0) - paid;
-  const [work, setWork] = useState<(typeof workSchema._type)[]>([]);
+  const [work, setWork] = useState<(typeof workSchema._output)[]>([]);
   const [hoursBusy, setHoursBusy] = useState(true);
   const [hoursError, setHoursError] = useState('');
   const loadHours = useCallback(

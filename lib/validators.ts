@@ -12,8 +12,8 @@ const FileCtor = typeof globalThis !== 'undefined' && typeof globalThis.File !==
 export function createContactSchema(t: Translator) {
   return z
     .object({
-      name: z.string().min(2, t('validation.name.min')).max(80, t('validation.name.max')),
-      email: z.string().email(t('validation.email')),
+      name: z.string().trim().min(2, t('validation.name.min')).max(80, t('validation.name.max')),
+      email: z.string().trim().email(t('validation.email')).max(254, t('validation.email')),
       company: z
         .string()
         .max(120, t('validation.company.max'))
@@ -23,7 +23,7 @@ export function createContactSchema(t: Translator) {
         .string()
         .min(12, t('validation.message.min'))
         .max(MAX_MESSAGE_LENGTH, t('validation.message.max')),
-      service: z.string().min(1, t('validation.service')),
+      service: z.string().min(1, t('validation.service')).max(180, t('validation.service')),
       token: z.string().optional(),
       honeypot: z.string().optional(),
       file:

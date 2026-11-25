@@ -33,7 +33,6 @@ Copy `.env.example` to `.env.local` and fill in the values that apply to your de
 - `RESEND_API_KEY` or `SMTP_*`: Configure at least one mail provider
 - `RESEND_FROM_EMAIL`: Verified sender when using Resend (falls back to `CONTACT_FROM_EMAIL`)
 - `HCAPTCHA_SECRET`/`NEXT_PUBLIC_HCAPTCHA_SITE_KEY` or `TURNSTILE_SECRET`/`NEXT_PUBLIC_TURNSTILE_SITE_KEY`: Enable bot protection (set both the secret and site key for a provider to activate verification). The first successful contact submission in a browser skips the challenge. Another submission within 24 hours requires a check, then successful human verification is remembered in a signed, HttpOnly cookie for 24 hours. hCaptcha challenge difficulty is configured on the sitekey in the hCaptcha dashboard; changing the secret does not adjust it.
-- `SHEET_WEBHOOK_URL`: Optional Google Sheets webhook to append new submissions
 
 ### Commands
 
@@ -76,7 +75,7 @@ To add a new MDX page:
 ### Contact Form Pipeline
 
 - Client-side: `components/contact-form.tsx` validates input with Zod and handles hCaptcha or Turnstile if configured.
-- API route: `app/api/contact/route.ts` re-validates, verifies captcha tokens, sends emails via Resend or SMTP, and forwards payloads to the optional Sheets webhook.
+- API route: `app/api/contact/route.ts` re-validates, verifies captcha tokens, sends emails via Resend or SMTP, and records the inquiry and any attachment in the CRM project notes. New senders enter the New lead column. Returning senders match by email regardless of case. If several projects match, the form uses an exact generated project title or the only non-closed project. Ambiguous inquiries open a New lead for triage.
 
 ### Deployment
 
@@ -146,3 +145,7 @@ To connect the NomaSoft hours workbook:
 2. Enable **Google Sheets API** under **Services**. Set script property `CRM_SECRET` to a long random secret, then run `setupCRM` once. It creates the hours ledger if needed. Keep its headers and entry IDs intact.
 3. Deploy as a web app executing as the workbook owner with access for **Anyone**. The script authenticates requests with the shared secret. Set the deployment's `/exec` URL as `CRM_SHEETS_WEB_APP_URL` and the same secret as `CRM_SHEETS_SECRET` on the website. Redeploy the website after configuring environment variables.
 4. Add a customer with an engagement, edit it from its detail panel, and refresh. Use the existing customer selector for additional engagements. Use the stage dropdown for keyboard or touch access and drag cards on desktop. Payments roll up across all engagements for the selected customer.
+
+### CRM MCP access
+
+Connect ChatGPT to `https://www.nomasoft.dev/api/mcp` using OAuth and approve with a CRM member account. Tools share the board, task, note, attachment and hours handlers with the CRM UI.

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 export const projectTask = z.object({
   id: z.string().uuid(),
   title: z.string().trim().min(1).max(180),

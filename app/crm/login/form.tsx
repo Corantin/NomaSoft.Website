@@ -2,7 +2,7 @@
 import { FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { requestCode } from './actions';
-export function LoginForm() {
+export function LoginForm({connect=false}: {connect?:boolean}) {
   const [email, setEmail] = useState(''),
     [code, setCode] = useState(''),
     [sent, setSent] = useState(false),
@@ -25,7 +25,7 @@ export function LoginForm() {
         callbackUrl: '/api/crm/renew',
       });
       if (result?.ok && !result.error) {
-        window.location.replace('/api/crm/renew');
+        if (connect) window.location.reload(); else window.location.replace('/api/crm/renew');
         return;
       }
       setMessage('The code is incorrect or has expired.');

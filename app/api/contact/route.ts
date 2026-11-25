@@ -1,3 +1,5 @@
+import { randomUUID, createHash } from 'node:crypto';
+import { recordInquiry } from '@/lib/crm/inquiry';
 import { Buffer } from 'node:buffer';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
@@ -57,7 +59,7 @@ type EmailPayload = {
   attachment?: Attachment;
 };
 
-async function sendEmail(payload: EmailPayload) {
+async function sendEmail(payload: EmailPayload, submissionKey: string) {
   const to = process.env.CONTACT_TO_EMAIL || siteContent.site?.contact?.email;
   if (!to) {
     throw new Error('contact_recipient_missing');
@@ -124,6 +126,7 @@ async function sendEmail(payload: EmailPayload) {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Idempotency-Key': submissionKey,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -178,20 +181,6 @@ async function sendEmail(payload: EmailPayload) {
   }
 
   throw new Error('mail_provider_not_configured');
-}
-
-async function appendToSheet(data: Record<string, unknown>) {
-  const webhook = process.env.SHEET_WEBHOOK_URL;
-  if (!webhook) return;
-  try {
-    await fetch(webhook, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-  } catch (error) {
-    console.error('Sheet webhook error', error);
-  }
 }
 
 function isChallengeRequired(request: NextRequest) {
@@ -274,27 +263,34 @@ export async function POST(request: NextRequest) {
         }
       : undefined;
 
-    await sendEmail({
-      ...rest,
-      locale,
-      serviceLabel,
-      attachment,
-    });
-    if (config && !isCaptchaSessionValid(
-      request.cookies.get(CONTACT_SUBMISSION_COOKIE)?.value,
-      config,
-      'submitted',
-    )) {
+    const submittedId = String(form.get('submissionId') || '');
+    const requestId = /^[a-f0-9-]{36}$/i.test(submittedId) ? submittedId : randomUUID();
+    const fingerprint = createHash('sha256')
+      .update(JSON.stringify([requestId, rest, locale, attachment?.filename]))
+      .update(attachment?.data ?? '')
+      .digest('hex');
+    const noteId = [
+      fingerprint.slice(0, 8),
+      fingerprint.slice(8, 12),
+      '4' + fingerprint.slice(13, 16),
+      '8' + fingerprint.slice(17, 20),
+      fingerprint.slice(20, 32),
+    ].join('-');
+    await recordInquiry({ ...rest, serviceLabel, attachment }, noteId);
+    await sendEmail(
+      { ...rest, locale, serviceLabel, attachment },
+      'contact-' + fingerprint,
+    );
+    if (
+      config &&
+      !isCaptchaSessionValid(
+        request.cookies.get(CONTACT_SUBMISSION_COOKIE)?.value,
+        config,
+        'submitted',
+      )
+    ) {
       newSubmissionSession = createCaptchaSession(config, 'submitted');
     }
-    await appendToSheet({
-      ...rest,
-      service: serviceLabel,
-      serviceKey: rest.service,
-      locale,
-      receivedAt: new Date().toISOString(),
-    });
-
     return respond(NextResponse.json({ ok: true }));
   } catch (error) {
     if (error instanceof ZodError) {
@@ -305,24 +301,24 @@ export async function POST(request: NextRequest) {
           fieldErrors[field] = issue.message;
         }
       }
-      return respond(NextResponse.json(
-        { error: 'validation_error', errors: fieldErrors },
-        { status: 422 },
-      ));
+      return respond(
+        NextResponse.json(
+          { error: 'validation_error', errors: fieldErrors },
+          { status: 422 },
+        ),
+      );
     }
 
     if (error instanceof Error) {
       switch (error.message) {
         case 'contact_recipient_missing':
-          return respond(NextResponse.json(
-            { error: 'contact_recipient_missing' },
-            { status: 500 },
-          ));
+          return respond(
+            NextResponse.json({ error: 'contact_recipient_missing' }, { status: 500 }),
+          );
         case 'mail_provider_not_configured':
-          return respond(NextResponse.json(
-            { error: 'mail_provider_not_configured' },
-            { status: 500 },
-          ));
+          return respond(
+            NextResponse.json({ error: 'mail_provider_not_configured' }, { status: 500 }),
+          );
         case 'resend_request_failed':
           return respond(NextResponse.json({ error: 'email_failed' }, { status: 502 }));
         default:

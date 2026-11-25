@@ -2,7 +2,7 @@
 
 import Script from 'next/script';
 import { useTranslations } from 'next-intl';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import type { CaptchaClientConfig } from '@/lib/captcha';
 import siteContent from '@/content/site.json';
 import { createContactSchema, MAX_MESSAGE_LENGTH } from '@/lib/validators';
@@ -40,6 +40,7 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
   const contactEmail = siteContent.site.contact.email;
   const [mailtoHref, setMailtoHref] = useState(() => `mailto:${contactEmail}`);
 
+  const submissionId=useRef('');
   const captchaType = captcha?.type ?? null;
 
   useEffect(() => {
@@ -149,6 +150,8 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
 
       setStatus('submitting');
       const submission = new FormData();
+      submissionId.current ||= crypto.randomUUID();
+      submission.set('submissionId',submissionId.current);
       submission.append('name', parsed.data.name);
       submission.append('email', parsed.data.email);
       if (parsed.data.company) submission.append('company', parsed.data.company);
@@ -167,6 +170,7 @@ export function ContactForm({ locale, defaultService, captcha }: Props) {
         throw new Error('Failed');
       }
 
+      submissionId.current='';
       setStatus('success');
       formElement.reset();
       resetCaptcha();
