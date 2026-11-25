@@ -417,11 +417,17 @@
   padding: 10px 0;
   border-top: 1px solid var(--line);
 }
+.crm-ledger-row > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .crm-ledger-row small {
   display: block;
   color: var(--muted);
 }
 .crm-ledger-row button {
+  flex: 0 0 auto;
+  white-space: nowrap;
   color: var(--green);
   text-decoration: underline;
 }
