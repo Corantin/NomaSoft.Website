@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useEffect, type FormEvent } from 'react';
+import { useState, useRef, useCallback, useEffect, type FormEvent } from 'react';
 import type { Board, Engagement, work as workSchema } from '@/lib/crm/model';
 
 const cad = (value: number) =>
@@ -77,6 +77,21 @@ export default function AgreementLedger({
   useEffect(() => {
     void loadHours();
   }, [loadHours]);
+  const editDialog = useRef<HTMLDialogElement>(null);
+  const editTrigger = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    if (!editing) return;
+    const dialog = editDialog.current!;
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      editTrigger.current?.focus();
+    };
+  }, [editing]);
+  function closeTimeForm() {
+    setForm('');
+    setEditing(null);
+  }
   function start(action: 'charge' | 'work') {
     setEditing(null);
     setId(crypto.randomUUID());
@@ -107,8 +122,53 @@ export default function AgreementLedger({
           )
         : await request({ action: form, [form]: row })
     )
-      setForm('');
+      closeTimeForm();
   }
+  const timeForm = (
+    <form key={id} onSubmit={save} data-saving={hoursBusy}>
+      {editing && <h2 id="crm-edit-time-title">Edit time entry</h2>}
+      <label className="crm-field">
+        Team member
+        <input required name="member" defaultValue={editing?.member ?? deal.owner} />
+      </label>
+      <div className="crm-pair">
+        <label className="crm-field">
+          Date worked
+          <input defaultValue={editing?.date} required type="date" name="date" />
+        </label>
+        <label className="crm-field">
+          Minutes
+          <input
+            defaultValue={editing?.minutes}
+            required
+            type="number"
+            min="1"
+            max="1440"
+            step="1"
+            name="minutes"
+          />
+        </label>
+      </div>
+      <label className="crm-field">
+        Description
+        <input name="description" maxLength={180} defaultValue={editing?.description} />
+      </label>
+      {editing && hoursError && <p role="alert">{hoursError}</p>}
+      <div className="crm-time-actions">
+        <button className="crm-primary" disabled={busy || hoursBusy}>
+          {editing ? 'Save changes' : 'Save time'}
+        </button>
+        <button
+          type="button"
+          className="crm-secondary"
+          disabled={hoursBusy}
+          onClick={closeTimeForm}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
   return (
     <>
       {(fixed || charges.length > 0) && (
@@ -179,7 +239,7 @@ export default function AgreementLedger({
               Number((work.reduce((s, w) => s + w.minutes, 0) / 60).toFixed(2)) +
               ' h'}
       </h3>
-      {hoursError && (
+      {hoursError && !editing && (
         <p role="alert">
           {hoursError} <button onClick={() => void loadHours()}>Retry</button>
         </p>
@@ -199,7 +259,8 @@ export default function AgreementLedger({
             className="crm-secondary"
             disabled={hoursBusy || form === 'work'}
             aria-label={'Edit time entry for ' + w.member + ' on ' + w.date}
-            onClick={() => {
+            onClick={(event) => {
+              editTrigger.current = event.currentTarget;
               setId(w.id);
               setEditing(w);
               setForm('work');
@@ -218,54 +279,21 @@ export default function AgreementLedger({
         >
           Log time
         </button>
+      ) : editing ? (
+        <dialog
+          ref={editDialog}
+          className="crm-time-dialog"
+          aria-labelledby="crm-edit-time-title"
+          onCancel={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (!hoursBusy) closeTimeForm();
+          }}
+        >
+          {timeForm}
+        </dialog>
       ) : (
-        <form key={id} onSubmit={save} data-saving={hoursBusy}>
-          {editing && <h4>Edit time entry</h4>}
-          <label className="crm-field">
-            Team member
-            <input required name="member" defaultValue={editing?.member ?? deal.owner} />
-          </label>
-          <div className="crm-pair">
-            <label className="crm-field">
-              Date worked
-              <input defaultValue={editing?.date} required type="date" name="date" />
-            </label>
-            <label className="crm-field">
-              Minutes
-              <input
-                defaultValue={editing?.minutes}
-                required
-                type="number"
-                min="1"
-                max="1440"
-                step="1"
-                name="minutes"
-              />
-            </label>
-          </div>
-          <label className="crm-field">
-            Description
-            <input
-              name="description"
-              maxLength={180}
-              defaultValue={editing?.description}
-            />
-          </label>
-          <button className="crm-secondary" disabled={busy || hoursBusy}>
-            {editing ? 'Save changes' : 'Save time'}
-          </button>
-          <button
-            type="button"
-            className="crm-secondary"
-            disabled={hoursBusy}
-            onClick={() => {
-              setForm('');
-              setEditing(null);
-            }}
-          >
-            Cancel
-          </button>
-        </form>
+        timeForm
       )}
     </>
   );
